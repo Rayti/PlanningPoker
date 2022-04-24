@@ -5,7 +5,6 @@
       <header-bar></header-bar>
     </div>
     <router-view></router-view>
-    <!--    <router-view />-->
 
   </div>
 
@@ -36,15 +35,5 @@ export default {
 #nav {
   padding: 30px;
 }
-.page {
-  position: absolute;
-  background: rgba(0, 0, 0, 0.3);
-  z-index: 25;
-  width: 100%;
-  height: 100%;
-}
-.input-toolbar{
-  justify-content: center !important;
-  z-index: 500;
-}
+
 </style>

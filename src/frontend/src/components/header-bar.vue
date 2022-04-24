@@ -1,16 +1,24 @@
 <template>
   <div>
-    <b-navbar class="header" toggleable="lg" type="dark" variant="info">
-      <b-navbar-brand href="#">Planning Poker</b-navbar-brand>
-      <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
-      <b-collapse id="nav-collapse" is-nav>
-<!--        <b-navbar-nav>-->
-<!--          <b-nav-item href="#">Link</b-nav-item>-->
-<!--          <b-nav-item href="#" disabled>Disabled</b-nav-item>-->
-<!--        </b-navbar-nav>-->
+    <nav class="navbar header">
+      <div class="container-fluid">
+        <a class="navbar-brand custom-brand" href="#">
+<!--          <img src="/docs/5.1/assets/brand/bootstrap-logo.svg" alt="" width="30" height="24" class="d-inline-block align-text-top">-->
+          Planning Poker
+        </a>
+      </div>
+    </nav>
+<!--    <b-navbar class="header" toggleable="lg" type="dark" variant="info">-->
+<!--      <b-navbar-brand href="#">Planning Poker</b-navbar-brand>-->
+<!--      <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>-->
+<!--      <b-collapse id="nav-collapse" is-nav>-->
+<!--&lt;!&ndash;        <b-navbar-nav>&ndash;&gt;-->
+<!--&lt;!&ndash;          <b-nav-item href="#">Link</b-nav-item>&ndash;&gt;-->
+<!--&lt;!&ndash;          <b-nav-item href="#" disabled>Disabled</b-nav-item>&ndash;&gt;-->
+<!--&lt;!&ndash;        </b-navbar-nav>&ndash;&gt;-->
 
-      </b-collapse>
-    </b-navbar>
+<!--      </b-collapse>-->
+<!--    </b-navbar>-->
   </div>
 </template>
 
@@ -32,5 +40,10 @@ export default {
   height:70px;     /* define height for content */
   padding-left: 5%;
   background-color: #6B5343 !important;
+  color: beige;
+}
+.custom-brand{
+  color: aliceblue;
+  font-size: x-large;
 }
 </style>

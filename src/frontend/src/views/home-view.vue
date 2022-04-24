@@ -1,17 +1,15 @@
 <template>
   <div>
   <img class ="logo" src="../assets/planningpoker.png">
-  <div>
-    <b-button-toolbar class ="input-toolbar" aria-label="Toolbar with button groups and input groups">
-      <b-input-group prepend="Username" class="mt-3" >
-        <b-form-input type="text" placeholder="Your Name" class="text-right" v-model="nickInput"></b-form-input>
+    <div class="btn-toolbar mb-3 input-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+      <div class="input-group">
+        <div class="input-group-text" id="btnGroupAddon">Name</div>
+        <input type="text" v-model="nickInput" class="form-control" placeholder="Enter your nick" aria-label="Input group example" aria-describedby="btnGroupAddon">
+        <button type="button" v-on:click="goClick" class="btn btn-outline-success">Let's start</button>
+      </div>
 
-        <b-input-group-append>
-          <b-button v-on:click="goClick" variant="outline-success">Let's start</b-button>
-        </b-input-group-append>
-      </b-input-group>
-    </b-button-toolbar>
-  </div></div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -41,5 +39,9 @@ export default {
 </script>
 
 <style scoped>
-
+.input-toolbar{
+  justify-content: center !important;
+  z-index: 500;
+  margin-top: 2.5%;
+}
 </style>
