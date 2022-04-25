@@ -1,29 +1,36 @@
 <template>
-  <div id="app">
-
-    <div id="nav">
+  <div id="nav">
       <header-bar></header-bar>
-    </div>
-    <router-view></router-view>
-
   </div>
-
-
+  <router-view></router-view>
+  <h1>Welcome to Planning Poker!</h1>
+  <DeckOfCards/>
 </template>
 
 <script>
 import HeaderBar from "@/components/header-bar";
+import DeckOfCards from './components/DeckOfCards.vue'
 
 export default {
   name: 'App',
   components: {
-    "header-bar": HeaderBar
+    "header-bar": HeaderBar,
+    DeckOfCards
   }
 
 }
 </script>
 
-<style >
+<style>
+body, html {
+  padding: 0;
+  margin: 0;
+}
+body {
+  background-color: rgb(255, 179, 179);
+  width: 100%;
+  height: 100%;
+}
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -35,5 +42,4 @@ export default {
 #nav {
   padding: 30px;
 }
-
 </style>
