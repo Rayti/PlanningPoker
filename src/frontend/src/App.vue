@@ -1,16 +1,23 @@
 <template>
+  <div id="nav">
+      <header-bar></header-bar>
+  </div>
+  <router-view></router-view>
   <h1>Welcome to Planning Poker!</h1>
   <DeckOfCards/>
 </template>
 
 <script>
+import HeaderBar from "@/components/header-bar";
 import DeckOfCards from './components/DeckOfCards.vue'
 
 export default {
   name: 'App',
   components: {
+    "header-bar": HeaderBar,
     DeckOfCards
   }
+
 }
 </script>
 
@@ -31,5 +38,8 @@ body {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+#nav {
+  padding: 30px;
 }
 </style>
