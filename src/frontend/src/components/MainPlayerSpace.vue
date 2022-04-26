@@ -2,7 +2,8 @@
 <div class="bottom-space">
     <div class="player-space">
         <div class="deck-label">
-            <button @click="confirmSelect">Select</button>
+            <button class = "btn btn-outline-primary btn-lg" @click="confirmSelect">Select</button>
+            <button class = "clear-bt btn btn-outline-secondary btn-lg" @click="clearSelections">Clear</button>
         </div>
         <div class="main-deck">
             <ul>
@@ -48,7 +49,14 @@ export default {
         },
         emitValue(){
             this.$emit("selection", { selectedCard: this.selectedCard, isSelectionConfirmed: this.isSelectionConfirmed });
-        }
+        },
+
+      clearSelections(){
+        this.selectedCard='';
+        this.$emit("clear", {beCleared: true});
+      }
+
+
     }
 }
 </script>
@@ -108,5 +116,8 @@ export default {
     transition: all .1s linear;
     vertical-align: top;
     white-space: nowrap;
+}
+.clear-bt{
+  margin-left: 1.5rem;
 }
 </style>

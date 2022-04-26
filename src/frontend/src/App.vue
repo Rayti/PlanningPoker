@@ -1,28 +1,22 @@
 <template>
   <div class="room">
     <div id="nav">
-        <header-bar></header-bar>
+        <HeaderBar></HeaderBar>
     </div>
-    <!-- <router-view></router-view> -->
-    <!-- <h1>Welcome to Planning Poker!</h1> -->
-    <div class="room-table">
-      <game-table :mainPlayerCard="this.mainPlayerCard" :isSelectionConfirmed="this.isSelectionConfirmed"/>
-      <main-player-space @selection="getSelection"/>
-    </div>
+     <router-view></router-view>
   </div>
 </template>
 
 <script>
-import HeaderBar from "@/components/header-bar";
-import MainPlayerSpace from './components/MainPlayerSpace.vue'
-import GameTable from './components/GameTable.vue'
+import HeaderBar from "@/components/HeaderBar";
+
+import jQuery from "jquery";
+window.$ = jQuery;
 
 export default {
   name: 'App',
   components: {
     HeaderBar,
-    MainPlayerSpace,
-    GameTable
   },
   data() {
         return {
@@ -34,6 +28,13 @@ export default {
       getSelection($event){
             this.mainPlayerCard = $event.selectedCard;
             this.isSelectionConfirmed = $event.isSelectionConfirmed;
+      },
+
+      clearTableHandler($event){
+        this.$refs.gameTableRef.clearResult();
+        this.mainPlayerCard = '';
+        this.isSelectionConfirmed = false;
+
       }
   }
 }

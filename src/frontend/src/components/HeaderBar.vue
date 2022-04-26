@@ -2,7 +2,7 @@
   <div>
     <nav class="navbar header">
       <div class="container-fluid">
-        <a class="navbar-brand custom-brand" href="#">
+        <a class="navbar-brand custom-brand" @click="navigate" >
 <!--          <img src="/docs/5.1/assets/brand/bootstrap-logo.svg" alt="" width="30" height="24" class="d-inline-block align-text-top">-->
           Planning Poker
         </a>
@@ -24,6 +24,11 @@
 
 <script>
 export default {
+  methods: {
+    navigate(){
+      this.$router.push('/')
+    }
+  }
 
 }
 </script>
@@ -45,5 +50,6 @@ export default {
 .custom-brand{
   color: aliceblue;
   font-size: x-large;
+  cursor: pointer;
 }
 </style>

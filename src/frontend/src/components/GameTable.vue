@@ -3,18 +3,18 @@
         <div class="inside-table">
             <div class="many-users">
                 <div></div>
-                <div class="top"><button @click="getResults">Get results</button></div>
+                <div class="top"><button class="btn btn-outline-primary btn-lg" :disabled="!isSelectionConfirmed" @click="getResults">Get results</button></div>
                 <div></div>
                 <div class="left"></div>
                 <div class="tabelunia"><div class="content-table">
-                    <div>player1</div>
+                  <div>
+                    <div>me</div>
                     <planning-poker-card :v-if="isSelectionConfirmed" :estimation="mainPlayerCard"/>
-                    <div>player2</div>
-                    <planning-poker-card :v-if="showResults" :estimation="playerTwo"/>
-                    <div>player3</div>
-                    <planning-poker-card :v-if="showResults" :estimation="playerThree"/>
-                    <div>player4</div>
-                    <planning-poker-card :v-if="showResults" :estimation="playerFour"/>
+                  </div>
+                  <div :v-if="showResults" v-for="(player, index) in players" :key="`player-${index + 2}`">
+                    <div>player{{ index + 2}}</div>
+                    <planning-poker-card :estimation="fibonacci[player]"/>
+                  </div>
                 </div></div>
                 <div class="right"></div>
                 <div></div>
@@ -41,18 +41,30 @@ export default {
         return {
             fibonacci: ['0', '1', '2', '3', '5', '8', '13', '21', '34', '55', '89', '?'],
             showResults: false,
-            playerTwo: '',
-            playerThree: '',
-            playerFour: ''
+            clearResults: false,
+            players: []
         }
     },
     methods: {
-        getResults() {
-            this.showResults = true;
-            this.playerTwo = this.fibonacci[Math.floor(Math.random() * (11))];
-            this.playerThree = this.fibonacci[Math.floor(Math.random() * (11))];
-            this.playerFour = this.fibonacci[Math.floor(Math.random() * (11))];
+      getResults() {
+        if (this.isSelectionConfirmed) {
+          let numberOfParticipants = Math.floor(Math.random() * (8) + 1);
+          const participants = [];
+          while (numberOfParticipants >= 0) {
+            console.log("here");
+            participants.push(Math.floor(Math.random() * (12)));
+            numberOfParticipants--;
+          }
+          this.players = participants;
+          console.log(numberOfParticipants);
+          console.log(participants);
+          this.showResults = true;
         }
+      },
+
+      clearResult(){
+        this.players=[];
+      }
     }
 }
 </script>
@@ -115,12 +127,12 @@ export default {
     display: flex;
     justify-content: center;
     background: #f0a7cc;
-    border-radius: 2.8rem;
+    border-radius: 6.0rem;
     grid-area: table;
     height: auto;
     margin: 0 auto;
     min-height: 15.1rem;
-    min-width: 33.8rem;
+    min-width: 50.8rem;
     padding: 0 1.6rem;
     position: relative;
     width: 100%;
