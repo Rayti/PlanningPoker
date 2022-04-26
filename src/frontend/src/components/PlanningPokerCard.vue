@@ -1,7 +1,7 @@
 <template>
   <!-- <div class="card" @click="click"> -->
     <div class="planning-poker-card" @click="click" :class="{ selected: isSelected }">
-      <h1 class="estimation">{{ estimation }}</h1>
+      <h1 class="estimation ">{{ estimation }}</h1>
     </div>
   <!-- </div> -->
 </template>

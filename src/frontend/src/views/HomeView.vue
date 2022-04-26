@@ -31,7 +31,7 @@ export default {
 
       webService.addUser(this.nickInput).then((data) => {
 
-        alert(data);
+        this.$router.push('game')
       });
     }
   }
