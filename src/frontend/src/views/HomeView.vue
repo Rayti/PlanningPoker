@@ -1,29 +1,61 @@
 <template>
-  <div>
-  <img class ="logo" src="../assets/planningpoker.png">
-    <div class="btn-toolbar mb-3 input-toolbar" role="toolbar" aria-label="Toolbar with button groups">
-      <div class="input-group">
-        <div class="input-group-text" id="btnGroupAddon">Name</div>
-        <input type="text" v-model="nickInput" class="form-control" placeholder="Enter your nick" aria-label="Input group example" aria-describedby="btnGroupAddon">
-        <button type="button" v-on:click="goClick" class="btn btn-outline-success">Let's start</button>
-      </div>
+  <div :class="{'blur-content': displayModal&&(createRoomModal||joinRoomModal)}">
+  <div class="container">
+    <img class="row text-margin" src="../assets/planningpoker.png">
+    <h3 class="row text-left text-margin mt-5 mb-4">To start planning</h3>
+    <div class="row justify-content-center">
+      <button col-4 type="button" class="btn btn-outline-primary btn-lg w-25 mb-4" @click="showModalRoom">CREATE A NEW
+        ROOM
+      </button>
+      <!--      <div class=" btn-toolbar  input-toolbar" role="toolbar" aria-label="Toolbar with button groups">-->
+      <!--        <div class="input-group">-->
+      <!--&lt;!&ndash;          <div class="input-group-text" id="btnGroupAddon">Name</div>&ndash;&gt;-->
+      <!--          <input type="text" v-model="nickInput" class="form-control" placeholder="Enter your nick"-->
+      <!--                 aria-label="Input group example" aria-describedby="btnGroupAddon">-->
+      <!--          <button type="button" v-on:click="goClick" class="btn btn-outline-success">Let's start</button>-->
+      <!--        </div>-->
+      <!--      </div>-->
 
     </div>
+    <br>
+    <h3 class="row text-center text-margin mb-4 ">...or join existing one</h3>
+    <div class="row justify-content-center">
+      <div class=" btn-toolbar btn-lg mb-3 input-toolbar w-25" role="toolbar" aria-label="Toolbar with button groups">
+        <div class="input-group invite">
+          <input type="text" v-model="linkInput" class="form-control " placeholder="Paste invite link"
+                 aria-label="Input group example" aria-describedby="btnGroupAddon">
+          <button type="button" @click="joinRoom" class="btn btn-outline-primary">Join</button>
+        </div>
+      </div>
+    </div>
   </div>
+  </div>
+    <CreateRoomModal v-if="createRoomModal" @close-modal-event="hideModal"></CreateRoomModal>
+
+
 </template>
 
 <script>
 
 import {WebService} from "@/services/WebService";
+import CreateRoomModal from "@/components/models/CreateRoomModal";
+
 
 const webService = new WebService();
 
 export default {
   name: "HomeView",
+  components: {
+    CreateRoomModal,
+  },
   data() {
     return{
-    nickInput: ""
-  }
+      linkInput: "",
+      displayModal: false,
+      createRoomModal: false,
+      joinRoomModal: false
+
+    }
 }
 ,
   methods: {
@@ -33,7 +65,22 @@ export default {
 
         this.$router.push('game')
       });
+    },
+    showModalRoom() {
+      this.displayModal = true;
+      this.createRoomModal = true;
+    },
+    hideModal() {
+      this.displayModal = false;
+      this.joinRoomModal = false;
+      this.createRoomModal = false;
+
+    },
+    joinRoom(){
+      this.displayModal = true;
+      this.joinRoomModal = true;
     }
+
   }
 };
 </script>
@@ -42,6 +89,16 @@ export default {
 .input-toolbar{
   justify-content: center !important;
   z-index: 500;
-  margin-top: 2.5%;
+  /*margin-left: 20.0rem*/
+}
+
+.text-margin{
+  margin-left: 23.0rem !important;
+}
+.invite{
+  min-width: 22rem;
+}
+.blur-content{
+  filter: blur(5px);
 }
 </style>
