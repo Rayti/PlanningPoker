@@ -3,8 +3,7 @@ package com.example.planningpoker.domain;
 import lombok.Data;
 
 @Data
-public class Task {
-
+public class Card {
     private int id;
-    private String description;
+    private float value;
 }
