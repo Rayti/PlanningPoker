@@ -1,15 +1,16 @@
 package com.example.planningpoker.controller;
 
 import com.example.planningpoker.domain.User;
+import com.example.planningpoker.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin()
+@CrossOrigin
 @RestController
 @RequestMapping("/api/poker")
 public class UserController {
 
-/*    private UserService userService;
+    private UserService userService;
 
     @Autowired
     public UserController(UserService userService) {
@@ -18,7 +19,7 @@ public class UserController {
 
     @GetMapping("/newUser/{userName}")
     public String newUser(@PathVariable String userName ){
-        userService.addUser(new User(userName, -1));
+        userService.createUser(userName);
         return "OK";
     }
 
@@ -26,5 +27,5 @@ public class UserController {
     public boolean selectCard(@PathVariable String userName, @PathVariable int cardId){
         //userService.selectCard();
         return false;
-    }*/
+    }
 }

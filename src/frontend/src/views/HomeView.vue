@@ -31,6 +31,9 @@
   </div>
   </div>
     <CreateRoomModal v-if="createRoomModal" @close-modal-event="hideModal"></CreateRoomModal>
+  <div>
+    <button @click="goClick">Test None Websocket Button</button>
+  </div>
 
 
 </template>
@@ -62,7 +65,6 @@ export default {
     goClick() {
 
       webService.addUser(this.nickInput).then((data) => {
-
         this.$router.push('game')
       });
     },

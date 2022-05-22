@@ -2,8 +2,9 @@ import axios from 'axios';
 import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
 const API_URL = 'http://localhost:8080/api/poker';
-const config ={headers: {"Content-type": "application/json",
-        'Access-Control-Allow-Credentials':true}}
+/*const config ={headers: {"Content-type": "application/json",
+        'Access-Control-Allow-Credentials':true}}*/
+const config = {headers: {}}
 
 
 export class WebService{
@@ -17,7 +18,7 @@ export class WebService{
 
     addUser(userName) {
         const url = `${API_URL}/newUser/`+userName;
-        return axios.get(url,config).then(response => response.data);
+        axios.get(url, config).then(response => response.data);
     }
 
     send(msg){
