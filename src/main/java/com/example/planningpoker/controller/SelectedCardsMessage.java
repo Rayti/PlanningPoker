@@ -4,10 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
-public class Message {
-    private String message;
-    private boolean success;
+public class SelectedCardsMessage {
+    private List<Integer> cardsSelected;
 }

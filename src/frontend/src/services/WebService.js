@@ -38,7 +38,7 @@ export class WebService{
             frame => {
                 this.connected = true;
                 console.log(frame);
-                this.stompClient.subscribe("/backend-response/messages", tick => {
+                this.stompClient.subscribe("/backend-response/messages/param", tick => {
                     //here is response processed from backend
                     console.log("RESPONSE FROM BACKEND:");
                     console.log(tick);

@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class SimpleUserService implements UserService {
+public class DefaultUserService implements UserService {
 
     private List<User> userCache = new ArrayList<>();
 

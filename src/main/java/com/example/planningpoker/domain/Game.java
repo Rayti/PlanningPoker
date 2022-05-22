@@ -2,8 +2,7 @@ package com.example.planningpoker.domain;
 
 import lombok.Data;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Data
 public class Game {
@@ -14,4 +13,9 @@ public class Game {
     private boolean gameFinished;
     private float gameResult;
 
+    public Game() {
+        this.chosenCards = Collections.synchronizedMap(new HashMap<>());
+        this.users = Collections.synchronizedList(new ArrayList<>());
+        this.gameFinished = false;
+    }
 }
