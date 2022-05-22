@@ -18,7 +18,8 @@
         </div>
         <div>
           <button @click="webService.connect()">Connect</button>
-          <button @click="webService.send()">Send</button>
+          <input v-model="messageInput"/>
+          <button @click="webService.send(messageInput)">Send</button>
           <button @click="webService.disconnect()">Disconnect</button>
           <ol>
             <li>
@@ -47,7 +48,8 @@ export default {
             fibonacci: ['0', '1', '2', '3', '5', '8', '13', '21', '34', '55', '89', '?'],
             selectedCard: '',
             isSelectionConfirmed: false,
-            webService: new WebService()
+            webService: new WebService(),
+            messageInput: ""
         }
     },
     methods:{

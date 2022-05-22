@@ -16,10 +16,10 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
     public void configureMessageBroker(MessageBrokerRegistry registry) {
 
         //at this endpoint vue will get web socket response
-        registry.enableSimpleBroker("/topic-socket");
+        registry.enableSimpleBroker("/backend-response");
 
         //at this endpoint vue will send request
-        registry.setApplicationDestinationPrefixes("/app-socket");
+        registry.setApplicationDestinationPrefixes("/backend-request");
     }
 
     @Override

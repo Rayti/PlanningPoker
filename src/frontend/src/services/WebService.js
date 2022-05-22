@@ -20,11 +20,11 @@ export class WebService{
         return axios.get(url,config).then(response => response.data);
     }
 
-    send(){
+    send(msg){
         console.log("Send message: " + this.sendMessage);
         if(this.stompClient && this.stompClient.connected){
-            const msg = { message: "Message from vue"};
-            this.stompClient.send("/app-socket/chat", JSON.stringify(msg), {});
+            const msgToParse = { message: msg};
+            this.stompClient.send("/backend-request/chat", JSON.stringify(msgToParse), {});
 
         }
     }
@@ -37,7 +37,7 @@ export class WebService{
             frame => {
                 this.connected = true;
                 console.log(frame);
-                this.stompClient.subscribe("/topic-socket/messages", tick => {
+                this.stompClient.subscribe("/backend-response/messages", tick => {
                     //here is response processed from backend
                     console.log("RESPONSE FROM BACKEND:");
                     console.log(tick);
