@@ -73,11 +73,11 @@ export default {
             this.isSelectionConfirmed = true
             this.emitValue();
         },
-        emitValue(){
+        emitValue() {
             this.$emit("selection", { selectedCard: this.selectedCard, isSelectionConfirmed: this.isSelectionConfirmed });
         },
 
-      clearSelections(){
+      clearSelections() {
         this.selectedCard='';
         this.$emit("clear", {beCleared: true});
       }
@@ -90,7 +90,6 @@ export default {
 <style>
 .bottom-space {
     flex-shrink: 0;
-    height: 16rem;
     overflow: hidden;
     position: relative; 
     /* width: 100%; */
@@ -98,6 +97,7 @@ export default {
     display: grid;
     grid-template-rows: auto; */
     box-sizing: border-box;
+    height: 16rem;
     outline-color: #74b3ff;
 }
 
@@ -113,14 +113,16 @@ export default {
 }
 
 .deck-label {
-      font-size: 1.8rem;
     margin: 0 0 .8rem;
     min-width: 48rem;
     text-align: center;
 }
+.deck-label h2 {
+    font-size: 1.2rem;
+}
 
 .main-deck {
-      position: relative;
+    position: relative;
 }
 
 .main-deck ul {
