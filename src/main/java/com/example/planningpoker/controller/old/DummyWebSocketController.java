@@ -1,4 +1,4 @@
-package com.example.planningpoker.controller;
+package com.example.planningpoker.controller.old;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;

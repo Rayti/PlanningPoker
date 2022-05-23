@@ -111,8 +111,8 @@ export class WebService{
         //selectedCard schema = {id: "1", value: "5"}
         console.log("Send message: " + this.sendMessage);
         if(this.stompClient && this.stompClient.connected){
-            const msgToParse = { message: msg};
-            this.stompClient.send(`/backend-request/${this.roomName}/{${this.userName}/select-card`, JSON.stringify(msgToParse), {});
+/*            const msgToParse = { message: msg};
+            this.stompClient.send(`/backend-request/${this.roomName}/{${this.userName}/select-card`, JSON.stringify(msgToParse), {});*/
 
         }
     }

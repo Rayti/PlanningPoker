@@ -1,7 +1,7 @@
 package com.example.planningpoker.service;
 
-import com.example.planningpoker.controller.Message;
-import com.example.planningpoker.controller.SelectCardMessage;
+import com.example.planningpoker.controller.old.Message;
+import com.example.planningpoker.controller.old.SelectCardMessage;
 import com.example.planningpoker.domain.Room;
 import com.example.planningpoker.domain.User;
 import org.springframework.stereotype.Service;
@@ -19,24 +19,24 @@ public class DefaultRoomService implements RoomService {
     private List<Room> roomCache = Collections.synchronizedList(new ArrayList<>());
 
     @Override
-    public Message createRoom(String userName, String roomName) {
+    public boolean createRoom(String userName, String roomName) {
         boolean notAlreadyExistsRoomName = roomCache.stream().noneMatch(room -> room.getRoomName().equals(roomName));
         if(notAlreadyExistsRoomName){
             Room room = new Room(roomName);
             User user = new User(userName, room);
             room.getUsersCache().add(user);
             roomCache.add(room);
-            return new Message(String.format("Room %s created", roomName), true);
+            return true;
         }
-        return new Message(String.format("Room %s already exists", roomName), false);
+        return false;
     }
 
     @Override
-    public Message joinRoom(String userName, String roomName) {
+    public boolean joinRoom(String userName, String roomName) {
         Optional<Room> optionalRoom = roomCache.stream().filter(room -> room.getRoomName().equals(roomName)).findFirst();
 
         if (optionalRoom.isEmpty()) {
-            return new Message(String.format("Room %s does not exist.", roomName), false);
+            return false;
         }
 
         Room room = optionalRoom.get();
@@ -46,10 +46,10 @@ public class DefaultRoomService implements RoomService {
         if (optionalUser.isEmpty()) {
             User user = new User(userName, room);
             room.getUsersCache().add(user);
-            return new Message(String.format("User %s joined the room %s", userName, roomName), true);
+            return true;
         }
 
-        return new Message(String.format("User %s is already in the room %s", userName, roomName), false);
+        return false;
     }
 
 
@@ -59,5 +59,15 @@ public class DefaultRoomService implements RoomService {
                 .filter(room -> selectCardMessage.getRoomName().equals(room.getRoomName()))
                 .findFirst().get().getCurrentGame().getChosenCards();
         return null;
+    }
+
+    @Override
+    public boolean deleteRoom(String userName, String roomName) {
+        return false;
+    }
+
+    @Override
+    public boolean leaveRoom(String userName, String roomName) {
+        return false;
     }
 }

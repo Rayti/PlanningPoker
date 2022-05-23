@@ -1,4 +1,4 @@
-package com.example.planningpoker.controller;
+package com.example.planningpoker.controller.old;
 
 import com.example.planningpoker.domain.Card;
 import com.example.planningpoker.domain.Game;
@@ -12,14 +12,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @CrossOrigin
 @Controller
 public class OverloadedPrototypeController {
 
-    private SimpMessagingTemplate template;
+/*    private SimpMessagingTemplate template;
 
     private Game game;
 
@@ -30,13 +29,6 @@ public class OverloadedPrototypeController {
         return new Message("test git", true);
     }
 
-    @GetMapping("/api/poker/{roomName}/{userName}/create-room")
-    @ResponseBody
-    public Message createRoom(@PathVariable String roomName, @PathVariable String userName) {
-        game = new Game();
-        System.out.println(roomName);
-        return new Message("Room created", true);
-    }
 
     @GetMapping("/api/poker/{roomName}/{userName}/join-room")
     @ResponseBody
@@ -65,5 +57,5 @@ public class OverloadedPrototypeController {
         List<Integer> chosenCardsIds = game.getChosenCards().entrySet().stream().map(userCardEntry -> userCardEntry.getValue().getId()).collect(Collectors.toList());
         game.setGameFinished(true);
         return new SelectedCardsMessage(chosenCardsIds);
-    }
+    }*/
 }

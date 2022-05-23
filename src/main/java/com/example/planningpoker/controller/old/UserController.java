@@ -1,4 +1,4 @@
-package com.example.planningpoker.controller;
+package com.example.planningpoker.controller.old;
 
 import com.example.planningpoker.domain.User;
 import com.example.planningpoker.service.UserService;

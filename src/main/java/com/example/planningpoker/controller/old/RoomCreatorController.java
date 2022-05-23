@@ -1,4 +1,4 @@
-package com.example.planningpoker.controller;
+package com.example.planningpoker.controller.old;
 
 import com.example.planningpoker.service.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +22,7 @@ public class RoomCreatorController {
      */
     @GetMapping("/api/poker/create-room")
     public Message createRoom(@RequestParam String name, @RequestParam String roomName) {
-        return roomService.createRoom(name, roomName);
+        //return roomService.createRoom(name, roomName);
+        return null;
     }
 }

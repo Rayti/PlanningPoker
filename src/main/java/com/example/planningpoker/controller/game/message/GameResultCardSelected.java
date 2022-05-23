@@ -1,4 +1,4 @@
-package com.example.planningpoker.controller;
+package com.example.planningpoker.controller.game.message;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,10 +7,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class SelectCardMessage {
-    private String roomName;
+public class GameResultCardSelected {
     private String userName;
-    private String gameId;
     private String cardId;
     private String cardValue;
 }
