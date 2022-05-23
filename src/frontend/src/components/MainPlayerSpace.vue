@@ -16,23 +16,49 @@
         <div class="deck-label">
             <h2>Choose your card...</h2>
         </div>
+<!--      <div>
+        <button @click="webService.test('a')">TEST</button>
+        <ol>
+          <li v-for="msg in webService.msgv2" :key="msg">
+            {{msg}}
+          </li>
+        </ol>
+      </div>-->
+<!--        <div>
+          <button @click="webService.connect()">Connect</button>
+          <input v-model="messageInput"/>
+          <button @click="webService.send(messageInput)">Send</button>
+          <button @click="webService.disconnect()">Disconnect</button>
+          <ol>
+            <li>
+              Here are received messages
+            </li>
+            <li v-for="msg in webService.receivedMessages" :key="msg">
+              {{msg}}
+            </li>
+          </ol>
+        </div>-->
     </div>
     </div>
 </template>
 
 <script>
 import PlanningPokerCard from './PlanningPokerCard.vue';
+import {WebService} from "@/services/WebService";
 
 export default {
-    name: 'MainPlayerSpace',
+  name: 'MainPlayerSpace',
     components: {
         PlanningPokerCard
     },
+  inject: ['webService'],
     data() {
         return {
             fibonacci: ['0', '1', '2', '3', '5', '8', '13', '21', '34', '55', '89', '?'],
             selectedCard: '',
-            isSelectionConfirmed: false
+            isSelectionConfirmed: false,
+            service: this.webService,
+            messageInput: ""
         }
     },
     methods:{

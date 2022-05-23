@@ -1,15 +1,14 @@
-package com.example.planningpoker.domain;
+package com.example.planningpoker.controller.task.message;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
 @AllArgsConstructor
-public class Task {
-
-    private int id;
+public class TaskMessage {
+    private String type;
+    private String id;
     private String description;
 }

@@ -3,6 +3,8 @@
 ## Project setup
 ```
 npm install
+npm install sockjs-client
+npm install webstomp-client
 ```
 
 ### Compiles and hot-reloads for development

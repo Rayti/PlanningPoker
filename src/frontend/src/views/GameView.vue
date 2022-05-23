@@ -11,9 +11,11 @@
 // import HeaderBar from "@/components/header-bar";
 import MainPlayerSpace from "@/components/MainPlayerSpace";
 import GameTable from "@/components/GameTable";
+import {WebService} from "@/services/WebService";
 
 export default {
   name: "GameView",
+  webService: new WebService(),
   components: {
     // HeaderBar,
     MainPlayerSpace,
