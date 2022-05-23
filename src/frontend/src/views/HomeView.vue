@@ -33,11 +33,13 @@
     <CreateRoomModal v-if="createRoomModal" @close-modal-event="hideModal"></CreateRoomModal>
 
 
+  <GiveNickModal v-if="joinRoomModal" @close-modal-event="hideModal"></GiveNickModal>
 </template>
 
 <script>
 
 import {WebService} from "@/services/WebService";
+import GiveNickModal from "@/components/models/GiveNickModal";
 import CreateRoomModal from "@/components/models/CreateRoomModal";
 
 
@@ -46,6 +48,7 @@ const webService = new WebService();
 export default {
   name: "HomeView",
   components: {
+    GiveNickModal,
     CreateRoomModal,
   },
   data() {
@@ -62,6 +65,7 @@ export default {
     goClick() {
 
       webService.addUser(this.nickInput).then((data) => {
+        this.joinRoomModal=true;
 
         this.$router.push('game')
       });
