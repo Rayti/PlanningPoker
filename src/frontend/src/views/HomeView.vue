@@ -39,8 +39,8 @@
 <script>
 
 import {WebService} from "@/services/WebService";
-import GiveNickModal from "@/components/models/GiveNickModal";
-import CreateRoomModal from "@/components/models/CreateRoomModal";
+import GiveNickModal from "@/components/modals/GiveNickModal";
+import CreateRoomModal from "@/components/modals/CreateRoomModal";
 
 
 const webService = new WebService();
