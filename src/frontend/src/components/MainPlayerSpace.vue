@@ -16,7 +16,15 @@
         <div class="deck-label">
             <h2>Choose your card...</h2>
         </div>
-        <div>
+<!--      <div>
+        <button @click="webService.test('a')">TEST</button>
+        <ol>
+          <li v-for="msg in webService.msgv2" :key="msg">
+            {{msg}}
+          </li>
+        </ol>
+      </div>-->
+<!--        <div>
           <button @click="webService.connect()">Connect</button>
           <input v-model="messageInput"/>
           <button @click="webService.send(messageInput)">Send</button>
@@ -29,7 +37,7 @@
               {{msg}}
             </li>
           </ol>
-        </div>
+        </div>-->
     </div>
     </div>
 </template>
@@ -43,12 +51,13 @@ export default {
     components: {
         PlanningPokerCard
     },
+  inject: ['webService'],
     data() {
         return {
             fibonacci: ['0', '1', '2', '3', '5', '8', '13', '21', '34', '55', '89', '?'],
             selectedCard: '',
             isSelectionConfirmed: false,
-            webService: new WebService(),
+            service: this.webService,
             messageInput: ""
         }
     },

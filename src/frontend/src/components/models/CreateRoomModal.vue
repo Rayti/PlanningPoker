@@ -21,18 +21,26 @@
         <div class="modal-footer">
           <button type="button" class="btn btn-primary" @click="createNewRoom" data-bs-dismiss="modal">Go</button>
         </div>
+<!--RSPONSE MSG IF ROOM CAN NOT BE CREATED-->
+        <div v-if="!service.responseMessage.success">
+          {{service.responseMessage.message}}
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import {WebService} from "@/services/WebService";
+
 export default {
   name: "CreateRoomModal",
+  inject: ['webService'],
   data() {
     return {
       roomInput: "",
-      nickInput:""
+      nickInput:"",
+      service: this.webService
     }
   },
   methods: {
@@ -43,7 +51,11 @@ export default {
     createNewRoom(){
       const room = this.roomInput;
       const nick = this.nickInput;
-      this.$router.push('game');
+      this.webService.createRoomRequest(room, nick);
+
+      if (this.webService.responseMessage.success){
+        this.$router.push('game');
+      }
     }
   }
 }

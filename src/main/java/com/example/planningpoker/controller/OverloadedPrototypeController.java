@@ -6,6 +6,7 @@ import com.example.planningpoker.domain.Room;
 import com.example.planningpoker.domain.User;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@CrossOrigin
 @Controller
 public class OverloadedPrototypeController {
 
@@ -21,16 +23,16 @@ public class OverloadedPrototypeController {
 
     private Game game;
 
-    @GetMapping("/api/test")
+    @GetMapping("/api/poker/test")
     @ResponseBody
     public Message test(){
         System.out.println("test");
         return new Message("test git", true);
     }
 
-    @GetMapping("/api/poker/create-room/{roomName}")
+    @GetMapping("/api/poker/{roomName}/{userName}/create-room")
     @ResponseBody
-    public Message createRoom(@PathVariable String roomName) {
+    public Message createRoom(@PathVariable String roomName, @PathVariable String userName) {
         game = new Game();
         System.out.println(roomName);
         return new Message("Room created", true);

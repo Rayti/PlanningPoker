@@ -4,7 +4,7 @@ import Stomp from "webstomp-client";
 const API_URL = 'http://localhost:8080/api/poker';
 /*const config ={headers: {"Content-type": "application/json",
         'Access-Control-Allow-Credentials':true}}*/
-const config = {headers: {}}
+const config = {headers: {'Access-Control-Allow-Credentials':true}}
 
 
 export class WebService{
@@ -12,13 +12,24 @@ export class WebService{
     receivedMessages = [];
     sendMessage = null;
     connected = false;
+    roomName = "";
+    userName = "";
+    msgv2 = [];
+    responseMessage = {message: "", success: false};
+    webService = null;
 
     constructor(){
     }
 
+    test(msg){
+        const link = `${API_URL}/test`
+        axios.get(link, config).then(response => this.msgv2.push(response.data.message))
+
+    }
+
     addUser(userName) {
-        const url = `${API_URL}/newUser/`+userName;
-        axios.get(url, config).then(response => response.data);
+        const url = `${API_URL}/test`;
+        axios.get(url, config).then(response => response.data.message);
     }
 
     send(msg){
@@ -61,4 +72,21 @@ export class WebService{
     tickleConnection(){
         this.connected ? this.disconnect() : this.connect();
     }
+
+    async createRoomRequest(roomName, userName) {
+        const link = `${API_URL}/${roomName}/${userName}/create-room`;
+        await axios.get(link, config).then(response => this.responseMessage = response.data);
+    }
+
+    joinRoomRequest(){}
+
+    connectRoom(){}
+
+    sendSelectedCard(){}
+
+    sendCreatedTask(){}
+
+    sendCreatedUserStory(){}
+
+    sendNextGame(){}
 }
