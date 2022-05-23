@@ -1,6 +1,18 @@
 <template>
     <div class="game-table">
         <div class="inside-table">
+            <div class="many-users row">
+
+                <div class="row justify-content-center">
+<!--                <div class="top">-->
+
+                  <button class=" col-4 btn btn-outline-primary btn-lg " :disabled="!isSelectionConfirmed" @click="getResults">Get results</button>
+<!--                </div>-->
+<!--              <div class="top">-->
+                <button class=" col-4 btn btn-outline-primary btn-lg ms-2"  @click="openUserStoryPanel">User story</button>
+              </div>
+<!--             /   </div>-->
+              <div></div>
             <div class="grid-table">
                 <div></div>
                 <div class="top">
@@ -48,15 +60,18 @@
                 <div></div>
             </div>
         </div>
+      <UserStoryModal v-if="displayUserStoryModal"  @closeUserStoryModal="hideModal"></UserStoryModal>
     </div>
 </template>
 
 <script>
 import PlanningPokerCard from './PlanningPokerCard.vue';
+import UserStoryModal from "@/components/modals/UserStoryModal";
 
 export default {
     name: 'GameTable',
     components: {
+      UserStoryModal,
         PlanningPokerCard
     },
     props: {
@@ -68,6 +83,8 @@ export default {
             fibonacci: ['0', '1', '2', '3', '5', '8', '13', '21', '34', '55', '89', '?'],
             showResults: false,
             clearResults: false,
+            players: []
+            displayUserStoryModal: false,
             players: [],
             exampleTasks: ["PP-23: Create planning poker Create planning poke Create planning pokeCreate planning poke Create planning poke Create planning poke Create planning poke Create planning poke", "PP-23: Create planning poker", "PP-23: Create planning poker", "PP-23: Create planning poker", "PP-23: Create planning poker", "PP-23: Create planning poker"]
         }
@@ -91,7 +108,13 @@ export default {
 
       clearResult() {
         this.players=[];
-      }
+      },
+      openUserStoryPanel(){
+          this.displayUserStoryModal = true;
+      },
+      hideModal() {
+        this.displayUserStoryModal = false;
+      },
     }
 }
 </script>
