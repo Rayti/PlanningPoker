@@ -9,15 +9,14 @@ import java.util.List;
 public class Room {
 
     private String roomName;
-    private List<Game> gamesCache;
-    private List<User> usersCache;
-    private List<Task> tasksCache;
+    private List<Game> games;
+    private List<User> users;
+    private List<Story> stories;
     private Game currentGame;
 
     public Room(String roomName) {
         this.roomName = roomName;
-        this.gamesCache = new ArrayList<>();
-        this.usersCache = new ArrayList<>();
-        this.tasksCache = new ArrayList<>();
+        this.games = new ArrayList<>();
+        this.users = new ArrayList<>();
     }
 }
