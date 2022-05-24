@@ -1,4 +1,5 @@
 <template>
+  <div :class="{'blur-content': displayUserStoryModal||displayTaskModal}">
   <div class="game-table">
     <div class="inside-table">
       <div class="many-users row">
@@ -23,7 +24,7 @@
 
             <div class="manage">
               <button class="btn btn-outline-primary" @click="openUserStoryPanel">Manage user stories</button>
-              <button class="btn btn-outline-primary" @click="onClick">Manage tasks</button>
+              <button class="btn btn-outline-primary" @click="openTaskPanel">Manage tasks</button>
             </div>
           </div>
           <div></div>
@@ -74,8 +75,11 @@
         </div>
       </div>
     </div>
+  </div>
+  </div>
       <UserStoryModal v-if="displayUserStoryModal" @closeUserStoryModal="hideModal"></UserStoryModal>
-    </div>
+    <TasksModal v-if="displayTaskModal" @closeTaskModal="hideTaskModal"></TasksModal>
+
 </template>
 
 <script>
@@ -84,11 +88,13 @@ import PlanningPokerCard from './PlanningPokerCard.vue';
 import UserStoryModal from "@/components/modals/UserStoryModal";
 import $ from "jquery";
 import { Popover } from 'bootstrap/dist/js/bootstrap.esm.min.js'
+import TasksModal from "@/components/modals/TasksModal";
 
 export default {
   name: 'GameTable',
   inject: ['webService'],
   components: {
+    TasksModal,
     UserStoryModal,
     PlanningPokerCard
   },
@@ -101,7 +107,9 @@ export default {
       showResults: false,
       clearResults: false,
       displayUserStoryModal: false,
-      exampleTasks: ["PP-23: Create planning poker", "PP-23: Create planning poker", "PP-23: Create planning poker", "PP-23: Create planning poker", "PP-23: Create planning poker", "PP-23: Create planning poker"]
+      displayTaskModal:false,
+      players: [],
+      exampleTasks: ["PP-23: Create planning poker Create planning poke Create planning pokeCreate planning poke Create planning poke Create planning poke Create planning poke Create planning poke", "PP-23: Create planning poker", "PP-23: Create planning poker", "PP-23: Create planning poker", "PP-23: Create planning poker", "PP-23: Create planning poker"]
     }
   },
 mounted() {
@@ -156,8 +164,14 @@ mounted() {
     openUserStoryPanel() {
       this.displayUserStoryModal = true;
     },
+    openTaskPanel() {
+      this.displayTaskModal = true;
+    },
     hideModal() {
       this.displayUserStoryModal = false;
+    },
+    hideTaskModal() {
+      this.displayTaskModal = false;
     },
     onClick() {
       //this.webService.selectCard("siema", "eniu");
@@ -345,6 +359,14 @@ mounted() {
 .invite-btn{
   width: 10rem;
   margin-left: -8%;
+
+}
+.blur-content{
+  /*filter: blur(5px);*/
+  opacity:0.5 !important;
+  /*!*background-color: black;*!*/
+  /*background: rgba(0, 0, 0, 0.5);*/
+  /*position: fixed;*/
 
 }
 </style>
