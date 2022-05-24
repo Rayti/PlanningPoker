@@ -7,8 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class StoryDescriptionMessage {
+public class DeleteStoryMessage {
     private String type;
-    private String id;
-    private String description;
+    private String storyId;
 }

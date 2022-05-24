@@ -6,12 +6,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Slf4j
 @Controller
+@CrossOrigin
 public class RoomController {
 
     private RoomService roomService;
@@ -26,6 +28,7 @@ public class RoomController {
     @ResponseBody
     public SuccessMessage joinRoom(@PathVariable String roomName, @PathVariable String userName){
         log.info("/api/poker/{}/{}/join-room", roomName, userName);
+        //DONE
         return new SuccessMessage(this.roomService.joinRoom(userName, roomName));
     }
 
@@ -34,6 +37,7 @@ public class RoomController {
     @ResponseBody
     public SuccessMessage leaveRoom(@PathVariable String roomName, @PathVariable String userName) {
         log.info("/api/poker/{}/{}/leave-room", roomName, userName);
+        //DONE
         return new SuccessMessage(this.roomService.leaveRoom(userName, roomName));
     }
 
@@ -42,6 +46,7 @@ public class RoomController {
     @ResponseBody
     public SuccessMessage deleteRoom(@PathVariable String roomName, @PathVariable String userName) {
         log.info("/api/poker/{}/{}/delete-room", roomName, userName);
+        //DONE
         return new SuccessMessage(this.roomService.deleteRoom(userName, roomName));
     }
 
@@ -50,6 +55,7 @@ public class RoomController {
     @ResponseBody
     public SuccessMessage createRoom(@PathVariable String roomName, @PathVariable String userName) {
         log.info("/api/poker/{}/{}/create-room", roomName, userName);
+        //DONE
         return new SuccessMessage(this.roomService.createRoom(userName, roomName));
     }
 

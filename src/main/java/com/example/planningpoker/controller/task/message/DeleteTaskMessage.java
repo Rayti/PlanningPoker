@@ -7,8 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class TaskDescriptionMessage {
+public class DeleteTaskMessage {
     private String type;
-    private String taskId;
-    private String description;
+    private String id;
 }
