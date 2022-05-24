@@ -9,6 +9,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class CreateTaskMessage {
     private String type;
+    private String storyId;
     private String id;
     private String description;
 }

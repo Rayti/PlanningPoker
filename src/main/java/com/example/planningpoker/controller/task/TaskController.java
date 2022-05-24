@@ -42,7 +42,7 @@ public class TaskController {
         if (room != null && room.userExists(userName) && room.getStory(Integer.parseInt(storyId)) != null){
             Task task = new Task(Integer.parseInt(taskDescriptionMessage.getTaskId()), taskDescriptionMessage.getDescription());
             room.getStory(Integer.parseInt(storyId)).getTasks().add(task);
-            CreateTaskMessage msg = new CreateTaskMessage("CreateTaskMessage", taskDescriptionMessage.getTaskId(), taskDescriptionMessage.getDescription());
+            CreateTaskMessage msg = new CreateTaskMessage("CreateTaskMessage", storyId, taskDescriptionMessage.getTaskId(), taskDescriptionMessage.getDescription());
             messagingTemplate.convertAndSend(String.format(BACKEND_SOCKET_RESPONSE_FORMAT, roomName), msg);
             log.info("/api/poker/{}/{}/{}/task-create SENT CreateTaskMessage to subscribers", roomName, userName, storyId);
         }
