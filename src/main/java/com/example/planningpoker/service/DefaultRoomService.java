@@ -4,6 +4,7 @@ import com.example.planningpoker.domain.Game;
 import com.example.planningpoker.domain.Room;
 import com.example.planningpoker.domain.Story;
 import com.example.planningpoker.domain.User;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.annotation.ApplicationScope;
 
@@ -13,17 +14,18 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @ApplicationScope
 public class DefaultRoomService implements RoomService {
 
+    public static final String ROOM_DOES_NOT_EXIST_LOG = "Room {} does not exist";
     private List<Room> roomCache = Collections.synchronizedList(new ArrayList<>());
 
 
     @Override
     public boolean createRoom(String userName, String roomName) {
-        boolean notAlreadyExistsRoomName = roomCache.stream().noneMatch(room -> room.getRoomName().equals(roomName));
-        if(notAlreadyExistsRoomName){
+        if(getRoom(roomName) == null){
             User user = new User(userName);
             Game game = new Game();
             Room room = new Room(roomName);
@@ -31,6 +33,7 @@ public class DefaultRoomService implements RoomService {
             room.getGames().add(game);
             room.setCurrentGame(game);
             roomCache.add(room);
+            log.info("Room {} and User {} created", roomName, userName);
             return true;
         }
         return false;
