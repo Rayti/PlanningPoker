@@ -27,8 +27,7 @@
 <script>
 import MainPlayerSpace from "@/components/MainPlayerSpace";
 import GameTable from "@/components/GameTable";
-import $ from "jquery";
-// import { Popover } from 'bootstrap/dist/js/bootstrap.esm.min.js';
+import {WebService} from "@/services/WebService";
 
 export default {
   name: "GameView",
@@ -82,11 +81,6 @@ export default {
 
 <style scoped>
 
-.invite-btn{
-  width: 10rem;
-  margin-left: -8%;
-
-}
 .room {
   display: flex;
   flex-direction: column;

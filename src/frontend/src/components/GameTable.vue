@@ -4,29 +4,45 @@
       <div class="many-users row">
 
         <div class="grid-table">
-          <div></div>
           <div class="top">
-            <!-- <div class="user-story-part"> -->
-            <div class="user-story">
-              <h5>I can Create/Update/Retrieve/Delete a user story so that we can estimate the items we need to do</h5>
+          <div class="user-story">
+          <div class="card mb-2 ">
+            <div class="card-header">
+              I can Create/Update/Retrieve/Delete a user story so that we can estimate the items we need to do
             </div>
-            <nav class="tasks">
+            <div class="card-body tasks">
               <ul>
                 <li v-for="(task, index) in exampleTasks" :key="`task${index}`">
                   {{ task }}
                 </li>
               </ul>
-            </nav>
-            <!-- </div> -->
+            </div>
+          </div>
+          </div>
+          <div></div>
+
             <div class="manage">
               <button class="btn btn-outline-primary" @click="openUserStoryPanel">Manage user stories</button>
               <button class="btn btn-outline-primary" @click="onClick">Manage tasks</button>
             </div>
           </div>
           <div></div>
-          <!-- <div class="left">
-              <button class="btn btn-outline-primary btn-lg">Get invitation link</button>
-          </div> -->
+         <div class="left">
+               <div class="row justify-content-start" >
+             <button type="button" class="btn btn-outline-secondary invite-btn col-8 align-start"
+                     data-bs-toggle="popover" title="Copy invite link " data-bs-placement="bottom"
+                     data-content-id="popover-27">
+               Invite to room
+             </button>
+               </div>
+             <div style="display: none;" id="popover-27">
+               <div class="input-group mb-3">
+                 <span class="input-group-text" id="basic-addon1">Link</span>
+                 <input type="text" class="form-control"  aria-describedby="basic-addon1">
+               </div>
+             </div>
+          </div>
+
           <div class="players-space">
             <div class="players-content">
               <div>
@@ -66,6 +82,8 @@
 import { mapState } from 'vuex';
 import PlanningPokerCard from './PlanningPokerCard.vue';
 import UserStoryModal from "@/components/modals/UserStoryModal";
+import $ from "jquery";
+import { Popover } from 'bootstrap/dist/js/bootstrap.esm.min.js'
 
 export default {
   name: 'GameTable',
@@ -86,6 +104,22 @@ export default {
       exampleTasks: ["PP-23: Create planning poker", "PP-23: Create planning poker", "PP-23: Create planning poker", "PP-23: Create planning poker", "PP-23: Create planning poker", "PP-23: Create planning poker"]
     }
   },
+mounted() {
+  let popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
+  popoverTriggerList.forEach(popoverTriggerEl=> {
+    const popoverId = popoverTriggerEl.attributes['data-content-id'];
+    const contentEl = $(`#${popoverId.value}`).html();
+    let opts = {
+      content: contentEl,
+      html: true,
+      container: 'body',
+      sanitize  : false,
+      // trigger: 'focus'
+    }
+    new Popover(popoverTriggerEl, opts);
+
+  })
+},
   computed: mapState([
       "otherPlayersCards"
   ]),
@@ -186,9 +220,9 @@ export default {
   margin: 0 auto;
   width: 100%;
   height: auto;
-  min-height: 3.1rem;
+  min-height: 3.5rem;
   max-width: 50.8rem;
-  background: rgb(214, 10, 81);
+  /*background: rgb(214, 10, 81);*/
   /* padding: 0 1.6rem; */
 }
 
@@ -202,8 +236,8 @@ export default {
   width: 100%;
   height: 4.7rem;
   /* min-width: 30.8rem; */
-  max-width: 50.8rem;
-  background: rgb(187, 178, 181);
+  /*max-width: 50.8rem;*/
+  /*background: rgb(187, 178, 181);*/
 }
 
 .tasks ul {
@@ -307,5 +341,10 @@ export default {
   margin-left: .5rem;
   margin-right: .5rem;
   width: 12.2rem;
+}
+.invite-btn{
+  width: 10rem;
+  margin-left: -8%;
+
 }
 </style>
