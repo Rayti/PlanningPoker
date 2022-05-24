@@ -1,5 +1,6 @@
 <template>
   <div :class="{'blur-content': displayUserStoryModal||displayTaskModal}">
+
   <div class="game-table">
     <div class="inside-table">
       <div class="many-users row">
@@ -77,7 +78,7 @@
     </div>
   </div>
   </div>
-      <UserStoryModal v-if="displayUserStoryModal" @closeUserStoryModal="hideModal"></UserStoryModal>
+      <UserStoryModal v-if="displayUserStoryModal"  @closeUserStoryModal="hideModal"></UserStoryModal>
     <TasksModal v-if="displayTaskModal" @closeTaskModal="hideTaskModal"></TasksModal>
 
 </template>
@@ -109,7 +110,7 @@ export default {
       displayUserStoryModal: false,
       displayTaskModal:false,
       players: [],
-      exampleTasks: ["PP-23: Create planning poker Create planning poke Create planning pokeCreate planning poke Create planning poke Create planning poke Create planning poke Create planning poke", "PP-23: Create planning poker", "PP-23: Create planning poker", "PP-23: Create planning poker", "PP-23: Create planning poker", "PP-23: Create planning poker"]
+      tasks: ["PP-23: Create planning poker Create planning poke Create planning pokeCreate planning poke Create planning poke Create planning poke Create planning poke Create planning poke", "PP-23: Create planning poker", "PP-23: Create planning poker", "PP-23: Create planning poker", "PP-23: Create planning poker", "PP-23: Create planning poker"]
     }
   },
 mounted() {

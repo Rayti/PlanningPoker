@@ -39,7 +39,8 @@
 import {WebService} from "@/services/WebService";
 import GiveNickModal from "@/components/modals/GiveNickModal";
 import CreateRoomModal from "@/components/modals/CreateRoomModal";
-
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min';
 
 const webService = new WebService();
 

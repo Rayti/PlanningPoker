@@ -3,7 +3,16 @@
     <div class="modal-dialog  modal-dialog-centered modal-dialog-scrollable modal-lg">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title">Manage User Stories</h5>
+          <h5 class="modal-title">Manage User Stories  </h5>
+          <div class="dropdown dd">
+            <button class="btn btn-outline-success dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+              Actions
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+              <li><a class="dropdown-item" href="#">Import Stories</a></li>
+              <li><a class="dropdown-item" href="#">Export Stories</a></li>
+            </ul>
+          </div>
           <button type="button" class="btn-close" data-bs-dismiss="modal" @click="closeModal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
@@ -81,6 +90,7 @@
           </div>
         </div>
         <div class="modal-footer">
+
           <button type="button" class="btn btn-primary" @click = "closeModal" data-bs-dismiss="modal">Close</button>
         </div>
       </div>
@@ -151,5 +161,9 @@ export default {
   justify-content: flex-start;
   alignment: left;
   display: flex;
+}
+.dd{
+  /*z-index: 1100;*/
+  margin-left: 10px;
 }
 </style>
