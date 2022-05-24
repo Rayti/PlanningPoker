@@ -1,6 +1,8 @@
 package com.example.planningpoker.service;
 
+import com.example.planningpoker.domain.Game;
 import com.example.planningpoker.domain.Room;
+import com.example.planningpoker.domain.Story;
 import com.example.planningpoker.domain.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -24,35 +26,38 @@ public class DefaultRoomService implements RoomService {
     @Override
     public boolean createRoom(String userName, String roomName) {
         if(getRoom(roomName) == null){
+            User user = new User(userName);
+            Game game = new Game();
             Room room = new Room(roomName);
-            User user = new User(userName, room);
             room.getUsers().add(user);
+            room.getGames().add(game);
+            room.setCurrentGame(game);
             roomCache.add(room);
             log.info("Room {} and User {} created", roomName, userName);
             return true;
         }
-        log.info("Room {} already exists", roomName);
         return false;
     }
 
 
     @Override
     public boolean joinRoom(String userName, String roomName) {
-        Room room = getRoom(roomName);
+        Optional<Room> optionalRoom = roomCache.stream().filter(room -> room.getRoomName().equals(roomName)).findFirst();
 
-        if (room == null) {
-            log.info(ROOM_DOES_NOT_EXIST_LOG, roomName);
+        if (optionalRoom.isEmpty()) {
             return false;
         }
 
-         if (getUserFromRoom(room, userName) == null) {
-            User user = new User(userName, room);
+        Room room = optionalRoom.get();
+
+        Optional<User> optionalUser = optionalRoom.get().getUsers().stream().filter(user -> user.getName().equals(userName)).findFirst();
+
+        if (optionalUser.isEmpty()) {
+            User user = new User(userName);
             room.getUsers().add(user);
-            log.info("User {} joined room {}", userName, roomName);
             return true;
         }
 
-        log.info("User {} already exists in room {}", userName, roomName);
         return false;
     }
 
@@ -61,13 +66,11 @@ public class DefaultRoomService implements RoomService {
     public boolean deleteRoom(String userName, String roomName) {
         Room room = getRoom(roomName);
         if (room == null) {
-            log.info(ROOM_DOES_NOT_EXIST_LOG, roomName);
             return false;
         }
         List<Room> roomsUpdated = roomCache.stream().filter(room1 -> !room1.getRoomName().equals(roomName)).collect(Collectors.toList());
         roomCache.clear();
         roomCache.addAll(roomsUpdated);
-        log.info("Room {} deleted", roomName);
         return true;
     }
 
@@ -76,26 +79,47 @@ public class DefaultRoomService implements RoomService {
     public boolean leaveRoom(String userName, String roomName) {
         Room room = getRoom(roomName);
         if (room == null) {
-            log.info(ROOM_DOES_NOT_EXIST_LOG, roomName);
             return false;
         }
 
         User user = getUserFromRoom(room, userName);
 
         if (user == null) {
-            log.info("User {} does not exist in room {}", userName, roomName);
             return false;
         }
 
         List<User> usersWithoutOneUser = room.getUsers().stream().filter(user1 -> !user1.getName().equals(userName)).collect(Collectors.toList());
-        room.setUsers(usersWithoutOneUser);
-        log.info("User {} left room {}", userName, roomName);
+        room.getUsers().clear();
+        room.getUsers().addAll(usersWithoutOneUser);
         return true;
     }
 
-    private Room getRoom(String roomName){
+
+    @Override
+    public List<Story> getStories(String roomName) {
+        return getRoom(roomName).getStories();
+    }
+
+    @Override
+    public Room getRoom(String roomName){
         Optional<Room> optionalRoom = roomCache.stream().filter(room -> room.getRoomName().equals(roomName)).findFirst();
         return optionalRoom.orElse(null);
+    }
+
+    @Override
+    public Story chooseStoryToCurrentGame(String roomName, String storyId) {
+        Room room = getRoom(roomName);
+        if (room == null) {
+            return null;
+        }
+        Story story = room.getStories().stream().filter(st -> st.getId() == Integer.parseInt(storyId)).findFirst().orElse(null);
+
+        if (story == null) {
+            return null;
+        }
+
+        room.getCurrentGame().setStory(story);
+        return story;
     }
 
     private User getUserFromRoom(Room room, String userName){

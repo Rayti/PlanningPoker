@@ -1,17 +1,14 @@
 package com.example.planningpoker.controller.game.message;
 
-
+import com.example.planningpoker.controller.story.message.StoryMessage;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
-
 @Getter
 @Setter
 @AllArgsConstructor
-public class GameResultMessage {
+public class CurrentGameStoryMessage {
     private String type;
-    private String gameAvgValue;
-    private List<SelectedCardMessage> selectedCards;
+    private StoryMessage storyMessage;
 }
