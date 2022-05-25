@@ -19,16 +19,17 @@
 
           <div class="accordion accordion-flush" id="accordionFlushExample">
             <div class="accordion-item" v-for="(story, index) in userStories" :key="story.id">
-              <h2 class="accordion-header" id="flush-headingOne">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" :data-bs-target="'#flush-collapseOne'+index" aria-expanded="false" aria-controls="flush-collapseOne">
-                  #{{index + 1}} {{story.title}}
+              <h2 class="accordion-header" :id="'flush-headingOne'+index">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" :data-bs-target="'#flush-collapseOne'+index" aria-expanded="false" :aria-controls="'flush-collapseOne'+index">
+                  #{{index + 1}} {{story.name}}
+                  <button type="button" :id="story.id" class="btn btn-sm btn-outline-success" @click="onChooseStory">Choose</button>
                 </button>
               </h2>
-              <div :id="'flush-collapseOne'+index" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+              <div :id="'flush-collapseOne'+index" class="accordion-collapse collapse" :aria-labelledby="'flush-headingOne'+index" data-bs-parent="#accordionFlushExample">
                 <div class="accordion-body">
                   <h5 align="left">Tasks:</h5>
                   <ul v-for="(task, index) in story.tasks" :key="task.id" class="justify-content-start">
-                    <li class = "taskList">#{{index+1}} task</li>
+                    <li class = "taskList">#{{index+1}} {{task.taskTitle}}</li>
                   </ul>
                   <div class="row justify-content-end">
                     <div class=" newStoryBtn">
@@ -40,7 +41,7 @@
                     <label for="floatingInputTask">Add task to the story</label>
                     <div class="row justify-content-end ">
                       <div class=" newStoryAddBtn">
-                        <button type="button" class="btn btn-outline-secondary btn-sm col-4 " @click="addNewTaskToStoryInsideClick">Add</button>
+                        <button type="button" class="btn btn-outline-secondary btn-sm col-4 " @click="addNewTaskToStoryInsideClick(story.id)">Add</button>
                       </div></div>
                   </div>
                   </div>
@@ -69,14 +70,14 @@
                 <h5 align="left" class="border-top pt-2 mt-2 border-info">Tasks to the story</h5>
 
               <ul v-for="(task, index) in tasks" :key="task.id" class="justify-content-start">
-                <li class = "taskList">#{{index+1}} task</li>
+                <li class = "taskList">#{{index+1}} {{task.taskTitle}}</li>
                 </ul>
               <div class="form-floating mb-3">
                 <input class="form-control" id="floatingInputTask" v-model="newTaskInput">
                 <label for="floatingInputTask">Add task to the story</label>
                 <div class="row justify-content-end border-bottom pb-2 border-info">
                   <div class=" newStoryAddBtn">
-                    <button type="button" class="btn btn-outline-secondary btn-sm col-4 " @click="addNewTaskToStoryClick">Add</button>
+                    <button type="button" class="btn btn-outline-secondary btn-sm col-4 " @click="addNewTaskToNewStoryClick">Add</button>
                   </div></div>
               </div>
 
@@ -99,17 +100,21 @@
 </template>
 
 <script>
+import { v4 as uuid4 } from 'uuid'
+
 export default {
   name: "UserStoryModal",
+  props: {
+    storyID: String
+  },
   data () {
     return {
-      userStories :[
-        {id: 1, title : "one" , tasks  :["login","logout"]},
-      ],
+      userStories : this.$store.getters.getStoriesAll,
       newStoryInput:"",
       newTaskInput:"",
       newTaskInsideInput:"",
       tasks:[],
+      newStoryId:'',
     }
   },
   methods:{
@@ -117,17 +122,41 @@ export default {
       this.$emit("closeUserStoryModal");
     },
     addNewStoryClick(){
-      this.userStories.push({id:3,title: this.newStoryInput,tasks:this.tasks,body:"5"});
+      if(!this.newStoryId){
+        this.newStoryId=uuid4();
+      }
+      if(this.newStoryInput !== '') {
+        this.$store.commit('addStory', {
+          id: this.newStoryId,
+          name: this.newStoryInput,
+          tasks: this.tasks
+        });
+        // this.$emit('addStory');
+
+      }
       this.newStoryInput = "";
       this.tasks=[];
+      this.newStoryId='';
     },
-    addNewTaskToStoryClick(){
-      this.tasks.push({id:0, taskTitle: this.newTaskInput});
+    addNewTaskToNewStoryClick(){
+      let taskId=uuid4()
+      this.tasks.push({id:taskId, taskTitle: this.newTaskInput});
+
       this.newTaskInput="";
 
     },
-    addNewTaskToStoryInsideClick(){
+    addNewTaskToStoryInsideClick(storyId){
+      let taskId=uuid4()
+      if(this.newTaskInsideInput !== '') {
+        let newTask = {id:taskId, taskTitle: this.newTaskInsideInput};
+        let arg = { storyID : storyId, task: newTask};
+        this.$store.commit('addTaskToStoryInside', arg);
+
+      }
       this.newTaskInsideInput="";
+    },
+    onChooseStory(e){
+      this.$emit('chooseStory',{id: e.target.id});
     }
   }
 }

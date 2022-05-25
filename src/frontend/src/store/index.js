@@ -2,16 +2,80 @@ import { createStore } from 'vuex'
 
 const store = createStore({
     state: {
-      roomName: '',
-      userName: '',
+        roomName: '',
+        stories: [],
+		userName: '',
       isHost: false,
       stories: {},
-      otherPlayersCards: [],
+      otherPlayersCards: []
     },
     getters: {
+        getStoriesAll (state) {
+
+            return state.stories;
+        },
+        getStory: (state) => (id) =>{
+            let findEl = state.stories.find((x) => x.id == id);
+            return findEl
+        },
+        getStoryTasks: (state) => (id) =>{
+            let findEl = state.stories.find((x) => x.id == id);
+            return (findEl.tasks.length != 0) ? findEl.tasks : []
+        }
     },
     mutations: {
-      changeBasicInformation (state, payload) {
+        setRoomName (state, roomName) {
+            state.roomName = roomName
+        },
+        addStory (state, story) {
+            if(story.id !== undefined && typeof story.name == 'string' ) {
+                state.stories.push({
+                    id: story.id,
+                    name: story.name,
+                    tasks: story.tasks,
+                })
+            }
+        },
+        addTaskToStory(state, arg){
+            let tasks = this.getters.getStoryTasks(arg.storyID);
+            tasks.push(arg.task);
+            // if(story.id !== undefined && typeof story.name == 'string' ) {
+            //     state.stories.push({
+            //         id: story.id,
+            //         name: story.name,
+            //         tasks: story.tasks,
+            //     })
+            // }
+        },
+        addTaskToStoryInside(state, arg){
+            let story = this.getters.getStory(arg.storyID);
+            story.tasks.push(arg.task);
+            // if(story.id !== undefined && typeof story.name == 'string' ) {
+            //     state.stories.push({
+            //         id: story.id,
+            //         name: story.name,
+            //         tasks: story.tasks,
+            //     })
+            // }
+        },
+        updateStory(state, story) {
+            let id = story.id;
+            let completed = story.completed;
+            let name = story.name;
+            let findEl = this.getters.getStory(story.id);
+            if(findEl.id != null) {
+                if(completed !== undefined) {
+                    findEl.completed = completed;
+                }
+                if(name !== undefined) {
+                    findEl.name = name;
+                }
+            }
+            else {
+                console.log(`To Do List Item ${id} couldn't be found`);
+            }
+        },
+		changeBasicInformation (state, payload) {
         state.roomName = payload.roomName
         state.userName = payload.userName
         state.isHost = payload.isHost
@@ -23,10 +87,13 @@ const store = createStore({
       },
       removeCards(state) {
         state.otherPlayersCards = []
-      }
+      },
     },
     actions: {
-      setBasicInformation ({ commit }, payload) {
+        setRoomName (context, roomName) {
+            context.commit('setRoomName', roomName)
+        },
+		setBasicInformation ({ commit }, payload) {
         commit("changeBasicInformation", payload)
       },
       addResults({ commit }, payload) {
@@ -38,6 +105,6 @@ const store = createStore({
     },
     modules: {
     }
-  })
-  
-  export default store
+})
+
+export default store

@@ -3,13 +3,13 @@
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title">Manage User Stories</h5>
+          <h5 class="modal-title">Manage Tasks</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" @click="closeModal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
           <h5 align="left">Tasks:</h5>
           <ul v-for="(task, index) in tasks" :key="task.id" class="justify-content-start">
-            <li class = "taskList">#{{index+1}} task</li>
+            <li class = "taskList">#{{index+1}} {{task.taskTitle}}</li>
           </ul>
           <div class="row justify-content-end">
             <div class=" newStoryBtn">
@@ -32,17 +32,27 @@
 </template>
 
 <script>
+import { v4 as uuid4 } from 'uuid'
 export default {
   name: "TasksModal",
+  props: {
+    storyID: String
+  },
   data () {
     return {
       newTaskInput:"",
-      tasks:[],
+      tasks:(this.storyID)? this.$store.getters.getStoryTasks(this.storyID) : [],
     }
   },
   methods:{
     addNewTaskClick(){
-      this.tasks.push({id:0, taskTitle: this.newTaskInput});
+      let taskId=uuid4()
+
+      if(this.newTaskInput !== '') {
+        let newTask = {id:taskId, taskTitle: this.newTaskInput};
+        let arg = { storyID : this.storyID, task: newTask};
+        this.$store.commit('addTaskToStory', arg);
+      }
       this.newTaskInput="";
     },
     closeModal(){

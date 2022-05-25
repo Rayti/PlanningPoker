@@ -9,13 +9,13 @@
           <div class="top">
           <div class="user-story">
           <div class="card mb-2 ">
-            <div class="card-header">
-              I can Create/Update/Retrieve/Delete a user story so that we can estimate the items we need to do
+            <div class="card-header" v-bind="story">
+              {{story.name}}
             </div>
             <div class="card-body tasks">
-              <ul>
-                <li v-for="(task, index) in exampleTasks" :key="`task${index}`">
-                  {{ task }}
+              <ul class="list-group">
+                <li v-for="(task, index) in story.tasks" :key="`task${index}`" class="list-group-item">
+                  {{ task.taskTitle }}
                 </li>
               </ul>
             </div>
@@ -25,7 +25,7 @@
 
             <div class="manage">
               <button class="btn btn-outline-primary" @click="openUserStoryPanel">Manage user stories</button>
-              <button class="btn btn-outline-primary" @click="openTaskPanel">Manage tasks</button>
+              <button class="btn btn-outline-primary" :disabled="!story.id" @click="openTaskPanel">Manage tasks</button>
             </div>
           </div>
           <div></div>
@@ -78,8 +78,8 @@
     </div>
   </div>
   </div>
-      <UserStoryModal v-if="displayUserStoryModal"  @closeUserStoryModal="hideModal"></UserStoryModal>
-    <TasksModal v-if="displayTaskModal" @closeTaskModal="hideTaskModal"></TasksModal>
+      <UserStoryModal v-if="displayUserStoryModal"  @closeUserStoryModal="hideModal" @chooseStory="chooseStory"></UserStoryModal>
+    <TasksModal v-if="displayTaskModal" :storyID ="this.story.id" @closeTaskModal="hideTaskModal"></TasksModal>
 
 </template>
 
@@ -109,8 +109,9 @@ export default {
       clearResults: false,
       displayUserStoryModal: false,
       displayTaskModal:false,
+      story:{},
       players: [],
-      tasks: ["PP-23: Create planning poker Create planning poke Create planning pokeCreate planning poke Create planning poke Create planning poke Create planning poke Create planning poke", "PP-23: Create planning poker", "PP-23: Create planning poker", "PP-23: Create planning poker", "PP-23: Create planning poker", "PP-23: Create planning poker"]
+      tasks: (this.story)? this.$store.getters.getStoryTasks(this.story.id) : [],
     }
   },
 mounted() {
@@ -174,6 +175,15 @@ mounted() {
     hideTaskModal() {
       this.displayTaskModal = false;
     },
+    chooseStory($event){
+      let story = this.$store.getters.getStory($event.id)
+      this.story=story;
+      this.tasks = this.$store.getters.getStoryTasks($event.id);
+    },
+    addStoryHandler(){
+      this.$emit('select')
+    }
+
     onClick() {
       //this.webService.selectCard("siema", "eniu");
     }
@@ -237,6 +247,7 @@ mounted() {
   height: auto;
   min-height: 3.5rem;
   max-width: 50.8rem;
+  min-width: 30.8rem;
   /*background: rgb(214, 10, 81);*/
   /* padding: 0 1.6rem; */
 }
@@ -250,7 +261,8 @@ mounted() {
   overflow-y: scroll;
   width: 100%;
   height: 4.7rem;
-  /* min-width: 30.8rem; */
+  min-width: 30.8rem;
+  padding: 0% !important;
   /*max-width: 50.8rem;*/
   /*background: rgb(187, 178, 181);*/
 }
