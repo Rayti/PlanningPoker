@@ -56,22 +56,10 @@ const store = createStore({
             state.stories.splice(index,1);
 
         },
-        updateStory(state, story) {
-            let id = story.id;
-            let completed = story.completed;
-            let name = story.name;
-            let findEl = this.getters.getStory(story.id);
-            if(findEl.id != null) {
-                if(completed !== undefined) {
-                    findEl.completed = completed;
-                }
-                if(name !== undefined) {
-                    findEl.name = name;
-                }
-            }
-            else {
-                console.log(`To Do List Item ${id} couldn't be found`);
-            }
+        updateStory(state, arg) {
+            let story = this.getters.getStory(arg.storyId);
+            story.name = arg.newName;
+
         },
 		changeBasicInformation (state, payload) {
         state.roomName = payload.roomName

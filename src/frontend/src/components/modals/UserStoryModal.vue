@@ -24,6 +24,7 @@
                   #{{index + 1}} {{story.name}}
                   <button type="button" :id="story.id" class="btn btn-sm btn-outline-success btnModal" @click="onChooseStory">Choose</button>
                   <button type="button"  class="btn btn-sm btn-outline-danger btnModal" @click="onDeleteStoryClick(story.id)">Delete</button>
+                  <button type="button"  class="btn btn-sm btn-outline-info btnModal" @click="onEditStoryClick(story)">Edit</button>
                 </button>
               </h2>
               <div :id="'flush-collapseOne'+index" class="accordion-collapse collapse" :aria-labelledby="'flush-headingOne'+index" data-bs-parent="#accordionFlushExample">
@@ -99,13 +100,19 @@
       </div>
     </div>
   </div>
+  <EditStoryModal v-if="displayEditStoryModal" :story="this.editedStory" @close-modal-event="hideModal" @edit = "editStoryHandler"></EditStoryModal>
 </template>
 
 <script>
 import { v4 as uuid4 } from 'uuid'
+import EditStoryModal from "@/components/modals/EditStoryModal";
 
 export default {
   name: "UserStoryModal",
+  components: {
+    EditStoryModal,
+
+  },
   props: {
     storyID: String
   },
@@ -117,6 +124,8 @@ export default {
       newTaskInsideInput:"",
       tasks:[],
       newStoryId:'',
+      displayEditStoryModal:false,
+      editedStory:{},
     }
   },
   methods:{
@@ -170,9 +179,18 @@ export default {
     onDeleteTaskClick(storyid, task){
       let arg = { storyID : storyid, task: task}
       this.$store.commit('deleteTaskStory', arg);
-
     },
-
+    onEditStoryClick(story){
+      this.displayEditStoryModal=true;
+      this.editedStory = story;
+    },
+    hideModal() {
+      this.displayEditStoryModal = false;
+    },
+    editStoryHandler($event){
+      this.$store.commit('updateStory', $event.arg);
+      this.displayEditStoryModal = false;
+    }
   }
 }
 </script>

@@ -80,7 +80,7 @@
   </div>
       <UserStoryModal v-if="displayUserStoryModal" :storyID ="this.story.id" @closeUserStoryModal="hideModal" @clearStoryTable = "clearStoryTable" @chooseStory="chooseStory"></UserStoryModal>
     <TasksModal v-if="displayTaskModal" :storyID ="this.story.id" @closeTaskModal="hideTaskModal"></TasksModal>
-
+<!--  <EditStoryModal v-if="displayEditStoryModal" @close-modal-event="hideModal"></EditStoryModal>-->
 </template>
 
 <script>
@@ -112,6 +112,7 @@ export default {
       story:{},
       players: [],
       tasks: (this.story)? this.$store.getters.getStoryTasks(this.story.id) : [],
+
     }
   },
 mounted() {
