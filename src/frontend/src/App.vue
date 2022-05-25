@@ -11,7 +11,7 @@
 import HeaderBar from "@/components/HeaderBar";
 
 import jQuery from "jquery";
-import {WebService} from "@/services/WebService";
+import { WebService } from "@/services/WebService";
 window.$ = jQuery;
 
 export default {
@@ -23,7 +23,7 @@ export default {
         return {
             mainPlayerCard: '',
             isSelectionConfirmed: false,
-            webService: new WebService()
+            webService: new WebService(this.$store)
         }
     },
   provide() {

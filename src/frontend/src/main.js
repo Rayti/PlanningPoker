@@ -5,7 +5,4 @@ import "bootstrap"
 import store from './store'
 import router from "@/router/router-views";
 
-createApp(App)
-    .use(store)
-    .use(router)
-    .mount('#app')
+createApp(App).use(store).use(router).mount('#app')

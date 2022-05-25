@@ -13,9 +13,11 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary" @click="goToRoom" data-bs-dismiss="modal">Go</button>
+          <button type="button" class="btn btn-primary" @click="joinRoom" data-bs-dismiss="modal">Go</button>
         </div>
-
+        <div v-if="joinRoomError">
+          You cannot join the room (server error/room doesn't exist).
+        </div>
       </div>
     </div>
   </div>
@@ -24,17 +26,40 @@
 <script>
 export default {
   name: "GiveNickModal",
+  inject: ['webService'],
+  props: {
+    roomName: String,
+  },
   data() {
     return {
-      nickInput:""
+      nickInput: "",
+      joinRoomError: false,
     }
   },
   methods: {
     closeModal() {
       this.$emit('close-modal-event');
     },
-    goToRoom(){
-      const nick = this.nickInput;
+    async joinRoom() {
+      if (this.$store.state.isHost) {
+        return;
+      }
+      const roomName = this.roomName;
+      const userName = this.nickInput;
+      const result = await this.webService.joinExistingRoomRequest(roomName, userName);
+      if (result && result.success) {
+        if (this.joinRoomError) {
+          this.joinRoomError = false
+        }
+
+        this.webService.createWebSocketConnection(roomName);
+        this.$store.dispatch("setBasicInformation", { roomName: roomName, userName: userName, isHost: false });
+        this.$router.push({ name: "game", params: { roomName: roomName }});
+      } else { // obsługa błędów
+        if (!this.joinRoomError) {
+          this.joinRoomError = true
+        }
+      }
     }
   }
 }

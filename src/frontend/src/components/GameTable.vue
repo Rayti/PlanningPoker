@@ -20,7 +20,7 @@
             <!-- </div> -->
             <div class="manage">
               <button class="btn btn-outline-primary" @click="openUserStoryPanel">Manage user stories</button>
-              <button class="btn btn-outline-primary">Manage tasks</button>
+              <button class="btn btn-outline-primary" @click="onClick">Manage tasks</button>
             </div>
           </div>
           <div></div>
@@ -30,19 +30,24 @@
           <div class="players-space">
             <div class="players-content">
               <div>
-                <div class="names">me</div>
+                <div class="names">{{ this.$store.state.userName }}</div>
                 <planning-poker-card :v-if="isSelectionConfirmed" :estimation="mainPlayerCard"/>
               </div>
-              <div :v-if="showResults" v-for="(player, index) in players" :key="`player-${index + 2}`">
-                <div class="names">player{{ index + 2 }}</div>
-                <planning-poker-card :estimation="fibonacci[player]"/>
+              <div :v-if="showResults" v-for="(player, index) in otherPlayersCards" :key="`player-${index + 2}`">
+                <div class="names">{{ player.userName }}</div>
+                <planning-poker-card :estimation="formatValue(player.value)"/>
               </div>
             </div>
           </div>
           <div class="right">
-            <button class="btn btn-outline-primary btn-lg" :disabled="!isSelectionConfirmed" @click="getResults">Get
-              results
+            <button class="btn btn-outline-primary btn-lg" 
+                    :disabled="checkResults()" @click="getResults">
+              Get results
             </button>
+            <!-- <button class="btn btn-outline-primary btn-lg" 
+                    :disabled="checkResults()" @click="getResults">
+              Clear results
+            </button> -->
           </div>
           <div></div>
           <!-- <div class="bot"> -->
@@ -58,11 +63,13 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import PlanningPokerCard from './PlanningPokerCard.vue';
 import UserStoryModal from "@/components/modals/UserStoryModal";
 
 export default {
   name: 'GameTable',
+  inject: ['webService'],
   components: {
     UserStoryModal,
     PlanningPokerCard
@@ -73,33 +80,44 @@ export default {
   },
   data() {
     return {
-      fibonacci: ['0', '1', '2', '3', '5', '8', '13', '21', '34', '55', '89', '?'],
       showResults: false,
       clearResults: false,
       displayUserStoryModal: false,
-      players: [],
-      exampleTasks: ["PP-23: Create planning poker Create planning poke Create planning pokeCreate planning poke Create planning poke Create planning poke Create planning poke Create planning poke", "PP-23: Create planning poker", "PP-23: Create planning poker", "PP-23: Create planning poker", "PP-23: Create planning poker", "PP-23: Create planning poker"]
+      exampleTasks: ["PP-23: Create planning poker", "PP-23: Create planning poker", "PP-23: Create planning poker", "PP-23: Create planning poker", "PP-23: Create planning poker", "PP-23: Create planning poker"]
     }
   },
+  computed: mapState([
+      "otherPlayersCards"
+  ]),
   methods: {
-    getResults() {
-      if (this.isSelectionConfirmed && this.mainPlayerCard !== "") {
-        let numberOfParticipants = Math.floor(Math.random() * (8) + 1);
-        const participants = [];
-        while (numberOfParticipants >= 0) {
-          console.log("here");
-          participants.push(Math.floor(Math.random() * (12)));
-          numberOfParticipants--;
-        }
-        this.players = participants;
-        console.log(numberOfParticipants);
-        console.log(participants);
-        this.showResults = true;
-      }
+    checkResults() {
+      return !this.$store.state.isHost || !this.isSelectionConfirmed || this.mainPlayerCard === "";
     },
-
+    getResults() {
+      this.webService.finishGame(this.$store.state.roomName, this.$store.state.userName);
+      this.showResults = true;
+      // if (this.isSelectionConfirmed && this.mainPlayerCard !== "") {
+      //   let numberOfParticipants = Math.floor(Math.random() * (8) + 1);
+      //   const participants = [];
+      //   while (numberOfParticipants >= 0) {
+      //     console.log("here");
+      //     participants.push(Math.floor(Math.random() * (12)));
+      //     numberOfParticipants--;
+      //   }
+      //   this.players = participants;
+      //   console.log(numberOfParticipants);
+      //   console.log(participants);
+      //   this.showResults = true;
+      // }
+    },
+    formatValue(value) {
+      return value.split(".")[0];
+    },
     clearResult() {
-      this.players = [];
+      if (this.$store.state.otherPlayersCards.length !== 0) {
+        this.$store.dispatch("removeResults");
+      } 
+      this.showResults = false;
     },
     openUserStoryPanel() {
       this.displayUserStoryModal = true;
@@ -107,6 +125,9 @@ export default {
     hideModal() {
       this.displayUserStoryModal = false;
     },
+    onClick() {
+      //this.webService.selectCard("siema", "eniu");
+    }
   }
 }
 </script>

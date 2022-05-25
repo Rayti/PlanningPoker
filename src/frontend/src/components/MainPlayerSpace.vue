@@ -78,7 +78,7 @@ export default {
         },
 
       clearSelections() {
-        this.selectedCard='';
+        this.selectedCard = "";
         this.$emit("clear", {beCleared: true});
       }
 
