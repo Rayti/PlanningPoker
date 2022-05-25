@@ -7,5 +7,5 @@ import lombok.Data;
 @AllArgsConstructor
 public class Card {
     private int id;
-    private float value;
+    private String value;
 }
