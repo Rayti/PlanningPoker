@@ -31,8 +31,9 @@
                 <div class="accordion-body">
                   <h5 align="left">Tasks:</h5>
                   <ul v-for="(task, index) in story.tasks" :key="task.id" class="justify-content-start">
-                    <li class = "taskList">#{{index+1}} {{task.taskTitle}}</li>
+                    <li class = "taskList">#{{index+1}} {{task.taskTitle}}
                     <button type="button" :id="story.id" class="btn btn-sm btn-outline-danger btnModal" @click="onDeleteTaskClick(story.id, task)">Delete</button>
+                    </li>
                   </ul>
                   <div class="row justify-content-end">
                     <div class=" newStoryBtn">

@@ -6,7 +6,7 @@ const store = createStore({
         stories: [],
 		userName: '',
       isHost: false,
-      stories: {},
+      // stories: {},
       otherPlayersCards: []
     },
     getters: {

@@ -187,7 +187,7 @@ mounted() {
     clearStoryTable(){
       this.story={};
       this.tasks=[];
-    }
+    },
 
     onClick() {
       //this.webService.selectCard("siema", "eniu");
