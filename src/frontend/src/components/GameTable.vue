@@ -78,7 +78,7 @@
     </div>
   </div>
   </div>
-      <UserStoryModal v-if="displayUserStoryModal"  @closeUserStoryModal="hideModal" @chooseStory="chooseStory"></UserStoryModal>
+      <UserStoryModal v-if="displayUserStoryModal" :storyID ="this.story.id" @closeUserStoryModal="hideModal" @clearStoryTable = "clearStoryTable" @chooseStory="chooseStory"></UserStoryModal>
     <TasksModal v-if="displayTaskModal" :storyID ="this.story.id" @closeTaskModal="hideTaskModal"></TasksModal>
 
 </template>
@@ -182,6 +182,10 @@ mounted() {
     },
     addStoryHandler(){
       this.$emit('select')
+    },
+    clearStoryTable(){
+      this.story={};
+      this.tasks=[];
     }
 
     onClick() {

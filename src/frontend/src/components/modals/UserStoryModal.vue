@@ -22,7 +22,8 @@
               <h2 class="accordion-header" :id="'flush-headingOne'+index">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" :data-bs-target="'#flush-collapseOne'+index" aria-expanded="false" :aria-controls="'flush-collapseOne'+index">
                   #{{index + 1}} {{story.name}}
-                  <button type="button" :id="story.id" class="btn btn-sm btn-outline-success" @click="onChooseStory">Choose</button>
+                  <button type="button" :id="story.id" class="btn btn-sm btn-outline-success btnModal" @click="onChooseStory">Choose</button>
+                  <button type="button"  class="btn btn-sm btn-outline-danger btnModal" @click="onDeleteStoryClick(story.id)">Delete</button>
                 </button>
               </h2>
               <div :id="'flush-collapseOne'+index" class="accordion-collapse collapse" :aria-labelledby="'flush-headingOne'+index" data-bs-parent="#accordionFlushExample">
@@ -30,6 +31,7 @@
                   <h5 align="left">Tasks:</h5>
                   <ul v-for="(task, index) in story.tasks" :key="task.id" class="justify-content-start">
                     <li class = "taskList">#{{index+1}} {{task.taskTitle}}</li>
+                    <button type="button" :id="story.id" class="btn btn-sm btn-outline-danger btnModal" @click="onDeleteTaskClick(story.id, task)">Delete</button>
                   </ul>
                   <div class="row justify-content-end">
                     <div class=" newStoryBtn">
@@ -157,7 +159,20 @@ export default {
     },
     onChooseStory(e){
       this.$emit('chooseStory',{id: e.target.id});
-    }
+    },
+    onDeleteStoryClick(storyid){
+      this.$store.commit('deleteStory', storyid);
+      if(this.storyID == storyid){
+        this.$emit('clearStoryTable')
+      }
+
+    },
+    onDeleteTaskClick(storyid, task){
+      let arg = { storyID : storyid, task: task}
+      this.$store.commit('deleteTaskStory', arg);
+
+    },
+
   }
 }
 </script>
@@ -190,6 +205,9 @@ export default {
   justify-content: flex-start;
   alignment: left;
   display: flex;
+}
+.btnModal{
+  margin-left: 2px;
 }
 .dd{
   /*z-index: 1100;*/

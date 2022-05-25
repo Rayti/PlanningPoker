@@ -37,26 +37,24 @@ const store = createStore({
             }
         },
         addTaskToStory(state, arg){
-            let tasks = this.getters.getStoryTasks(arg.storyID);
-            tasks.push(arg.task);
-            // if(story.id !== undefined && typeof story.name == 'string' ) {
-            //     state.stories.push({
-            //         id: story.id,
-            //         name: story.name,
-            //         tasks: story.tasks,
-            //     })
-            // }
+            let story = this.getters.getStory(arg.storyID);
+            story.tasks.push(arg.task);
         },
         addTaskToStoryInside(state, arg){
             let story = this.getters.getStory(arg.storyID);
             story.tasks.push(arg.task);
-            // if(story.id !== undefined && typeof story.name == 'string' ) {
-            //     state.stories.push({
-            //         id: story.id,
-            //         name: story.name,
-            //         tasks: story.tasks,
-            //     })
-            // }
+
+        },
+        deleteTaskStory(state, arg){
+            let tasks = this.getters.getStoryTasks(arg.storyID);
+            const index = tasks.indexOf(arg.task);
+            tasks.splice(index, 1);
+        },
+        deleteStory(state, storyId){
+            let story = this.getters.getStory(storyId);
+            const index = state.stories.indexOf(story);
+            state.stories.splice(index,1);
+
         },
         updateStory(state, story) {
             let id = story.id;

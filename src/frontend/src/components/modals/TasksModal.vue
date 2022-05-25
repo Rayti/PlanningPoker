@@ -9,7 +9,9 @@
         <div class="modal-body">
           <h5 align="left">Tasks:</h5>
           <ul v-for="(task, index) in tasks" :key="task.id" class="justify-content-start">
-            <li class = "taskList">#{{index+1}} {{task.taskTitle}}</li>
+            <li class = "taskList">#{{index+1}} {{task.taskTitle}}
+            <button type="button" class="btn btn-sm btn-outline-danger btnModal btnModal" @click="deleteClick(task)">Delete</button>
+            </li>
           </ul>
           <div class="row justify-content-end">
             <div class=" newStoryBtn">
@@ -47,13 +49,17 @@ export default {
   methods:{
     addNewTaskClick(){
       let taskId=uuid4()
-
       if(this.newTaskInput !== '') {
         let newTask = {id:taskId, taskTitle: this.newTaskInput};
         let arg = { storyID : this.storyID, task: newTask};
         this.$store.commit('addTaskToStory', arg);
       }
       this.newTaskInput="";
+    },
+    deleteClick(task){
+      let arg = { storyID : this.storyID, task: task}
+      this.$store.commit('deleteTaskStory', arg)
+
     },
     closeModal(){
       this.$emit("closeTaskModal");
@@ -85,6 +91,9 @@ export default {
   justify-content: flex-end;
   display: flex;
   margin-top: 0.5rem;
+}
+.btnModal{
+  margin-left: 2px;
 }
 
 .modal-backdrop
