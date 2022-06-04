@@ -44,7 +44,7 @@
 
 <script>
 import PlanningPokerCard from './PlanningPokerCard.vue';
-import {WebService} from "@/services/WebService";
+import {WebHTTPService} from "@/services/WebHTTPService";
 
 export default {
   name: 'MainPlayerSpace',

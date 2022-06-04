@@ -1,13 +1,12 @@
 import axios from "axios";
-import SockJS from "sockjs-client";
-import Stomp from "webstomp-client";
+
 
 const API_URL = "http://localhost:8080/api/poker";
 /*const config ={headers: {"Content-type": "application/json",
         'Access-Control-Allow-Credentials':true}}*/
 const config = { headers: { 'Access-Control-Allow-Credentials': true } }
 
-export class WebService {
+export class WebHTTPService {
     store = null;
     connected = false;
     // receivedMessages = [];
@@ -23,42 +22,6 @@ export class WebService {
         this.store = store;
     }
 
-    createWebSocketConnection(roomName) {
-        this.socket = new SockJS("http://localhost:8080/register-websocket");
-        this.stompClient = Stomp.over(this.socket);
-        this.stompClient.connect(
-            {},
-            frame => {
-                console.log("frame", frame);
-                this.connected = true;
-                this.stompClient.subscribe(`/backend-socket-response/${roomName}`, tick => {
-                    //here is response processed from backend
-                    console.log("RESPONSE FROM BACKEND:");
-                    console.log(tick);
-
-                    let receivedMsg = JSON.parse(tick.body); // TUTAJ można zrobić switcha i w zależności od odpowiedzi coś tam robić
-                    switch (receivedMsg.type) {
-                        case "GameResultMessage":
-                            this.store.dispatch("addResults", receivedMsg.selectedCards);
-                            break;
-                    }
-                    console.log(receivedMsg);
-                    // this.receivedMessages.push(JSON.parse(tick.body).message);
-                });
-            },
-            error => {
-                console.log(error);
-                this.connected = false;
-            }
-        );
-    }
-
-    disconnect() {
-        if (this.stompClient) {
-            this.stompClient.disconnect();
-        }
-        this.connected = false;
-    }
 
     async createRoomRequest(roomName, userName) {
         const link = `${API_URL}/${roomName}/${userName}/create-room`;
@@ -104,26 +67,26 @@ export class WebService {
         }
     }
 
-    selectCard(roomName, userName, selectedCard) {
-        if (this.stompClient && this.stompClient.connected) {
-            console.log("I've selected a card");
-            this.stompClient.send(`/backend-socket-request/api/poker/${roomName}/${userName}/select-card/0/${selectedCard}`);
-        }
-    }
-
-    finishGame(roomName, userName) {
-        if (this.stompClient && this.stompClient.connected) {
-            console.log("I've ended the game");
-            this.stompClient.send(`/backend-socket-request/api/poker/${roomName}/${userName}/finish-game`);
-        }
-    }
-
-    goToNextGame(roomName, userName) {
-        if (this.stompClient && this.stompClient.connected) {
-            console.log("Moved to the next game");
-            this.stompClient.send(`/backend-socket-request/api/poker/${roomName}/${userName}/next-game`);
-        }
-    }
+    // selectCard(roomName, userName, selectedCard) {
+    //     if (this.stompClient && this.stompClient.connected) {
+    //         console.log("I've selected a card");
+    //         this.stompClient.send(`/backend-socket-request/api/poker/${roomName}/${userName}/select-card/0/${selectedCard}`);
+    //     }
+    // }
+    //
+    // finishGame(roomName, userName) {
+    //     if (this.stompClient && this.stompClient.connected) {
+    //         console.log("I've ended the game");
+    //         this.stompClient.send(`/backend-socket-request/api/poker/${roomName}/${userName}/finish-game`);
+    //     }
+    // }
+    //
+    // goToNextGame(roomName, userName) {
+    //     if (this.stompClient && this.stompClient.connected) {
+    //         console.log("Moved to the next game");
+    //         this.stompClient.send(`/backend-socket-request/api/poker/${roomName}/${userName}/next-game`);
+    //     }
+    // }
 
     async getIntoCurrentGame(roomName, userName) {
         const link = `${API_URL}/${roomName}/${userName}/game-data`;

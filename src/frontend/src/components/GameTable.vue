@@ -93,7 +93,7 @@ import TasksModal from "@/components/modals/TasksModal";
 
 export default {
   name: 'GameTable',
-  inject: ['webService'],
+  inject: ['webHttpService', 'webSocketService'],
   components: {
     TasksModal,
     UserStoryModal,
@@ -139,7 +139,7 @@ mounted() {
       return !this.$store.state.isHost || !this.isSelectionConfirmed || this.mainPlayerCard === "";
     },
     getResults() {
-      this.webService.finishGame(this.$store.state.roomName, this.$store.state.userName);
+      this.webSocketService.finishGame(this.$store.state.roomName, this.$store.state.userName);
       this.showResults = true;
       // if (this.isSelectionConfirmed && this.mainPlayerCard !== "") {
       //   let numberOfParticipants = Math.floor(Math.random() * (8) + 1);

@@ -49,12 +49,19 @@
 </template>
 
 <script>
+import {WebHTTPService} from "@/services/WebHTTPService";
 import GiveNickModal from "@/components/modals/GiveNickModal";
 import CreateRoomModal from "@/components/modals/CreateRoomModal";
 import RegisterModal from "@/components/modals/RegisterModal";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
-import LoginModal from "@/components/modals/LoginModal";
+import {WebSocketService} from "@/services/WebSocketService";
+
+const webHttpService = new WebHTTPService();
+
+const webHttpService = new WebHTTPService();
+const webSocketService = new WebSocketService();
+const webSocketService = new WebSocketService();
 
 export default {
   name: "HomeView",

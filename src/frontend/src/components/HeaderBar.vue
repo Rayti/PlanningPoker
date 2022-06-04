@@ -24,10 +24,10 @@
 
 <script>
 export default {
-  inject: ['webService'],
+  inject: ['webSocketService'],
   methods: {
     navigate() {
-      this.webService.disconnect();
+      this.webSocketService.disconnect();
       this.$router.push('/');
     },
     async logOut(){
