@@ -10,10 +10,13 @@ import com.example.planningpoker.domain.Card;
 import com.example.planningpoker.domain.Story;
 import com.example.planningpoker.domain.Task;
 import com.example.planningpoker.domain.User;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class MessageMapper {
     public static TaskMessage toTaskMessage(Task task) {
         return new TaskMessage("TaskMessage", String.valueOf(task.getId()), task.getDescription());
@@ -34,6 +37,6 @@ public class MessageMapper {
     }
 
     public static SelectedCardMessage toSelectedCardMessage(User user, Card card) {
-        return new SelectedCardMessage("SelectedCardMessage", user.getName(), String.valueOf(card.getId()), String.valueOf(card.getValue()));
+        return new SelectedCardMessage("SelectedCardMessage", user.getName(), String.valueOf(card.getId()), card.getValue());
     }
 }

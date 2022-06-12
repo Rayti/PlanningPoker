@@ -1,6 +1,7 @@
 package com.example.planningpoker.domain;
 
 import lombok.Data;
+import org.springframework.util.NumberUtils;
 
 import java.util.*;
 import java.util.function.ToIntFunction;
@@ -23,6 +24,8 @@ public class Game {
     }
 
     public void calculateAndSetGameResult() {
-        gameResult = (float) chosenCards.values().stream().mapToDouble(Card::getValue).average().orElse(0.0d);
+        gameResult = (float) chosenCards.values().stream()
+                .mapToDouble(card -> card.getValue().equals("?") ? 0.0d : Double.parseDouble(card.getValue()))
+                .average().orElse(0.0d);
     }
 }

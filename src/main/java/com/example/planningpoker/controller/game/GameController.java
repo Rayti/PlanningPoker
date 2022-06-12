@@ -96,11 +96,16 @@ public class GameController {
         //DONE
         log.info("/api/poker/{}/{}/select-card/{}/{}", roomName, userName, id, value);
         Room room = roomService.getRoom(roomName);
-        if (room != null && room.userExists(userName) && !room.getCurrentGame().userAlreadyChoseCard(userName)) {
-            room.getCurrentGame().getChosenCards().put(new User(userName), new Card(Integer.parseInt(id), Float.parseFloat(value)));
+        if (room != null && room.userExists(userName)) {
+            String addLog = "user selected card for the first time";
+            if (room.getCurrentGame().userAlreadyChoseCard(userName)){
+                room.getCurrentGame().getChosenCards().remove(new User(userName));
+                addLog = "user selected card once more";
+            }
+            room.getCurrentGame().getChosenCards().put(new User(userName), new Card(Integer.parseInt(id), value));
             SelectedCardMessage msg = new SelectedCardMessage(SELECTED_CARD_MESSAGE, userName, id, value);
             messagingTemplate.convertAndSend(String.format(BACKEND_SOCKET_RESPONSE_FORMAT, roomName), msg);
-            log.info("/api/poker/{}/{}/select-card/{}/{} SENT SelectedCardMessage to subscribers", roomName, userName, id, value);
+            log.info("/api/poker/{}/{}/select-card/{}/{} SENT SelectedCardMessage to subscribers\n{}", roomName, userName, id, value, addLog);
         }
 
     }
