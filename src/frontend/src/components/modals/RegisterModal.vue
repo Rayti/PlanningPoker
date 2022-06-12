@@ -19,6 +19,9 @@
           </div>
         </div>
         <div class="modal-footer">
+          <div>
+            <p class="text-start" v-if="requestResponseMsg">{{requestResponseMsg}}</p>
+          </div>
           <button type="button" class="btn btn-primary" @click="registerNewAccount">Create new account</button>
         </div>
       </div>
@@ -35,7 +38,8 @@ export default {
   data(){
     return {
       registerNicknameInput: "",
-      passwordInput: ""
+      passwordInput: "",
+      requestResponseMsg: null
     }
   },
   methods: {
@@ -43,8 +47,12 @@ export default {
       this.$emit('close-modal-event');
     },
     async registerNewAccount(){
-    //  TODO
-
+      this.webService.registerUserAccount(this.registerNicknameInput, this.passwordInput)
+          .then(result => {
+            const successMsg = "User registered. You can now log in with your new credentials.";
+            const failureMsg = "User with this name and/or password can not be created.";
+            this.requestResponseMsg = result.data.success ? successMsg : failureMsg;
+      })
     }
   }
 }
