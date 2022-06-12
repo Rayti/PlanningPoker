@@ -136,6 +136,28 @@ export class WebService {
         }
     }
 
+    //################# START OF USER METHODS #################
+    async registerUserAccount(userName, password) {
+        const link = `${API_URL}/user/register/${userName}/${password}`;
+        try {
+            return await axios.get(link, config);
+        } catch (error) {
+            console.log(error.message());
+            return null;
+        }
+    }
+
+    async userAccountExist(userName){
+        //TODO
+
+    }
+
+    async deleteUserAccount(userName){
+        //TODO
+    }
+
+    //################# END OF USER METHODS #################
+
     // test(msg){
     //     const link = `${API_URL}/test`
     //     axios.get(link, config).then(response => this.msgv2.push(response.data.message))
