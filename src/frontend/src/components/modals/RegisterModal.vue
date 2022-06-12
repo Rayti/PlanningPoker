@@ -14,7 +14,7 @@
           </div>
           <p class="text-start">Password:</p>
           <div class="form-floating mb-3">
-            <input  class="form-control" id="password" v-model="passwordInput" aria-label="Floating label select example" placeholder="Enter your password">
+            <input type="password"  class="form-control" id="password" v-model="passwordInput" aria-label="Floating label select example" placeholder="Enter your password">
             <label for="password">Your password</label>
           </div>
         </div>
