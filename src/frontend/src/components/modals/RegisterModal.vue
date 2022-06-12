@@ -17,11 +17,11 @@
             <input type="password"  class="form-control" id="password" v-model="passwordInput" aria-label="Floating label select example" placeholder="Enter your password">
             <label for="password">Your password</label>
           </div>
-        </div>
-        <div class="modal-footer">
           <div>
-            <p class="text-start" v-if="requestResponseMsg">{{requestResponseMsg}}</p>
+            <p class="text-start text-center text-white p-3 rounded" :class="requestResponseClass()" v-if="requestResponseMsg">{{requestResponseMsg}}</p>
           </div>
+        </div>
+        <div v-if="!registered" class="modal-footer">
           <button type="button" class="btn btn-primary" @click="registerNewAccount">Create new account</button>
         </div>
       </div>
@@ -39,7 +39,8 @@ export default {
     return {
       registerNicknameInput: "",
       passwordInput: "",
-      requestResponseMsg: null
+      requestResponseMsg: null,
+      registered: false,
     }
   },
   methods: {
@@ -51,8 +52,17 @@ export default {
           .then(result => {
             const successMsg = "User registered. You can now log in with your new credentials.";
             const failureMsg = "User with this name and/or password can not be created.";
-            this.requestResponseMsg = result.data.success ? successMsg : failureMsg;
+            if(result.data.success){
+              this.requestResponseMsg = successMsg;
+              this.registered = true;
+            }else{
+              this.requestResponseMsg = failureMsg;
+              this.registered = false;
+            }
       })
+    },
+    requestResponseClass(){
+      return this.registered ? "bg-success" : "bg-warning";
     }
   }
 }
