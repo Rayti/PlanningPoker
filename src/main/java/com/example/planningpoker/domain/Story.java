@@ -11,15 +11,15 @@ import java.util.stream.Collectors;
 @Setter
 @AllArgsConstructor
 public class Story {
-    private int id;
+    private Long id;
     private String description;
     private List<Task> tasks;
 
-    public Task getTask(int taskId) {
+    public Task getTask(Long taskId) {
         return tasks.stream().filter(task -> task.getId() == taskId).findFirst().orElse(null);
     }
 
-    public void deleteTask(int taskId){
+    public void deleteTask(Long taskId){
         tasks = tasks.stream().filter(task -> task.getId() != taskId).collect(Collectors.toList());
     }
 }

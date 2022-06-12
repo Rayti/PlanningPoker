@@ -51,6 +51,7 @@ export default {
         if (this.joinRoomError) {
           this.joinRoomError = false
         }
+        const gameData = this.webHttpService.getIntoCurrentGame(roomName,userName);
 
         this.webSocketService.createWebSocketConnection(roomName);
         this.$store.dispatch("setBasicInformation", { roomName: roomName, userName: userName, isHost: false });

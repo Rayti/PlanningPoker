@@ -48,7 +48,7 @@ export default {
   },
   methods:{
     addNewTaskClick(){
-      let taskId=uuid4()
+      let taskId=Date.now();
       if(this.newTaskInput !== '') {
         let newTask = {id:taskId, taskTitle: this.newTaskInput};
         let arg = { storyID : this.storyID, task: newTask};

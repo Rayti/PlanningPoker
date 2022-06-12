@@ -92,7 +92,11 @@ export class WebHTTPService {
         const link = `${API_URL}/${roomName}/${userName}/game-data`;
         try {
             const response = await axios.get(link, config);
-            return response.data;
+            for(let i=0;i<response.data.stories.length;i++){
+                this.store.dispatch("addStory", response.data.stories[i]);
+            }
+            this.store.dispatch("changeCurrentStory", response.data.currentStory)
+            return response
         } catch (error) {
             console.log(error.message); 
             return null;

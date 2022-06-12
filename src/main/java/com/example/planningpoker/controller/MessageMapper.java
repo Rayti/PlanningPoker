@@ -13,7 +13,8 @@ import com.example.planningpoker.domain.User;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+
+import java.util.*;
 import java.util.stream.Collectors;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -23,8 +24,13 @@ public class MessageMapper {
     }
 
     public static StoryMessage toStoryMessage(Story story) {
-        List<TaskMessage> taskMessages = story.getTasks().stream().map(MessageMapper::toTaskMessage).collect(Collectors.toList());
-        return new StoryMessage("StoryMessage", String.valueOf(story.getId()), story.getDescription(), taskMessages);
+        if(story != null ){
+            List<TaskMessage> taskMessages = story.getTasks().stream().filter(Objects::nonNull).map(MessageMapper::toTaskMessage).collect(Collectors.toList());
+            return new StoryMessage("StoryMessage", String.valueOf(story.getId()), story.getDescription(), taskMessages);
+        }else{
+            return new StoryMessage("StoryMessage", "", "", new ArrayList<>());
+        }
+
     }
 
     public static CreateStoryMessage toCreateStoryMessage(Story story) {

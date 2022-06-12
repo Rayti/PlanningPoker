@@ -19,17 +19,18 @@ public class Room {
         this.roomName = roomName;
         this.games = new ArrayList<>();
         this.users = new ArrayList<>();
+        this.stories = new ArrayList<>();
     }
 
     public boolean userExists(String userName){
         return users.stream().filter(user -> user.getName().equals(userName)).findFirst().orElse(null) != null;
     }
 
-    public Story getStory(int storyId) {
+    public Story getStory(Long storyId) {
         return stories.stream().filter(story -> story.getId() == storyId).findFirst().orElse(null);
     }
 
-    public void deleteStory(int storyId) {
+    public void deleteStory(Long storyId) {
         stories = stories.stream().filter(x -> x.getId() != storyId).collect(Collectors.toList());
     }
 }

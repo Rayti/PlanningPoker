@@ -1,15 +1,27 @@
 import {createStore} from 'vuex'
-
-const store = createStore({
-    state: {
+const getDefaultState = () => {
+    return {
         roomName: '',
         stories: [],
-		userName: '',
+        userName: '',
+        currentStory:{},
         isHost: false,
         // stories: {},
-        otherPlayersCards: [],
-        sessionId: ''
-    },
+        otherPlayersCards: []
+    }
+}
+const store = createStore({
+
+    state: getDefaultState(),
+    //     {
+    //     roomName: '',
+    //     stories: [],
+	// 	userName: '',
+    //     currentStory:{},
+    //   isHost: false,
+    //   // stories: {},
+    //   otherPlayersCards: []
+    // },
     getters: {
         getStoriesAll (state) {
 
@@ -25,6 +37,11 @@ const store = createStore({
         }
     },
     mutations: {
+        resetState (state) {
+            // Merge rather than replace so we don't lose observers
+            // https://github.com/vuejs/vuex/issues/1118
+            Object.assign(state, getDefaultState())
+        },
         setUserName(state, userName){
           state.userName = userName;
         },
@@ -35,10 +52,10 @@ const store = createStore({
             state.roomName = roomName;
         },
         addStory (state, story) {
-            if(story.id !== undefined && typeof story.name == 'string' ) {
+            if(story.id !== undefined && typeof story.description == 'string' ) {
                 state.stories.push({
                     id: story.id,
-                    name: story.name,
+                    description: story.description,
                     tasks: story.tasks,
                 })
             }
@@ -65,7 +82,7 @@ const store = createStore({
         },
         updateStory(state, arg) {
             let story = this.getters.getStory(arg.storyId);
-            story.name = arg.newName;
+            story.description = arg.newName;
 
         },
 		changeBasicInformation (state, payload) {
@@ -89,8 +106,17 @@ const store = createStore({
       removeCards(state) {
         state.otherPlayersCards = []
       },
+       setCurrentStory(state,payload){
+           if(payload) {
+               state.currentStory = this.getters.getStory(payload.id);
+           }
+
+       }
     },
     actions: {
+        resetState ({ commit }) {
+            commit('resetState')
+        },
         setUserName({commit}, payload){
             commit('setUserName', payload);
         },
@@ -108,6 +134,18 @@ const store = createStore({
       },
       removeResults({ commit }) {
         commit("removeCards")
+      },
+      changeCurrentStory({ commit }, payload) {
+          commit("setCurrentStory", payload)
+      },
+      addStory({ commit }, payload){
+          // const parsedStory = {
+          //     id: payload.id,
+          //     name: payload.description,
+          //     tasks: payload.tasks
+          // }
+          commit("addStory", payload)
+      }
       },
         cleanStore({commit}) {
             commit("cleanStore");

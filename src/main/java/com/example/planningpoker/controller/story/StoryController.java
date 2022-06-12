@@ -42,7 +42,7 @@ public class StoryController {
         log.info("/api/poker/{}/{}/story-create", roomName, userName);
         Room room = roomService.getRoom(roomName);
         if (room != null && room.userExists(userName)) {
-            Story story = new Story(Integer.parseInt(storyDescriptionMessage.getId()), storyDescriptionMessage.getDescription(), new ArrayList<>());
+            Story story = new Story(Long.parseLong(storyDescriptionMessage.getId()), storyDescriptionMessage.getDescription(), new ArrayList<>());
             room.getStories().add(story);
             CreateStoryMessage msg = MessageMapper.toCreateStoryMessage(story);
             messagingTemplate.convertAndSend(String.format(BACKEND_SOCKET_RESPONSE_FORMAT, roomName), msg);
@@ -56,8 +56,8 @@ public class StoryController {
         //DONE
         log.info("/api/poker/{}/{}/{storyId}/story-update/description", userName, roomName);
         Room room = roomService.getRoom(roomName);
-        if (room != null && room.userExists(userName) && room.getStory(Integer.parseInt(storyId)) != null) {
-            Story story = room.getStory(Integer.parseInt(storyId));
+        if (room != null && room.userExists(userName) && room.getStory(Long.parseLong(storyId)) != null) {
+            Story story = room.getStory(Long.parseLong(storyId));
             story.setDescription(storyDescriptionMessage.getDescription());
             StoryDescriptionUpdateMessage msg = new StoryDescriptionUpdateMessage(STORY_DESCRIPTION_UPDATE_MESSAGE, storyId, storyDescriptionMessage.getDescription());
             messagingTemplate.convertAndSend(String.format(BACKEND_SOCKET_RESPONSE_FORMAT, roomName), msg);
@@ -72,8 +72,8 @@ public class StoryController {
         //DONE
         log.info("/api/poker/{}/{}/{storyId}/story-retrieve", roomName, userName);
         Room room = roomService.getRoom(roomName);
-        if (room != null && room.userExists(userName) && room.getStory(Integer.parseInt(storyId)) != null) {
-            return MessageMapper.toStoryMessage(room.getStory(Integer.parseInt(storyId)));
+        if (room != null && room.userExists(userName) && room.getStory(Long.parseLong(storyId)) != null) {
+            return MessageMapper.toStoryMessage(room.getStory(Long.parseLong(storyId)));
         }
         log.error("/api/poker/{}/{}/{storyId}/story-retrieve - no room or user", roomName, userName);
         return null;
@@ -85,8 +85,8 @@ public class StoryController {
         //DOne
         log.info("/api/poker/{}/{}/{}/story-delete", roomName, userName, storyId);
         Room room = roomService.getRoom(roomName);
-        if (room != null && room.userExists(userName) && room.getStory(Integer.parseInt(storyId)) != null) {
-            room.deleteStory(Integer.parseInt(storyId));
+        if (room != null && room.userExists(userName) && room.getStory(Long.parseLong(storyId)) != null) {
+            room.deleteStory(Long.parseLong(storyId));
 
             DeleteStoryMessage msg = new DeleteStoryMessage("DeleteStoryMessage", storyId);
             messagingTemplate.convertAndSend(String.format(BACKEND_SOCKET_RESPONSE_FORMAT, roomName), msg);

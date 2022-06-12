@@ -28,6 +28,14 @@ export class WebSocketService {
                         case "GameResultMessage":
                             this.store.dispatch("addResults", receivedMsg.selectedCards);
                             break;
+                        case "CurrentGameStoryMessage":
+                            this.store.dispatch("changeCurrentStory", receivedMsg.storyMessage);
+                            break;
+                        case "CreateStoryMessage":
+                            this.store.dispatch("addStory", receivedMsg);
+                            break;
+
+
                     }
                     console.log(receivedMsg);
                     // this.receivedMessages.push(JSON.parse(tick.body).message);
@@ -66,5 +74,32 @@ export class WebSocketService {
             console.log("Moved to the next game");
             this.stompClient.send(`${SOCKET_API_URL}/${roomName}/${userName}/next-game`);
         }
+    }
+
+    addNewUserStory(roomName, userName, storyId, storyName){
+        if (this.stompClient && this.stompClient.connected) {
+            console.log("I've added a story");
+            let arg = {
+                type: "StoryDescriptionMessage",
+                id: storyId,
+                description: storyName
+            }
+            this.stompClient.send(`${SOCKET_API_URL}/${roomName}/${userName}/story-create`, JSON.stringify(arg));
+        }
+    }
+
+    chooseUserStory(roomName, userName, storyId){
+        if (this.stompClient && this.stompClient.connected) {
+            console.log("I've chosen story");
+            this.stompClient.send(`${SOCKET_API_URL}/${roomName}/${userName}/${storyId}choose-story`);
+        }
+    }
+
+    updateUserStory(){
+
+    }
+
+    deleteUserStory(){
+
     }
 }

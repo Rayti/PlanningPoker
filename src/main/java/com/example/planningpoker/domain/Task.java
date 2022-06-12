@@ -9,6 +9,6 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class Task {
-    private int id;
+    private Long id;
     private String description;
 }

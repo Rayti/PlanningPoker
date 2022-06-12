@@ -28,6 +28,7 @@ export default {
   methods: {
     navigate() {
       this.webSocketService.disconnect();
+      this.$store.dispatch("resetState");
       this.$router.push('/');
     },
     async logOut(){

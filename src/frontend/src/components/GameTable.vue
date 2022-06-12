@@ -9,12 +9,12 @@
           <div class="top">
           <div class="user-story">
           <div class="card mb-2 ">
-            <div class="card-header" v-bind="story">
-              {{story.name}}
+            <div class="card-header" v-bind="currentStory">
+              {{currentStory.description}}
             </div>
             <div class="card-body tasks">
               <ul class="list-group">
-                <li v-for="(task, index) in story.tasks" :key="`task${index}`" class="list-group-item">
+                <li v-for="(task, index) in currentStory.tasks" :key="`task${index}`" class="list-group-item">
                   {{ task.taskTitle }}
                 </li>
               </ul>
@@ -132,7 +132,8 @@ mounted() {
   })
 },
   computed: mapState([
-      "otherPlayersCards"
+      "otherPlayersCards",
+      "currentStory"
   ]),
   methods: {
     checkResults() {
@@ -177,10 +178,9 @@ mounted() {
       this.displayTaskModal = false;
     },
     chooseStory($event){
-      let story = this.$store.getters.getStory($event.id)
-      this.story=story;
-      this.tasks = this.$store.getters.getStoryTasks($event.id);
+      this.webSocketService.chooseUserStory(this.$store.state.roomName, this.$store.state.userName, $event.id);
     },
+
     addStoryHandler(){
       this.$emit('select')
     },

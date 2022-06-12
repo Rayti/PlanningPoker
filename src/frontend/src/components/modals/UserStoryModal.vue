@@ -21,7 +21,7 @@
             <div class="accordion-item" v-for="(story, index) in userStories" :key="story.id">
               <h2 class="accordion-header" :id="'flush-headingOne'+index">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" :data-bs-target="'#flush-collapseOne'+index" aria-expanded="false" :aria-controls="'flush-collapseOne'+index">
-                  #{{index + 1}} {{story.name}}
+                  #{{index + 1}} {{story.description}}
                   <button type="button" :id="story.id" class="btn btn-sm btn-outline-success btnModal" @click="onChooseStory">Choose</button>
                   <button type="button"  class="btn btn-sm btn-outline-danger btnModal" @click="onDeleteStoryClick(story.id)">Delete</button>
                   <button type="button"  class="btn btn-sm btn-outline-info btnModal" @click="onEditStoryClick(story)">Edit</button>
@@ -117,6 +117,7 @@ export default {
   props: {
     storyID: String
   },
+  inject: ['webHttpService','webSocketService'],
   data () {
     return {
       userStories : this.$store.getters.getStoriesAll,
@@ -135,15 +136,10 @@ export default {
     },
     addNewStoryClick(){
       if(!this.newStoryId){
-        this.newStoryId=uuid4();
+        this.newStoryId=Date.now();
       }
       if(this.newStoryInput !== '') {
-        this.$store.commit('addStory', {
-          id: this.newStoryId,
-          name: this.newStoryInput,
-          tasks: this.tasks
-        });
-        // this.$emit('addStory');
+        this.webSocketService.addNewUserStory(this.$store.state.roomName, this.$store.state.userName, this.newStoryId, this.newStoryInput)
 
       }
       this.newStoryInput = "";
@@ -151,14 +147,14 @@ export default {
       this.newStoryId='';
     },
     addNewTaskToNewStoryClick(){
-      let taskId=uuid4()
+      let taskId=Date.now();
       this.tasks.push({id:taskId, taskTitle: this.newTaskInput});
 
       this.newTaskInput="";
 
     },
     addNewTaskToStoryInsideClick(storyId){
-      let taskId=uuid4()
+      let taskId=Date.now();
       if(this.newTaskInsideInput !== '') {
         let newTask = {id:taskId, taskTitle: this.newTaskInsideInput};
         let arg = { storyID : storyId, task: newTask};

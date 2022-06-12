@@ -9,7 +9,7 @@
         <div class="modal-body">
           <div class="form mb-3">
             <label class="align-content-start" for="nameStoryInput">Story Name</label>
-            <input  class="form-control" id="nameStoryInput" v-model="nameStoryInput" :placeholder="this.story.name">
+            <input  class="form-control" id="nameStoryInput" v-model="nameStoryInput" :placeholder="this.story.description">
           </div>
         </div>
         <div class="modal-footer">
