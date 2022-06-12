@@ -10,7 +10,16 @@ public interface UserService {
 
     boolean deleteUser(String name);
 
-    User getUser(String name);
+    User getRegisteredUser(String name);
 
     boolean userExists(String name);
+
+    String logIn(String userName, String password);
+
+
+    boolean loggedUserExists(String userName);
+
+    boolean logOut(String userName);
+
+    boolean checkSessionId(String sessionId, String userName);
 }
