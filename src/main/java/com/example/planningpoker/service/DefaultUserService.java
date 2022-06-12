@@ -53,7 +53,7 @@ public class DefaultUserService implements UserService {
                 .findFirst();
 
         if (optionalUser.isEmpty() || loggedUserExists(userName)){
-            return "";
+            return null;
         }
         User user = optionalUser.get();
         user.setSessionId(UUID.randomUUID().toString());

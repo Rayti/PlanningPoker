@@ -1,13 +1,14 @@
-import { createStore } from 'vuex'
+import {createStore} from 'vuex'
 
 const store = createStore({
     state: {
         roomName: '',
         stories: [],
 		userName: '',
-      isHost: false,
-      // stories: {},
-      otherPlayersCards: []
+        isHost: false,
+        // stories: {},
+        otherPlayersCards: [],
+        sessionId: ''
     },
     getters: {
         getStoriesAll (state) {
@@ -24,8 +25,14 @@ const store = createStore({
         }
     },
     mutations: {
+        setUserName(state, userName){
+          state.userName = userName;
+        },
+        setSessionId(state, sessionId){
+            state.sessionId = sessionId;
+        },
         setRoomName (state, roomName) {
-            state.roomName = roomName
+            state.roomName = roomName;
         },
         addStory (state, story) {
             if(story.id !== undefined && typeof story.name == 'string' ) {
@@ -71,11 +78,25 @@ const store = createStore({
         console.log(filteredCards)
         state.otherPlayersCards = filteredCards
       },
+      cleanStore(state) {
+            state.roomName = null;
+            state.userName = null;
+            state.isHost = null;
+            state.stories = [];
+            state.otherPlayersCards = [];
+            state.sessionId = '';
+      },
       removeCards(state) {
         state.otherPlayersCards = []
       },
     },
     actions: {
+        setUserName({commit}, payload){
+            commit('setUserName', payload);
+        },
+        setSessionId({commit}, payload){
+            commit("setSessionId", payload);
+        },
         setRoomName (context, roomName) {
             context.commit('setRoomName', roomName)
         },
@@ -87,7 +108,10 @@ const store = createStore({
       },
       removeResults({ commit }) {
         commit("removeCards")
-      }
+      },
+        cleanStore({commit}) {
+            commit("cleanStore");
+        }
     },
     modules: {
     }

@@ -18,11 +18,11 @@
             <label for="password">Your password</label>
           </div>
           <div>
-            <p class="text-start text-center text-white p-3 rounded bg-warning" v-if="requestResponseMsg">{{requestResponseMsg}}</p>
+            <p class="text-start text-center text-white p-3 rounded" :class="requestResponseClass()" v-if="requestResponseMsg">{{requestResponseMsg}}</p>
           </div>
         </div>
-        <div  class="modal-footer">
-          <button type="button" class="btn btn-primary" @click="login">Log in</button>
+        <div  class="modal-footer" v-if="!loggedIn">
+          <button type="button" class="btn btn-primary" @click="logIn">Log in</button>
         </div>
       </div>
     </div>
@@ -37,15 +37,32 @@ export default {
     return{
       loginNicknameInput: "",
       loginPasswordInput: "",
-      requestResponseMsg: false
+      requestResponseMsg: false,
+      loggedIn: false
     }
   },
   methods: {
     closeModal(){
       this.$emit('close-modal-event');
     },
-    async login(){
-      //TODO MIKA
+    async logIn(){
+      this.webService.logIn(this.loginNicknameInput, this.loginPasswordInput)
+          .then(result => {
+            let sessionId = result.data.sessionId;
+            console.log(`SessionId: ${sessionId}`);
+            if(sessionId !== ''){
+              this.$store.dispatch("setSessionId", sessionId);
+              this.$store.dispatch("setUserName", this.loginNicknameInput);
+              this.requestResponseMsg = "Logged in successfully";
+              this.loggedIn = true;
+            }else{
+              this.requestResponseMsg = "Could not log in";
+              this.loggedIn = false;
+            }
+          })
+    },
+    requestResponseClass(){
+      return this.loggedIn ? "bg-success" : "bg-warning";
     }
   }
 }

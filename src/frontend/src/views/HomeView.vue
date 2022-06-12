@@ -50,15 +50,12 @@
 </template>
 
 <script>
-import {WebService} from "@/services/WebService";
 import GiveNickModal from "@/components/modals/GiveNickModal";
 import CreateRoomModal from "@/components/modals/CreateRoomModal";
 import RegisterModal from "@/components/modals/RegisterModal";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
 import LoginModal from "@/components/modals/LoginModal";
-
-const webService = new WebService();
 
 export default {
   name: "HomeView",
@@ -79,14 +76,6 @@ export default {
     }
   },
   methods: {
-    goClick() {
-
-      webService.addUser(this.nickInput).then((data) => {
-        this.joinRoomModal=true;
-
-        this.$router.push('game')
-      });
-    },
     showModalRoom() {
       this.displayModal = true;
       this.createRoomModal = true;

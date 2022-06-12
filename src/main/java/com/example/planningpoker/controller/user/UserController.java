@@ -69,8 +69,9 @@ public class UserController {
     }
 
     @GetMapping("api/poker/user/log-out/{userName}/{sessionId}")
+    @ResponseBody
     public SuccessMessage logOut(@PathVariable String userName, @PathVariable String sessionId) {
-        log.info("/api/poker/user/log-out/{userName}");
+        log.info("/api/poker/user/log-out/{}/{}", userName, sessionId);
 
         if (!userService.checkSessionId(sessionId, userName)) {
             log.warn("Attempt to access with wrong sessionId");

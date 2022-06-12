@@ -142,7 +142,7 @@ export class WebService {
         try {
             return await axios.get(link, config);
         } catch (error) {
-            console.log(error.message());
+            console.log(error.message);
             return null;
         }
     }
@@ -155,6 +155,29 @@ export class WebService {
     async deleteUserAccount(userName){
         //TODO
     }
+
+    async logIn(userName, password) {
+        const link = `${API_URL}/user/log-in/${userName}/${password}`;
+        try {
+            return await axios.get(link, config);
+        } catch (error) {
+            console.log(error.message);
+            return null;
+        }
+    }
+
+    async logOut() {
+        const userName = this.store.state.userName;
+        const sessionId = this.store.state.sessionId;
+        const link = `${API_URL}/user/log-out/${userName}/${sessionId}`;
+        try {
+            return await axios.get(link, config);
+        } catch (error){
+            console.log(error.message)
+            return null;
+        }
+    }
+
 
     //################# END OF USER METHODS #################
 
