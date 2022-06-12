@@ -1,5 +1,6 @@
 package com.example.planningpoker.controller.user;
 
+import com.example.planningpoker.controller.SessionMessage;
 import com.example.planningpoker.controller.SuccessMessage;
 import com.example.planningpoker.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -48,6 +49,37 @@ public class UserController {
         log.info("api/poker/user/check-exist/{}", userName);
         boolean success = userService.userExists(userName);
         String logInfo = success ? "User {} exists" : "User {} does not exist";
+        log.info(logInfo, userName);
+        return new SuccessMessage(success);
+    }
+
+    @GetMapping("/api/poker/user/log-in/{userName}/{password}")
+    @ResponseBody
+    public SessionMessage logIn(@PathVariable String userName, @PathVariable String password) {
+        log.info("/api/poker/user/log-in/{}/{}", userName, password);
+
+        String sessionId = userService.logIn(userName, password);
+
+        if (sessionId == null) {
+            log.info("User {} could not log in", userName);
+            return new SessionMessage("");
+        }
+        log.info("User {} logged in; sessionId: {}", userName, sessionId);
+        return new SessionMessage(sessionId);
+    }
+
+    @GetMapping("api/poker/user/log-out/{userName}/{sessionId}")
+    @ResponseBody
+    public SuccessMessage logOut(@PathVariable String userName, @PathVariable String sessionId) {
+        log.info("/api/poker/user/log-out/{}/{}", userName, sessionId);
+
+        if (!userService.checkSessionId(sessionId, userName)) {
+            log.warn("Attempt to access with wrong sessionId");
+            return new SuccessMessage(false);
+        }
+
+        boolean success = userService.logOut(userName);
+        String logInfo = success ? "User {} logged out" : "Not able to log out user {}";
         log.info(logInfo, userName);
         return new SuccessMessage(success);
     }

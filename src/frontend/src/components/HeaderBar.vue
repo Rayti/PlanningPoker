@@ -6,6 +6,7 @@
 <!--          <img src="/docs/5.1/assets/brand/bootstrap-logo.svg" alt="" width="30" height="24" class="d-inline-block align-text-top">-->
           Planning Poker
         </a>
+        <button type="button" v-if="this.$store.state.sessionId !== ''" class="btn btn-outline-light" @click="logOut">Log out</button>
       </div>
     </nav>
 <!--    <b-navbar class="header" toggleable="lg" type="dark" variant="info">-->
@@ -16,7 +17,6 @@
 <!--&lt;!&ndash;          <b-nav-item href="#">Link</b-nav-item>&ndash;&gt;-->
 <!--&lt;!&ndash;          <b-nav-item href="#" disabled>Disabled</b-nav-item>&ndash;&gt;-->
 <!--&lt;!&ndash;        </b-navbar-nav>&ndash;&gt;-->
-
 <!--      </b-collapse>-->
 <!--    </b-navbar>-->
   </div>
@@ -29,6 +29,16 @@ export default {
     navigate() {
       this.webService.disconnect();
       this.$router.push('/');
+    },
+    async logOut(){
+      this.webService.logOut()
+          .then(result => {
+            if(result?.data?.success === true){
+              alert("Successfully logged out!");
+              this.$store.dispatch("cleanStore");
+              this.$router.push('/');
+            }
+          })
     }
   }
 
