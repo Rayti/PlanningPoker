@@ -37,7 +37,7 @@
         <div class="col-2">
           <div class="btn-group-vertical">
             <button type="button" class="btn btn-outline-primary btn-lg" @click="showRegisterModal"> Register</button>
-            <button type="button" class="btn btn-outline-primary btn-lg"> Log in</button>
+            <button type="button" class="btn btn-outline-primary btn-lg" @click="showLoginModal"> Log in</button>
           </div>
         </div>
       </div>
@@ -46,6 +46,7 @@
   <create-room-modal v-if="createRoomModal" @close-modal-event="hideModal"></create-room-modal>
   <give-nick-modal v-if="joinRoomModal" :room-name="joinRoomInput" @close-modal-event="hideModal"></give-nick-modal>
   <register-modal v-if="registerModal" @close-modal-event="hideModal"></register-modal>
+  <login-modal v-if="loginModal" @close-modal-event="hideModal"></login-modal>
 </template>
 
 <script>
@@ -55,12 +56,14 @@ import CreateRoomModal from "@/components/modals/CreateRoomModal";
 import RegisterModal from "@/components/modals/RegisterModal";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
+import LoginModal from "@/components/modals/LoginModal";
 
 const webService = new WebService();
 
 export default {
   name: "HomeView",
   components: {
+    LoginModal,
     GiveNickModal,
     CreateRoomModal,
     RegisterModal
@@ -72,6 +75,7 @@ export default {
       createRoomModal: false,
       joinRoomModal: false,
       registerModal: false,
+      loginModal: false
     }
   },
   methods: {
@@ -92,6 +96,7 @@ export default {
       this.joinRoomModal = false;
       this.createRoomModal = false;
       this.registerModal = false;
+      this.loginModal = false;
     },
     joinRoom(){
       this.displayModal = true;
@@ -100,8 +105,11 @@ export default {
     showRegisterModal() {
       this.displayModal = true;
       this.registerModal = true;
+    },
+    showLoginModal(){
+      this.displayModal = true;
+      this.loginModal = true;
     }
-
   }
 };
 </script>
