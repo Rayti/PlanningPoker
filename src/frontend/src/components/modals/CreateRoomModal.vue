@@ -22,8 +22,8 @@
           <button type="button" class="btn btn-primary" @click="createNewRoom" data-bs-dismiss="modal">Go</button>
         </div>
 <!--RSPONSE MSG IF ROOM CAN NOT BE CREATED-->
-        <div v-if="!service.responseMessage.success">
-          {{service.responseMessage.message}}
+        <div v-if="createRoomError">
+          Room cannot be created (server error/room already exists).
         </div>
       </div>
     </div>
@@ -31,30 +31,37 @@
 </template>
 
 <script>
-import {WebService} from "@/services/WebService";
-
 export default {
   name: "CreateRoomModal",
   inject: ['webService'],
   data() {
     return {
       roomInput: "",
-      nickInput:"",
-      service: this.webService
+      nickInput: "",
+      createRoomError: false,
     }
   },
   methods: {
     closeModal() {
       this.$emit('close-modal-event');
     },
+    async createNewRoom() {
+      const roomName = this.roomInput;
+      const userName = this.nickInput;
+      const result = await this.webService.createRoomRequest(roomName, userName);
 
-    createNewRoom(){
-      const room = this.roomInput;
-      const nick = this.nickInput;
-      this.webService.createRoomRequest(room, nick);
+      if (result && result.success) { // jeżeli nie to powinien tost jakiś się pojawić
+        if (this.createRoomError) {
+          this.createRoomError = false
+        }
 
-      if (this.webService.responseMessage.success){
-        this.$router.push('game');
+        this.webService.createWebSocketConnection(roomName);
+        this.$store.dispatch("setBasicInformation", { roomName: roomName, userName: userName, isHost: true });
+        this.$router.push({ name: "game", params: { roomName: roomName }});
+      } else { // obsługa błędów
+        if (!this.createRoomError) {
+          this.createRoomError = true
+        }
       }
     }
   }
@@ -65,6 +72,4 @@ export default {
 .modal {
   display: block;
 }
-
-
 </style>

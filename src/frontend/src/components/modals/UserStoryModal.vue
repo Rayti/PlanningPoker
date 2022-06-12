@@ -1,25 +1,39 @@
 <template>
   <div class="modal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-dialog  modal-dialog-centered modal-dialog-scrollable modal-lg">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title">Manage User Stories</h5>
+          <h5 class="modal-title">Manage User Stories  </h5>
+          <div class="dropdown dd">
+            <button class="btn btn-outline-success dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+              Actions
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+              <li><a class="dropdown-item" href="#">Import Stories</a></li>
+              <li><a class="dropdown-item" href="#">Export Stories</a></li>
+            </ul>
+          </div>
           <button type="button" class="btn-close" data-bs-dismiss="modal" @click="closeModal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
 
           <div class="accordion accordion-flush" id="accordionFlushExample">
             <div class="accordion-item" v-for="(story, index) in userStories" :key="story.id">
-              <h2 class="accordion-header" id="flush-headingOne">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" :data-bs-target="'#flush-collapseOne'+index" aria-expanded="false" aria-controls="flush-collapseOne">
-                  #{{index + 1}} {{story.title}}
+              <h2 class="accordion-header" :id="'flush-headingOne'+index">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" :data-bs-target="'#flush-collapseOne'+index" aria-expanded="false" :aria-controls="'flush-collapseOne'+index">
+                  #{{index + 1}} {{story.name}}
+                  <button type="button" :id="story.id" class="btn btn-sm btn-outline-success btnModal" @click="onChooseStory">Choose</button>
+                  <button type="button"  class="btn btn-sm btn-outline-danger btnModal" @click="onDeleteStoryClick(story.id)">Delete</button>
+                  <button type="button"  class="btn btn-sm btn-outline-info btnModal" @click="onEditStoryClick(story)">Edit</button>
                 </button>
               </h2>
-              <div :id="'flush-collapseOne'+index" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+              <div :id="'flush-collapseOne'+index" class="accordion-collapse collapse" :aria-labelledby="'flush-headingOne'+index" data-bs-parent="#accordionFlushExample">
                 <div class="accordion-body">
                   <h5 align="left">Tasks:</h5>
                   <ul v-for="(task, index) in story.tasks" :key="task.id" class="justify-content-start">
-                    <li class = "taskList">#{{index+1}} task</li>
+                    <li class = "taskList">#{{index+1}} {{task.taskTitle}}
+                    <button type="button" :id="story.id" class="btn btn-sm btn-outline-danger btnModal" @click="onDeleteTaskClick(story.id, task)">Delete</button>
+                    </li>
                   </ul>
                   <div class="row justify-content-end">
                     <div class=" newStoryBtn">
@@ -31,7 +45,7 @@
                     <label for="floatingInputTask">Add task to the story</label>
                     <div class="row justify-content-end ">
                       <div class=" newStoryAddBtn">
-                        <button type="button" class="btn btn-outline-secondary btn-sm col-4 " @click="addNewTaskToStoryInsideClick">Add</button>
+                        <button type="button" class="btn btn-outline-secondary btn-sm col-4 " @click="addNewTaskToStoryInsideClick(story.id)">Add</button>
                       </div></div>
                   </div>
                   </div>
@@ -60,14 +74,14 @@
                 <h5 align="left" class="border-top pt-2 mt-2 border-info">Tasks to the story</h5>
 
               <ul v-for="(task, index) in tasks" :key="task.id" class="justify-content-start">
-                <li class = "taskList">#{{index+1}} task</li>
+                <li class = "taskList">#{{index+1}} {{task.taskTitle}}</li>
                 </ul>
               <div class="form-floating mb-3">
                 <input class="form-control" id="floatingInputTask" v-model="newTaskInput">
                 <label for="floatingInputTask">Add task to the story</label>
                 <div class="row justify-content-end border-bottom pb-2 border-info">
                   <div class=" newStoryAddBtn">
-                    <button type="button" class="btn btn-outline-secondary btn-sm col-4 " @click="addNewTaskToStoryClick">Add</button>
+                    <button type="button" class="btn btn-outline-secondary btn-sm col-4 " @click="addNewTaskToNewStoryClick">Add</button>
                   </div></div>
               </div>
 
@@ -81,25 +95,38 @@
           </div>
         </div>
         <div class="modal-footer">
+
           <button type="button" class="btn btn-primary" @click = "closeModal" data-bs-dismiss="modal">Close</button>
         </div>
       </div>
     </div>
   </div>
+  <EditStoryModal v-if="displayEditStoryModal" :story="this.editedStory" @close-modal-event="hideModal" @edit = "editStoryHandler"></EditStoryModal>
 </template>
 
 <script>
+import { v4 as uuid4 } from 'uuid'
+import EditStoryModal from "@/components/modals/EditStoryModal";
+
 export default {
   name: "UserStoryModal",
+  components: {
+    EditStoryModal,
+
+  },
+  props: {
+    storyID: String
+  },
   data () {
     return {
-      userStories :[
-        {id: 1, title : "one" , tasks  :["login","logout"]},
-      ],
+      userStories : this.$store.getters.getStoriesAll,
       newStoryInput:"",
       newTaskInput:"",
       newTaskInsideInput:"",
       tasks:[],
+      newStoryId:'',
+      displayEditStoryModal:false,
+      editedStory:{},
     }
   },
   methods:{
@@ -107,17 +134,63 @@ export default {
       this.$emit("closeUserStoryModal");
     },
     addNewStoryClick(){
-      this.userStories.push({id:3,title: this.newStoryInput,tasks:this.tasks,body:"5"});
+      if(!this.newStoryId){
+        this.newStoryId=uuid4();
+      }
+      if(this.newStoryInput !== '') {
+        this.$store.commit('addStory', {
+          id: this.newStoryId,
+          name: this.newStoryInput,
+          tasks: this.tasks
+        });
+        // this.$emit('addStory');
+
+      }
       this.newStoryInput = "";
       this.tasks=[];
+      this.newStoryId='';
     },
-    addNewTaskToStoryClick(){
-      this.tasks.push({id:0, taskTitle: this.newTaskInput});
+    addNewTaskToNewStoryClick(){
+      let taskId=uuid4()
+      this.tasks.push({id:taskId, taskTitle: this.newTaskInput});
+
       this.newTaskInput="";
 
     },
-    addNewTaskToStoryInsideClick(){
+    addNewTaskToStoryInsideClick(storyId){
+      let taskId=uuid4()
+      if(this.newTaskInsideInput !== '') {
+        let newTask = {id:taskId, taskTitle: this.newTaskInsideInput};
+        let arg = { storyID : storyId, task: newTask};
+        this.$store.commit('addTaskToStoryInside', arg);
+
+      }
       this.newTaskInsideInput="";
+    },
+    onChooseStory(e){
+      this.$emit('chooseStory',{id: e.target.id});
+    },
+    onDeleteStoryClick(storyid){
+      this.$store.commit('deleteStory', storyid);
+      if(this.storyID == storyid){
+        this.$emit('clearStoryTable')
+      }
+
+    },
+    onDeleteTaskClick(storyid, task){
+      let arg = { storyID : storyid, task: task}
+      this.$store.commit('deleteTaskStory', arg);
+    },
+    onEditStoryClick(story){
+      this.displayEditStoryModal=true;
+      this.editedStory = story;
+    },
+    hideModal() {
+      this.displayEditStoryModal = false;
+    },
+    editStoryHandler($event){
+      this.$store.commit('updateStory', $event.arg);
+      this.displayEditStoryModal = false;
     }
   }
 }
@@ -151,5 +224,12 @@ export default {
   justify-content: flex-start;
   alignment: left;
   display: flex;
+}
+.btnModal{
+  margin-left: 2px;
+}
+.dd{
+  /*z-index: 1100;*/
+  margin-left: 10px;
 }
 </style>

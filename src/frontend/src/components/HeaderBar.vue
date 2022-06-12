@@ -24,9 +24,11 @@
 
 <script>
 export default {
+  inject: ['webService'],
   methods: {
-    navigate(){
-      this.$router.push('/')
+    navigate() {
+      this.webService.disconnect();
+      this.$router.push('/');
     }
   }
 

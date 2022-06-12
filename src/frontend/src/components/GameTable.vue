@@ -1,48 +1,71 @@
 <template>
+  <div :class="{'blur-content': displayUserStoryModal||displayTaskModal}">
+
   <div class="game-table">
     <div class="inside-table">
       <div class="many-users row">
 
         <div class="grid-table">
-          <div></div>
           <div class="top">
-            <!-- <div class="user-story-part"> -->
-            <div class="user-story">
-              <h5>I can Create/Update/Retrieve/Delete a user story so that we can estimate the items we need to do</h5>
+          <div class="user-story">
+          <div class="card mb-2 ">
+            <div class="card-header" v-bind="story">
+              {{story.name}}
             </div>
-            <nav class="tasks">
-              <ul>
-                <li v-for="(task, index) in exampleTasks" :key="`task${index}`">
-                  {{ task }}
+            <div class="card-body tasks">
+              <ul class="list-group">
+                <li v-for="(task, index) in story.tasks" :key="`task${index}`" class="list-group-item">
+                  {{ task.taskTitle }}
                 </li>
               </ul>
-            </nav>
-            <!-- </div> -->
+            </div>
+          </div>
+          </div>
+          <div></div>
+
             <div class="manage">
               <button class="btn btn-outline-primary" @click="openUserStoryPanel">Manage user stories</button>
-              <button class="btn btn-outline-primary">Manage tasks</button>
+              <button class="btn btn-outline-primary" :disabled="!story.id" @click="openTaskPanel">Manage tasks</button>
             </div>
           </div>
           <div></div>
-          <!-- <div class="left">
-              <button class="btn btn-outline-primary btn-lg">Get invitation link</button>
-          </div> -->
+         <div class="left">
+               <div class="row justify-content-start" >
+             <button type="button" class="btn btn-outline-secondary invite-btn col-8 align-start"
+                     data-bs-toggle="popover" title="Copy invite link " data-bs-placement="bottom"
+                     data-content-id="popover-27">
+               Invite to room
+             </button>
+               </div>
+             <div style="display: none;" id="popover-27">
+               <div class="input-group mb-3">
+                 <span class="input-group-text" id="basic-addon1">Link</span>
+                 <input type="text" class="form-control"  aria-describedby="basic-addon1">
+               </div>
+             </div>
+          </div>
+
           <div class="players-space">
             <div class="players-content">
               <div>
-                <div class="names">me</div>
+                <div class="names">{{ this.$store.state.userName }}</div>
                 <planning-poker-card :v-if="isSelectionConfirmed" :estimation="mainPlayerCard"/>
               </div>
-              <div :v-if="showResults" v-for="(player, index) in players" :key="`player-${index + 2}`">
-                <div class="names">player{{ index + 2 }}</div>
-                <planning-poker-card :estimation="fibonacci[player]"/>
+              <div :v-if="showResults" v-for="(player, index) in otherPlayersCards" :key="`player-${index + 2}`">
+                <div class="names">{{ player.userName }}</div>
+                <planning-poker-card :estimation="formatValue(player.value)"/>
               </div>
             </div>
           </div>
           <div class="right">
-            <button class="btn btn-outline-primary btn-lg" :disabled="!isSelectionConfirmed" @click="getResults">Get
-              results
+            <button class="btn btn-outline-primary btn-lg" 
+                    :disabled="checkResults()" @click="getResults">
+              Get results
             </button>
+            <!-- <button class="btn btn-outline-primary btn-lg" 
+                    :disabled="checkResults()" @click="getResults">
+              Clear results
+            </button> -->
           </div>
           <div></div>
           <!-- <div class="bot"> -->
@@ -53,17 +76,26 @@
         </div>
       </div>
     </div>
-      <UserStoryModal v-if="displayUserStoryModal" @closeUserStoryModal="hideModal"></UserStoryModal>
-    </div>
+  </div>
+  </div>
+      <UserStoryModal v-if="displayUserStoryModal" :storyID ="this.story.id" @closeUserStoryModal="hideModal" @clearStoryTable = "clearStoryTable" @chooseStory="chooseStory"></UserStoryModal>
+    <TasksModal v-if="displayTaskModal" :storyID ="this.story.id" @closeTaskModal="hideTaskModal"></TasksModal>
+<!--  <EditStoryModal v-if="displayEditStoryModal" @close-modal-event="hideModal"></EditStoryModal>-->
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import PlanningPokerCard from './PlanningPokerCard.vue';
 import UserStoryModal from "@/components/modals/UserStoryModal";
+import $ from "jquery";
+import { Popover } from 'bootstrap/dist/js/bootstrap.esm.min.js'
+import TasksModal from "@/components/modals/TasksModal";
 
 export default {
   name: 'GameTable',
+  inject: ['webService'],
   components: {
+    TasksModal,
     UserStoryModal,
     PlanningPokerCard
   },
@@ -73,40 +105,93 @@ export default {
   },
   data() {
     return {
-      fibonacci: ['0', '1', '2', '3', '5', '8', '13', '21', '34', '55', '89', '?'],
       showResults: false,
       clearResults: false,
       displayUserStoryModal: false,
+      displayTaskModal:false,
+      story:{},
       players: [],
-      exampleTasks: ["PP-23: Create planning poker Create planning poke Create planning pokeCreate planning poke Create planning poke Create planning poke Create planning poke Create planning poke", "PP-23: Create planning poker", "PP-23: Create planning poker", "PP-23: Create planning poker", "PP-23: Create planning poker", "PP-23: Create planning poker"]
+      tasks: (this.story)? this.$store.getters.getStoryTasks(this.story.id) : [],
+
     }
   },
-  methods: {
-    getResults() {
-      if (this.isSelectionConfirmed && this.mainPlayerCard !== "") {
-        let numberOfParticipants = Math.floor(Math.random() * (8) + 1);
-        const participants = [];
-        while (numberOfParticipants >= 0) {
-          console.log("here");
-          participants.push(Math.floor(Math.random() * (12)));
-          numberOfParticipants--;
-        }
-        this.players = participants;
-        console.log(numberOfParticipants);
-        console.log(participants);
-        this.showResults = true;
-      }
-    },
+mounted() {
+  let popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
+  popoverTriggerList.forEach(popoverTriggerEl=> {
+    const popoverId = popoverTriggerEl.attributes['data-content-id'];
+    const contentEl = $(`#${popoverId.value}`).html();
+    let opts = {
+      content: contentEl,
+      html: true,
+      container: 'body',
+      sanitize  : false,
+      // trigger: 'focus'
+    }
+    new Popover(popoverTriggerEl, opts);
 
+  })
+},
+  computed: mapState([
+      "otherPlayersCards"
+  ]),
+  methods: {
+    checkResults() {
+      return !this.$store.state.isHost || !this.isSelectionConfirmed || this.mainPlayerCard === "";
+    },
+    getResults() {
+      this.webService.finishGame(this.$store.state.roomName, this.$store.state.userName);
+      this.showResults = true;
+      // if (this.isSelectionConfirmed && this.mainPlayerCard !== "") {
+      //   let numberOfParticipants = Math.floor(Math.random() * (8) + 1);
+      //   const participants = [];
+      //   while (numberOfParticipants >= 0) {
+      //     console.log("here");
+      //     participants.push(Math.floor(Math.random() * (12)));
+      //     numberOfParticipants--;
+      //   }
+      //   this.players = participants;
+      //   console.log(numberOfParticipants);
+      //   console.log(participants);
+      //   this.showResults = true;
+      // }
+    },
+    formatValue(value) {
+      return value.split(".")[0];
+    },
     clearResult() {
-      this.players = [];
+      if (this.$store.state.otherPlayersCards.length !== 0) {
+        this.$store.dispatch("removeResults");
+      } 
+      this.showResults = false;
     },
     openUserStoryPanel() {
       this.displayUserStoryModal = true;
     },
+    openTaskPanel() {
+      this.displayTaskModal = true;
+    },
     hideModal() {
       this.displayUserStoryModal = false;
     },
+    hideTaskModal() {
+      this.displayTaskModal = false;
+    },
+    chooseStory($event){
+      let story = this.$store.getters.getStory($event.id)
+      this.story=story;
+      this.tasks = this.$store.getters.getStoryTasks($event.id);
+    },
+    addStoryHandler(){
+      this.$emit('select')
+    },
+    clearStoryTable(){
+      this.story={};
+      this.tasks=[];
+    },
+
+    onClick() {
+      //this.webService.selectCard("siema", "eniu");
+    }
   }
 }
 </script>
@@ -165,9 +250,10 @@ export default {
   margin: 0 auto;
   width: 100%;
   height: auto;
-  min-height: 3.1rem;
+  min-height: 3.5rem;
   max-width: 50.8rem;
-  background: rgb(214, 10, 81);
+  min-width: 30.8rem;
+  /*background: rgb(214, 10, 81);*/
   /* padding: 0 1.6rem; */
 }
 
@@ -180,9 +266,10 @@ export default {
   overflow-y: scroll;
   width: 100%;
   height: 4.7rem;
-  /* min-width: 30.8rem; */
-  max-width: 50.8rem;
-  background: rgb(187, 178, 181);
+  min-width: 30.8rem;
+  padding: 0% !important;
+  /*max-width: 50.8rem;*/
+  /*background: rgb(187, 178, 181);*/
 }
 
 .tasks ul {
@@ -286,5 +373,18 @@ export default {
   margin-left: .5rem;
   margin-right: .5rem;
   width: 12.2rem;
+}
+.invite-btn{
+  width: 10rem;
+  margin-left: -8%;
+
+}
+.blur-content{
+  /*filter: blur(5px);*/
+  opacity:0.5 !important;
+  /*!*background-color: black;*!*/
+  /*background: rgba(0, 0, 0, 0.5);*/
+  /*position: fixed;*/
+
 }
 </style>
