@@ -26,7 +26,7 @@ public class DefaultRoomService implements RoomService {
     @Override
     public boolean createRoom(String userName, String roomName) {
         if(getRoom(roomName) == null){
-            User user = new User(userName);
+            User user = new User(userName, "");
             Game game = new Game();
             Room room = new Room(roomName);
             room.getUsers().add(user);
@@ -53,7 +53,7 @@ public class DefaultRoomService implements RoomService {
         Optional<User> optionalUser = optionalRoom.get().getUsers().stream().filter(user -> user.getName().equals(userName)).findFirst();
 
         if (optionalUser.isEmpty()) {
-            User user = new User(userName);
+            User user = new User(userName, "");
             room.getUsers().add(user);
             return true;
         }

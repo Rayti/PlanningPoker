@@ -1,4 +1,5 @@
 package com.example.planningpoker.controller.game;
+
 import com.example.planningpoker.controller.MessageMapper;
 import com.example.planningpoker.controller.game.message.*;
 import com.example.planningpoker.controller.story.message.StoryMessage;
@@ -11,7 +12,10 @@ import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -99,10 +103,10 @@ public class GameController {
         if (room != null && room.userExists(userName)) {
             String addLog = "user selected card for the first time";
             if (room.getCurrentGame().userAlreadyChoseCard(userName)){
-                room.getCurrentGame().getChosenCards().remove(new User(userName));
+                room.getCurrentGame().getChosenCards().remove(new User(userName, ""));
                 addLog = "user selected card once more";
             }
-            room.getCurrentGame().getChosenCards().put(new User(userName), new Card(Integer.parseInt(id), value));
+            room.getCurrentGame().getChosenCards().put(new User(userName, ""), new Card(Integer.parseInt(id), value));
             SelectedCardMessage msg = new SelectedCardMessage(SELECTED_CARD_MESSAGE, userName, id, value);
             messagingTemplate.convertAndSend(String.format(BACKEND_SOCKET_RESPONSE_FORMAT, roomName), msg);
             log.info("/api/poker/{}/{}/select-card/{}/{} SENT SelectedCardMessage to subscribers\n{}", roomName, userName, id, value, addLog);
