@@ -1,6 +1,5 @@
 <template>
 
-
   <div :class="{'blur-content': displayModal}">
     <div class="container">
       <div class="row">

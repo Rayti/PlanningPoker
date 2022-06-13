@@ -17,6 +17,20 @@
             <input type="password"  class="form-control" id="password" v-model="passwordInput" aria-label="Floating label select example" placeholder="Enter your password">
             <label for="password">Your password</label>
           </div>
+          <div v-if="!registered" class="container-fluid">
+            <div class="center mb-3">
+              <div class="input-group-text">
+                <input type="checkbox" id="policyCheckbox" aria-label="Checkbox for personal data policy" v-model="policyAccepted">
+                <div class="px-3">
+                  I accept
+                  <a class="link-primary" @click="navigatePolicy">
+                    personal data policy
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div>
             <p class="text-start text-center text-white p-3 rounded" :class="requestResponseClass()" v-if="requestResponseMsg">{{requestResponseMsg}}</p>
           </div>
@@ -41,6 +55,7 @@ export default {
       passwordInput: "",
       requestResponseMsg: null,
       registered: false,
+      policyAccepted: false,
     }
   },
   methods: {
@@ -48,6 +63,12 @@ export default {
       this.$emit('close-modal-event');
     },
     async registerNewAccount(){
+      if(!this.policyAccepted){
+        this.registered = false;
+        this.requestResponseMsg = "You have to accept our policy to register.";
+        return;
+      }
+
       this.webService.registerUserAccount(this.registerNicknameInput, this.passwordInput)
           .then(result => {
             const successMsg = "User registered. You can now log in with your new credentials.";
@@ -63,6 +84,9 @@ export default {
     },
     requestResponseClass(){
       return this.registered ? "bg-success" : "bg-warning";
+    },
+    navigatePolicy(){
+      this.$router.push('/policy');
     }
   }
 }

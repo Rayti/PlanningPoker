@@ -1,5 +1,4 @@
-import HomeView from "../views/HomeView.vue";
-import { createRouter, createWebHistory } from 'vue-router';
+import {createRouter, createWebHistory} from 'vue-router';
 
 const routes = [
     {
@@ -12,7 +11,11 @@ const routes = [
         name: "game",
         component: () => import(/* webpackChunkName: "about" */ '../views/GameView.vue')
     },
-
+    {
+        path: "/policy",
+        name: "policy",
+        component: () => import('../views/PersonalDataPolicy')
+    }
 ];
 
 
