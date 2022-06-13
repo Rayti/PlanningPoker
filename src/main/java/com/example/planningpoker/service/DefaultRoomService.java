@@ -63,6 +63,18 @@ public class DefaultRoomService implements RoomService {
 
 
     @Override
+    public boolean canJoinRoom(String userName, String roomName) {
+        Optional<Room> optionalRoom = roomCache.stream().filter(room -> room.getRoomName().equals(roomName)).findFirst();
+
+        if (optionalRoom.isEmpty()) {
+            return false;
+        }
+
+        Optional<User> optionalUser = optionalRoom.get().getUsers().stream().filter(user -> user.getName().equals(userName)).findFirst();
+        return optionalUser.isEmpty();
+    }
+
+    @Override
     public boolean deleteRoom(String userName, String roomName) {
         Room room = getRoom(roomName);
         if (room == null) {
