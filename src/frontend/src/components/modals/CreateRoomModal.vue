@@ -7,12 +7,7 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" @click="closeModal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <p class="text-start">Firstly, please enter your nick:</p>
-          <div class="form-floating mb-3">
-            <input  class="form-control" id="floatingNick" v-model="nickInput" aria-label="Floating label select example" placeholder="Enter your nick">
-            <label for="floatingNick">Your nick</label>
-          </div>
-          <p class="text-start">and then name your room:</p>
+          <p class="text-start">Please enter your room name:</p>
           <div class="form-floating mb-3">
             <input  class="form-control" id="floatingInput" v-model="roomInput" placeholder="Enter room name">
             <label for="floatingInput">Game room name</label>
@@ -47,7 +42,7 @@ export default {
     },
     async createNewRoom() {
       const roomName = this.roomInput;
-      const userName = this.nickInput;
+      const userName = this.$store.state.userName;
       const result = await this.webHttpService.createRoomRequest(roomName, userName);
 
       if (result && result.success) { // jeżeli nie to powinien tost jakiś się pojawić
