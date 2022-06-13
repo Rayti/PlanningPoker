@@ -1,9 +1,13 @@
 package com.example.planningpoker.controller.room;
 
 import com.example.planningpoker.controller.SuccessMessage;
+import com.example.planningpoker.controller.room.message.JoinedRoomMessage;
+import com.example.planningpoker.controller.room.message.LeftRoomMessage;
 import com.example.planningpoker.service.RoomService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -16,11 +20,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @CrossOrigin
 public class RoomController {
 
+    public static final String BACKEND_SOCKET_RESPONSE_FORMAT = "/backend-socket-response/%s";
     private RoomService roomService;
+    private SimpMessagingTemplate messagingTemplate;
 
     @Autowired
-    public RoomController(SimpMessagingTemplate template, RoomService roomService) {
+    public RoomController(SimpMessagingTemplate messagingTemplate, RoomService roomService) {
         this.roomService = roomService;
+        this.messagingTemplate = messagingTemplate;
     }
 
 
@@ -32,6 +39,18 @@ public class RoomController {
         return new SuccessMessage(this.roomService.joinRoom(userName, roomName));
     }
 
+    @MessageMapping("/api/poker/{roomName}/{userName}/join-room-ws")
+    public void joinRoomWebSocket(@DestinationVariable String roomName, @DestinationVariable String userName) {
+        log.info("/api/poker/{}/{}/join-room-ws", roomName, userName);
+
+        boolean success = this.roomService.joinRoom(userName, roomName);
+        if (success) {
+            JoinedRoomMessage msg = new JoinedRoomMessage("JoinedRoomMessage", userName);
+            messagingTemplate.convertAndSend(String.format(BACKEND_SOCKET_RESPONSE_FORMAT, roomName), msg);
+            log.info("/api/poker/{}/{}/join-room-ws SENT JoinedRoomMessage to subscribers", roomName, userName);
+        }
+    }
+
 
     @GetMapping("/api/poker/{roomName}/{userName}/leave-room")
     @ResponseBody
@@ -39,6 +58,17 @@ public class RoomController {
         log.info("/api/poker/{}/{}/leave-room", roomName, userName);
         //DONE
         return new SuccessMessage(this.roomService.leaveRoom(userName, roomName));
+    }
+
+    @MessageMapping("/api/poker/{roomName}/{userName}/leave-room-ws")
+    public void leaveRoomWebSocket(@DestinationVariable String roomName, @DestinationVariable String userName) {
+        log.info("/api/poker/{}/{}/leave-room", roomName, userName);
+        boolean success = this.roomService.leaveRoom(userName, roomName);
+        if (success) {
+            LeftRoomMessage msg = new LeftRoomMessage("LeftRoomMessage", userName);
+            messagingTemplate.convertAndSend(String.format(BACKEND_SOCKET_RESPONSE_FORMAT, roomName), msg);
+            log.info("/api/poker/{}/{}/leave-room SENT LeftRoomMessage to subscribers", roomName, userName);
+        }
     }
 
 
