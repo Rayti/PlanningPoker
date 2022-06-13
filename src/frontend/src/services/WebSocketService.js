@@ -34,6 +34,12 @@ export class WebSocketService {
                         case "CreateStoryMessage":
                             this.store.dispatch("addStory", receivedMsg);
                             break;
+                        case "DeleteStoryMessage":
+                            this.store.dispatch("deleteStory", receivedMsg.storyId);
+                            break;
+                        case "StoryDescriptionUpdateMessage":
+                            this.store.commit('updateStory', receivedMsg);
+                            break;
 
 
                     }
@@ -95,11 +101,23 @@ export class WebSocketService {
         }
     }
 
-    updateUserStory(){
-
+    updateUserStory(roomName, userName, storyId, storyNewDescription){
+        if (this.stompClient && this.stompClient.connected) {
+            console.log("I've chosen story");
+            let arg = {
+                type: "StoryDescriptionMessage",
+                id: storyId,
+                description: storyNewDescription
+            }
+            this.stompClient.send(`${SOCKET_API_URL}/${roomName}/${userName}/${storyId}/story-update/description`,
+                JSON.stringify(arg));
+        }
     }
 
-    deleteUserStory(){
-
+    deleteUserStory(roomName, userName, storyId){
+        if (this.stompClient && this.stompClient.connected) {
+            console.log("I've chosen story");
+            this.stompClient.send(`${SOCKET_API_URL}/${roomName}/${userName}/${storyId}/story-delete`);
+        }
     }
 }

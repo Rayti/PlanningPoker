@@ -9,12 +9,12 @@
           <div class="top">
           <div class="user-story">
           <div class="card mb-2 ">
-            <div class="card-header" v-bind="currentStory">
-              {{currentStory.description}}
+            <div class="card-header" v-bind="this.$store.state.currentStory" v-if="this.$store.state.currentStory!=undefined">
+              {{this.$store.state.currentStory.description}}
             </div>
             <div class="card-body tasks">
-              <ul class="list-group">
-                <li v-for="(task, index) in currentStory.tasks" :key="`task${index}`" class="list-group-item">
+              <ul class="list-group" v-if="this.$store.state.currentStory!=undefined">
+                <li v-for="(task, index) in this.$store.state.currentStory.tasks" :key="`task${index}`" class="list-group-item">
                   {{ task.taskTitle }}
                 </li>
               </ul>

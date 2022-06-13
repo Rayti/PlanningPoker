@@ -167,10 +167,8 @@ export default {
       this.$emit('chooseStory',{id: e.target.id});
     },
     onDeleteStoryClick(storyid){
-      this.$store.commit('deleteStory', storyid);
-      if(this.storyID == storyid){
-        this.$emit('clearStoryTable')
-      }
+      this.webSocketService.deleteUserStory(this.$store.state.roomName, this.$store.state.userName, storyid)
+
 
     },
     onDeleteTaskClick(storyid, task){
@@ -185,7 +183,9 @@ export default {
       this.displayEditStoryModal = false;
     },
     editStoryHandler($event){
-      this.$store.commit('updateStory', $event.arg);
+      this.webSocketService.updateUserStory(this.$store.state.roomName, this.$store.state.userName,
+          $event.arg.storyId,$event.arg.newName)
+
       this.displayEditStoryModal = false;
     }
   }

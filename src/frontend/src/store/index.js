@@ -78,11 +78,14 @@ const store = createStore({
             let story = this.getters.getStory(storyId);
             const index = state.stories.indexOf(story);
             state.stories.splice(index,1);
+            if(storyId==state.currentStory.id){
+                state.currentStory={};
+            }
 
         },
         updateStory(state, arg) {
             let story = this.getters.getStory(arg.storyId);
-            story.description = arg.newName;
+            story.description = arg.description;
 
         },
 		changeBasicInformation (state, payload) {
@@ -139,13 +142,14 @@ const store = createStore({
           commit("setCurrentStory", payload)
       },
       addStory({ commit }, payload){
-          // const parsedStory = {
-          //     id: payload.id,
-          //     name: payload.description,
-          //     tasks: payload.tasks
-          // }
           commit("addStory", payload)
-      }
+      },
+      deleteStory({ commit }, payload){
+            commit("deleteStory", payload)
+        },
+        updateStory({ commit }, payload){
+            commit("updateStory", payload)
+        }
       },
         cleanStore({commit}) {
             commit("cleanStore");
