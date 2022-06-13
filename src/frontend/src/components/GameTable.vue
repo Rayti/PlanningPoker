@@ -15,7 +15,7 @@
             <div class="card-body tasks">
               <ul class="list-group" v-if="this.$store.state.currentStory!=undefined">
                 <li v-for="(task, index) in this.$store.state.currentStory.tasks" :key="`task${index}`" class="list-group-item">
-                  {{ task.taskTitle }}
+                  {{ task.description }}
                 </li>
               </ul>
             </div>
@@ -25,7 +25,7 @@
 
             <div class="manage">
               <button class="btn btn-outline-primary" @click="openUserStoryPanel">Manage user stories</button>
-              <button class="btn btn-outline-primary" :disabled="!story.id" @click="openTaskPanel">Manage tasks</button>
+              <button class="btn btn-outline-primary" :disabled="this.$store.state.currentStory==undefined" @click="openTaskPanel">Manage tasks</button>
             </div>
           </div>
           <div></div>

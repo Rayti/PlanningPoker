@@ -8,8 +8,8 @@
         </div>
         <div class="modal-body">
           <h5 align="left">Tasks:</h5>
-          <ul v-for="(task, index) in tasks" :key="task.id" class="justify-content-start">
-            <li class = "taskList">#{{index+1}} {{task.taskTitle}}
+          <ul v-for="(task, index) in this.$store.state.currentStory.tasks" :key="task.id" class="justify-content-start">
+            <li class = "taskList">#{{index+1}} {{task.description}}
             <button type="button" class="btn btn-sm btn-outline-danger btnModal btnModal" @click="deleteClick(task)">Delete</button>
             </li>
           </ul>
@@ -40,19 +40,19 @@ export default {
   props: {
     storyID: String
   },
+  inject: ['webHttpService','webSocketService'],
   data () {
     return {
       newTaskInput:"",
-      tasks:(this.storyID)? this.$store.getters.getStoryTasks(this.storyID) : [],
+    //  tasks:(this.$store.state.currentStory.id)? this.$store.getters.getStoryTasks(this.$store.state.currentStory.id) : [],
     }
   },
   methods:{
     addNewTaskClick(){
       let taskId=Date.now();
       if(this.newTaskInput !== '') {
-        let newTask = {id:taskId, taskTitle: this.newTaskInput};
-        let arg = { storyID : this.storyID, task: newTask};
-        this.$store.commit('addTaskToStory', arg);
+        this.webSocketService.addNewTask(this.$store.state.roomName, this.$store.state.userName,
+            this.$store.state.currentStory.id, taskId, this.newTaskInput)
       }
       this.newTaskInput="";
     },

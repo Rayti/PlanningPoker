@@ -40,6 +40,10 @@ export class WebSocketService {
                         case "StoryDescriptionUpdateMessage":
                             this.store.commit('updateStory', receivedMsg);
                             break;
+                        case "CreateTaskMessage":
+                            this.store.commit('addTask', receivedMsg);
+                            break;
+
 
 
                     }
@@ -82,13 +86,22 @@ export class WebSocketService {
         }
     }
 
-    addNewUserStory(roomName, userName, storyId, storyName){
+    addNewUserStory(roomName, userName, storyId, storyName,tasks){
         if (this.stompClient && this.stompClient.connected) {
+            let taskMessageList=[];
+            for(let i=0;i<tasks.length;i++){
+                taskMessageList.push({
+                    type:"TaskMessage",
+                    id: tasks[i].id,
+                    description:tasks[i].description
+                })
+            }
             console.log("I've added a story");
             let arg = {
-                type: "StoryDescriptionMessage",
+                type: "CreateStoryMessage",
                 id: storyId,
-                description: storyName
+                description: storyName,
+                tasks: taskMessageList
             }
             this.stompClient.send(`${SOCKET_API_URL}/${roomName}/${userName}/story-create`, JSON.stringify(arg));
         }
@@ -118,6 +131,19 @@ export class WebSocketService {
         if (this.stompClient && this.stompClient.connected) {
             console.log("I've chosen story");
             this.stompClient.send(`${SOCKET_API_URL}/${roomName}/${userName}/${storyId}/story-delete`);
+        }
+    }
+
+    addNewTask(roomName, userName, storyId,taskId, taskName){
+        if (this.stompClient && this.stompClient.connected) {
+
+            console.log("I've added a story");
+            let arg = {
+                type: "CreateTaskMessage",
+                id: taskId,
+                description: taskName
+            }
+            this.stompClient.send(`${SOCKET_API_URL}/${roomName}/${userName}/${storyId}/task-create`, JSON.stringify(arg));
         }
     }
 }

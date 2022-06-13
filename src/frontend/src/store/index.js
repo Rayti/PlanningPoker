@@ -60,9 +60,13 @@ const store = createStore({
                 })
             }
         },
-        addTaskToStory(state, arg){
-            let story = this.getters.getStory(arg.storyID);
-            story.tasks.push(arg.task);
+        addTask(state, arg){
+            const newTask = {
+                id: arg.id,
+                description: arg.description
+            }
+            let story = this.getters.getStory(arg.storyId);
+            story.tasks.push(newTask);
         },
         addTaskToStoryInside(state, arg){
             let story = this.getters.getStory(arg.storyID);
@@ -146,10 +150,13 @@ const store = createStore({
       },
       deleteStory({ commit }, payload){
             commit("deleteStory", payload)
+      },
+      updateStory({ commit }, payload){
+         commit("updateStory", payload)
         },
-        updateStory({ commit }, payload){
-            commit("updateStory", payload)
-        }
+      addTask({ commit }, payload){
+          commit("addTask", payload)
+      },
       },
         cleanStore({commit}) {
             commit("cleanStore");

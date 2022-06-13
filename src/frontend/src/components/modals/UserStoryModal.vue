@@ -31,7 +31,7 @@
                 <div class="accordion-body">
                   <h5 align="left">Tasks:</h5>
                   <ul v-for="(task, index) in story.tasks" :key="task.id" class="justify-content-start">
-                    <li class = "taskList">#{{index+1}} {{task.taskTitle}}
+                    <li class = "taskList">#{{index+1}} {{task.description}}
                     <button type="button" :id="story.id" class="btn btn-sm btn-outline-danger btnModal" @click="onDeleteTaskClick(story.id, task)">Delete</button>
                     </li>
                   </ul>
@@ -74,7 +74,7 @@
                 <h5 align="left" class="border-top pt-2 mt-2 border-info">Tasks to the story</h5>
 
               <ul v-for="(task, index) in tasks" :key="task.id" class="justify-content-start">
-                <li class = "taskList">#{{index+1}} {{task.taskTitle}}</li>
+                <li class = "taskList">#{{index+1}} {{task.description}}</li>
                 </ul>
               <div class="form-floating mb-3">
                 <input class="form-control" id="floatingInputTask" v-model="newTaskInput">
@@ -139,7 +139,7 @@ export default {
         this.newStoryId=Date.now();
       }
       if(this.newStoryInput !== '') {
-        this.webSocketService.addNewUserStory(this.$store.state.roomName, this.$store.state.userName, this.newStoryId, this.newStoryInput)
+        this.webSocketService.addNewUserStory(this.$store.state.roomName, this.$store.state.userName, this.newStoryId, this.newStoryInput, this.tasks)
 
       }
       this.newStoryInput = "";
@@ -148,7 +148,7 @@ export default {
     },
     addNewTaskToNewStoryClick(){
       let taskId=Date.now();
-      this.tasks.push({id:taskId, taskTitle: this.newTaskInput});
+      this.tasks.push({id:taskId, description: this.newTaskInput});
 
       this.newTaskInput="";
 
@@ -156,9 +156,8 @@ export default {
     addNewTaskToStoryInsideClick(storyId){
       let taskId=Date.now();
       if(this.newTaskInsideInput !== '') {
-        let newTask = {id:taskId, taskTitle: this.newTaskInsideInput};
-        let arg = { storyID : storyId, task: newTask};
-        this.$store.commit('addTaskToStoryInside', arg);
+        this.webSocketService.addNewTask(this.$store.state.roomName, this.$store.state.userName,
+            storyId, taskId, this.newTaskInsideInput)
 
       }
       this.newTaskInsideInput="";
