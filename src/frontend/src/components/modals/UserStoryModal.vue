@@ -184,7 +184,7 @@ export default {
       this.resolvePromise($event.result)
     },
 
-    async onDeleteStoryClick(storyid){
+    onDeleteStoryClick(storyid){
       this.onDeleteFirstly().then((ok) => {
         if (ok) {
           this.webSocketService.deleteUserStory(this.$store.state.roomName, this.$store.state.userName, storyid);
@@ -192,7 +192,7 @@ export default {
       })
     },
 
-    async onDeleteTaskClick(storyId, task){
+    onDeleteTaskClick(storyId, task){
       this.onDeleteFirstly().then((ok) => {
         if(ok) {
           this.webSocketService.deleteTask(this.$store.state.roomName, this.$store.state.userName, storyId, task.id);
