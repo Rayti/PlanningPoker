@@ -102,16 +102,19 @@
     </div>
   </div>
   <EditStoryModal v-if="displayEditStoryModal" :story="this.editedStory" @close-modal-event="hideModal" @edit = "editStoryHandler"></EditStoryModal>
+  <ConfirmDeleteModal ref="popupConfirm" v-if="displayConfirmModal"  @confirm = "outputConfirm"></ConfirmDeleteModal>
 </template>
 
 <script>
 import { v4 as uuid4 } from 'uuid'
 import EditStoryModal from "@/components/modals/EditStoryModal";
+import ConfirmDeleteModal from "@/components/modals/ConfirmDeleteModal";
 
 export default {
   name: "UserStoryModal",
   components: {
     EditStoryModal,
+    ConfirmDeleteModal
 
   },
   props: {
@@ -127,7 +130,10 @@ export default {
       tasks:[],
       newStoryId:'',
       displayEditStoryModal:false,
+      displayConfirmModal:false,
       editedStory:{},
+      resolvePromise: undefined,
+      rejectPromise: undefined,
     }
   },
   methods:{
@@ -165,12 +171,34 @@ export default {
     onChooseStory(e){
       this.$emit('chooseStory',{id: e.target.id});
     },
-    onDeleteStoryClick(storyid){
-      this.webSocketService.deleteUserStory(this.$store.state.roomName, this.$store.state.userName, storyid)
+    onDeleteFirstly(){
+      this.displayConfirmModal=true;
+      return new Promise((resolve, reject) => {
+        this.resolvePromise = resolve
+        this.rejectPromise = reject
+      })
     },
-    onDeleteTaskClick(storyId, task){
-      this.webSocketService.deleteTask(this.$store.state.roomName, this.$store.state.userName, storyId, task.id);
-      //this.$store.commit('deleteTaskStory', arg);
+
+    outputConfirm($event) {
+      this.displayConfirmModal=false;
+      this.resolvePromise($event.result)
+    },
+
+    async onDeleteStoryClick(storyid){
+      this.onDeleteFirstly().then((ok) => {
+        if (ok) {
+          this.webSocketService.deleteUserStory(this.$store.state.roomName, this.$store.state.userName, storyid);
+        }
+      })
+    },
+
+    async onDeleteTaskClick(storyId, task){
+      this.onDeleteFirstly().then((ok) => {
+        if(ok) {
+          this.webSocketService.deleteTask(this.$store.state.roomName, this.$store.state.userName, storyId, task.id);
+        }
+      })
+
     },
     onEditStoryClick(story){
       this.displayEditStoryModal=true;

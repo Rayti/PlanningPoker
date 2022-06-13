@@ -31,12 +31,18 @@
       </div>
     </div>
   </div>
+  <ConfirmDeleteModal ref="popupConfirm" v-if="displayConfirmModal"  @confirm = "outputConfirm"></ConfirmDeleteModal>
 </template>
 
 <script>
-import { v4 as uuid4 } from 'uuid'
+import ConfirmDeleteModal from "@/components/modals/ConfirmDeleteModal";
+
 export default {
   name: "TasksModal",
+  components: {
+    ConfirmDeleteModal
+
+  },
   props: {
     storyID: String
   },
@@ -44,6 +50,9 @@ export default {
   data () {
     return {
       newTaskInput:"",
+      resolvePromise: undefined,
+      rejectPromise: undefined,
+      displayConfirmModal:false,
     //  tasks:(this.$store.state.currentStory.id)? this.$store.getters.getStoryTasks(this.$store.state.currentStory.id) : [],
     }
   },
@@ -57,8 +66,23 @@ export default {
       this.newTaskInput="";
     },
     deleteClick(task){
-      this.webSocketService.deleteTask(this.$store.state.roomName, this.$store.state.userName,
-          this.$store.state.currentStory.id, task.id);
+      this.onDeleteFirstly().then((ok) => {
+        if (ok) {
+          this.webSocketService.deleteTask(this.$store.state.roomName, this.$store.state.userName, this.$store.state.currentStory.id, task.id);
+        }
+      })
+      },
+    onDeleteFirstly(){
+      this.displayConfirmModal=true;
+      return new Promise((resolve, reject) => {
+        this.resolvePromise = resolve
+        this.rejectPromise = reject
+      })
+    },
+
+    outputConfirm($event) {
+      this.displayConfirmModal=false;
+      this.resolvePromise($event.result)
     },
     closeModal(){
       this.$emit("closeTaskModal");
