@@ -2,6 +2,7 @@ package com.example.planningpoker.service;
 
 
 import com.example.planningpoker.domain.User;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -10,6 +11,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class DefaultUserService implements UserService {
 
@@ -80,6 +82,11 @@ public class DefaultUserService implements UserService {
 
     @Override
     public boolean loggedUserExists(String userName) {
-        return loggedUsers.stream().anyMatch(user -> user.getName().equals(userName));
+
+        boolean exists = loggedUsers.stream().anyMatch(user -> user.getName().equals(userName));
+        if(!exists){
+            log.warn("User {} tried to do something while being not logged in!!", userName);
+        }
+        return exists;
     }
 }
