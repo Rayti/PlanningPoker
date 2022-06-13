@@ -15,7 +15,12 @@ const routes = [
         path: "/policy",
         name: "policy",
         component: () => import('../views/PersonalDataPolicy')
-    }
+    },
+    {
+        path: "/history",
+        name: "history",
+        component: () => import('../views/HistoryView')
+    },
 ];
 
 

@@ -3,6 +3,9 @@
   <div :class="{'blur-content': displayModal}">
     <div class="container">
       <div class="row">
+
+      </div>
+      <div class="row">
         <div class="col-12">
           <div class="container">
             <img class="row text-margin" src="../assets/planningpoker.png">
