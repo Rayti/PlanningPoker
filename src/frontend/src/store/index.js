@@ -7,21 +7,14 @@ const getDefaultState = () => {
         currentStory:{},
         isHost: false,
         // stories: {},
+        sessionId:'',
         otherPlayersCards: []
     }
 }
 const store = createStore({
 
     state: getDefaultState(),
-    //     {
-    //     roomName: '',
-    //     stories: [],
-	// 	userName: '',
-    //     currentStory:{},
-    //   isHost: false,
-    //   // stories: {},
-    //   otherPlayersCards: []
-    // },
+
     getters: {
         getStoriesAll (state) {
 
@@ -38,8 +31,6 @@ const store = createStore({
     },
     mutations: {
         resetState (state) {
-            // Merge rather than replace so we don't lose observers
-            // https://github.com/vuejs/vuex/issues/1118
             Object.assign(state, getDefaultState())
         },
         setUserName(state, userName){
@@ -161,7 +152,6 @@ const store = createStore({
         deleteTask({ commit }, payload){
             commit("addTask", payload)
         },
-      },
         cleanStore({commit}) {
             commit("cleanStore");
         }

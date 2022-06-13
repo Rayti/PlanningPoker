@@ -1,12 +1,12 @@
 <template>
   <div>
     <nav class="navbar header">
-      <div class="container-fluid">
+      <div class="container-fluid ">
         <a class="navbar-brand custom-brand" @click="navigate" >
 <!--          <img src="/docs/5.1/assets/brand/bootstrap-logo.svg" alt="" width="30" height="24" class="d-inline-block align-text-top">-->
           Planning Poker
         </a>
-        <button type="button" v-if="this.$store.state.sessionId !== ''" class="btn btn-outline-light mx-4" @click="logOut">Log out</button>
+        <button type="button" v-if="this.$store.state.sessionId != ''" class="btn btn-outline-light mx-4" @click="logOut">Log out</button>
       </div>
     </nav>
 <!--    <b-navbar class="header" toggleable="lg" type="dark" variant="info">-->
@@ -24,7 +24,7 @@
 
 <script>
 export default {
-  inject: ['webSocketService'],
+  inject: ['webHttpService','webSocketService'],
   methods: {
     navigate() {
       this.webSocketService.disconnect();
@@ -32,7 +32,7 @@ export default {
       this.$router.push('/');
     },
     async logOut(){
-      this.webService.logOut()
+      this.webHttpService.logOut()
           .then(result => {
             if(result?.data?.success === true){
               alert("Successfully logged out!");

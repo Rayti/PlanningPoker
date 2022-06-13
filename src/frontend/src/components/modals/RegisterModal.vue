@@ -48,7 +48,7 @@
 
 export default {
   name: "RegisterModal",
-  inject: ['webService'],
+  inject: ['webHttpService'],
   data(){
     return {
       registerNicknameInput: "",
@@ -69,7 +69,7 @@ export default {
         return;
       }
 
-      this.webService.registerUserAccount(this.registerNicknameInput, this.passwordInput)
+      this.webHttpService.registerUserAccount(this.registerNicknameInput, this.passwordInput)
           .then(result => {
             const successMsg = "User registered. You can now log in with your new credentials.";
             const failureMsg = "User with this name and/or password can not be created.";

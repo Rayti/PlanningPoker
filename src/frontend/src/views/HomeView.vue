@@ -56,12 +56,12 @@ import RegisterModal from "@/components/modals/RegisterModal";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
 import {WebSocketService} from "@/services/WebSocketService";
+import LoginModal from "@/components/modals/LoginModal";
 
 const webHttpService = new WebHTTPService();
 
-const webHttpService = new WebHTTPService();
 const webSocketService = new WebSocketService();
-const webSocketService = new WebSocketService();
+
 
 export default {
   name: "HomeView",
