@@ -3,40 +3,44 @@
   <div :class="{'blur-content': displayModal}">
     <div class="container">
       <div class="row">
-        <div class="col-10">
+        <div class="col-12">
           <div class="container">
             <img class="row text-margin" src="../assets/planningpoker.png">
-            <h3 class="row text-left text-margin mt-5 mb-4">To start planning</h3>
-            <div class="row justify-content-center">
-              <button col-4 type="button" class="btn btn-outline-primary btn-lg w-25 mb-4" @click="showModalRoom">
-                CREATE A NEW ROOM
-              </button>
-              <!--      <div class=" btn-toolbar  input-toolbar" role="toolbar" aria-label="Toolbar with button groups">-->
-              <!--        <div class="input-group">-->
-              <!--&lt;!&ndash;          <div class="input-group-text" id="btnGroupAddon">Name</div>&ndash;&gt;-->
-              <!--          <input type="text" v-model="nickInput" class="form-control" placeholder="Enter your nick"-->
-              <!--                 aria-label="Input group example" aria-describedby="btnGroupAddon">-->
-              <!--          <button type="button" v-on:click="goClick" class="btn btn-outline-success">Let's start</button>-->
-              <!--        </div>-->
-              <!--      </div>-->
-            </div>
-            <br>
-            <h3 class="row text-center text-margin mb-4 ">...or join existing one</h3>
-            <div class="row justify-content-center">
-              <div class=" btn-toolbar btn-lg mb-3 input-toolbar w-25" role="toolbar" aria-label="Toolbar with button groups">
-                <div class="input-group invite">
-                  <input type="text" v-model="joinRoomInput" class="form-control " placeholder="Paste room name"
-                         aria-label="Input group example" aria-describedby="btnGroupAddon">
-                  <button type="button" @click="joinRoom" class="btn btn-outline-primary">Join</button>
+
+            <div v-if="this.$store.state.sessionId !== ''">
+              <h3 class="row text-left text-margin mt-5 mb-4">To start planning</h3>
+              <div class="row justify-content-center">
+                <button col-4 type="button" class="btn btn-outline-primary btn-lg w-25 mb-4" @click="showModalRoom">
+                  CREATE A NEW ROOM
+                </button>
+                <!--      <div class=" btn-toolbar  input-toolbar" role="toolbar" aria-label="Toolbar with button groups">-->
+                <!--        <div class="input-group">-->
+                <!--&lt;!&ndash;          <div class="input-group-text" id="btnGroupAddon">Name</div>&ndash;&gt;-->
+                <!--          <input type="text" v-model="nickInput" class="form-control" placeholder="Enter your nick"-->
+                <!--                 aria-label="Input group example" aria-describedby="btnGroupAddon">-->
+                <!--          <button type="button" v-on:click="goClick" class="btn btn-outline-success">Let's start</button>-->
+                <!--        </div>-->
+                <!--      </div>-->
+              </div>
+              <br>
+              <h3 class="row text-center text-margin mb-4 ">...or join existing one</h3>
+              <div class="row justify-content-center">
+                <div class=" btn-toolbar btn-lg mb-3 input-toolbar w-25" role="toolbar" aria-label="Toolbar with button groups">
+                  <div class="input-group invite">
+                    <input type="text" v-model="joinRoomInput" class="form-control " placeholder="Paste room name"
+                           aria-label="Input group example" aria-describedby="btnGroupAddon">
+                    <button type="button" @click="joinRoom" class="btn btn-outline-primary">Join</button>
+                  </div>
                 </div>
               </div>
             </div>
+
           </div>
         </div>
-        <div class="col-2">
-          <div class="btn-group-vertical">
-            <button type="button" class="btn btn-outline-primary btn-lg" @click="showRegisterModal"> Register</button>
-            <button type="button" class="btn btn-outline-primary btn-lg" @click="showLoginModal"> Log in</button>
+        <div class="col-12" v-if="this.$store.state.sessionId === ''">
+          <div class="btn-group-vertical btn-group-lg mt-5">
+            <button type="button" class="btn btn-outline-primary btn-lg px-5 py-3" @click="showRegisterModal"> Register</button>
+            <button type="button" class="btn btn-outline-primary btn-lg px-5 py-3" @click="showLoginModal"> Log in</button>
           </div>
         </div>
       </div>

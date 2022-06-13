@@ -6,7 +6,7 @@
 <!--          <img src="/docs/5.1/assets/brand/bootstrap-logo.svg" alt="" width="30" height="24" class="d-inline-block align-text-top">-->
           Planning Poker
         </a>
-        <button type="button" v-if="this.$store.state.sessionId != ''" class="btn btn-outline-light mx-4" @click="logOut">Log out</button>
+        <button type="button" v-if="this.$store.state.sessionId !== ''" class="btn btn-outline-light mx-4" @click="logOut">Log out</button>
       </div>
     </nav>
 <!--    <b-navbar class="header" toggleable="lg" type="dark" variant="info">-->
