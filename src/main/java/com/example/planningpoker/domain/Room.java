@@ -27,10 +27,10 @@ public class Room {
     }
 
     public Story getStory(Long storyId) {
-        return stories.stream().filter(story -> story.getId() == storyId).findFirst().orElse(null);
+        return stories.stream().filter(story -> story.getId().longValue() == storyId.longValue()).findFirst().orElse(null);
     }
 
     public void deleteStory(Long storyId) {
-        stories = stories.stream().filter(x -> x.getId() != storyId).collect(Collectors.toList());
+        stories = stories.stream().filter(x -> x.getId().longValue() != storyId.longValue()).collect(Collectors.toList());
     }
 }

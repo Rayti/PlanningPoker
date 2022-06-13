@@ -10,4 +10,5 @@ import lombok.Setter;
 public class DeleteTaskMessage {
     private String type;
     private String id;
+    private String storyId;
 }

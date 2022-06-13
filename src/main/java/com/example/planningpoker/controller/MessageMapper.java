@@ -23,6 +23,10 @@ public class MessageMapper {
         return new TaskMessage("TaskMessage", String.valueOf(task.getId()), task.getDescription());
     }
 
+    public static Task fromTaskMessage(TaskMessage taskMessage) {
+        return new Task( Long.parseLong(taskMessage.getId()), taskMessage.getDescription());
+    }
+
     public static StoryMessage toStoryMessage(Story story) {
         if(story != null ){
             List<TaskMessage> taskMessages = story.getTasks().stream().filter(Objects::nonNull).map(MessageMapper::toTaskMessage).collect(Collectors.toList());

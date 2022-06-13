@@ -43,6 +43,8 @@ export class WebSocketService {
                         case "CreateTaskMessage":
                             this.store.commit('addTask', receivedMsg);
                             break;
+                        case "DeleteTaskMessage":
+                            this.store.commit('deleteTask', receivedMsg)
 
 
 
@@ -144,6 +146,13 @@ export class WebSocketService {
                 description: taskName
             }
             this.stompClient.send(`${SOCKET_API_URL}/${roomName}/${userName}/${storyId}/task-create`, JSON.stringify(arg));
+        }
+    }
+
+    deleteTask(roomName, userName, storyId, taskId){
+        if (this.stompClient && this.stompClient.connected) {
+            console.log("I've chosen story");
+            this.stompClient.send(`${SOCKET_API_URL}/${roomName}/${userName}/${storyId}/${taskId}/task-delete`);
         }
     }
 }

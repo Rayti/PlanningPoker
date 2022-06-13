@@ -37,12 +37,12 @@ public class TaskController {
     public void createTask(@DestinationVariable String roomName, @DestinationVariable String userName,
                            @DestinationVariable String storyId, TaskDescriptionMessage taskDescriptionMessage){
         //DONE
-        log.info("/api/poker/{}/{}/{}/task-create", roomName, userName, storyId);
+        log.info("/api/poker/{}/{}/{}/task-create{}", roomName, userName, storyId);
         Room room = roomService.getRoom(roomName);
         if (room != null && room.userExists(userName) && room.getStory(Long.parseLong(storyId)) != null){
-            Task task = new Task(Long.parseLong(taskDescriptionMessage.getTaskId()), taskDescriptionMessage.getDescription());
+            Task task = new Task(Long.parseLong(taskDescriptionMessage.getId()), taskDescriptionMessage.getDescription());
             room.getStory(Long.parseLong(storyId)).getTasks().add(task);
-            CreateTaskMessage msg = new CreateTaskMessage("CreateTaskMessage", storyId, taskDescriptionMessage.getTaskId(), taskDescriptionMessage.getDescription());
+            CreateTaskMessage msg = new CreateTaskMessage("CreateTaskMessage", storyId, taskDescriptionMessage.getId(), taskDescriptionMessage.getDescription());
             messagingTemplate.convertAndSend(String.format(BACKEND_SOCKET_RESPONSE_FORMAT, roomName), msg);
             log.info("/api/poker/{}/{}/{}/task-create SENT CreateTaskMessage to subscribers", roomName, userName, storyId);
         }
@@ -97,7 +97,7 @@ public class TaskController {
                 && room.getStory(Long.parseLong(storyId)).getTask(Long.parseLong(taskId)) != null) {
 
             room.getStory(Long.parseLong(storyId)).deleteTask(Long.parseLong(taskId));
-            DeleteTaskMessage msg = new DeleteTaskMessage("DeleteTaskMessage", taskId);
+            DeleteTaskMessage msg = new DeleteTaskMessage("DeleteTaskMessage", taskId, storyId);
             messagingTemplate.convertAndSend(String.format(BACKEND_SOCKET_RESPONSE_FORMAT, roomName), msg);
             log.info("/api/poker/{}/{}/{}/{}/task-delete SENT DeleteTaskMessage to subscribers", roomName, userName, storyId, taskId);
         }

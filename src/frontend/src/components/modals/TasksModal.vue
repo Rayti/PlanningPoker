@@ -57,9 +57,8 @@ export default {
       this.newTaskInput="";
     },
     deleteClick(task){
-      let arg = { storyID : this.storyID, task: task}
-      this.$store.commit('deleteTaskStory', arg)
-
+      this.webSocketService.deleteTask(this.$store.state.roomName, this.$store.state.userName,
+          this.$store.state.currentStory.id, task.id);
     },
     closeModal(){
       this.$emit("closeTaskModal");

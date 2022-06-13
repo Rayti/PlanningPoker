@@ -167,12 +167,10 @@ export default {
     },
     onDeleteStoryClick(storyid){
       this.webSocketService.deleteUserStory(this.$store.state.roomName, this.$store.state.userName, storyid)
-
-
     },
-    onDeleteTaskClick(storyid, task){
-      let arg = { storyID : storyid, task: task}
-      this.$store.commit('deleteTaskStory', arg);
+    onDeleteTaskClick(storyId, task){
+      this.webSocketService.deleteTask(this.$store.state.roomName, this.$store.state.userName, storyId, task.id);
+      //this.$store.commit('deleteTaskStory', arg);
     },
     onEditStoryClick(story){
       this.displayEditStoryModal=true;

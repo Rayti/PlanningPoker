@@ -16,10 +16,10 @@ public class Story {
     private List<Task> tasks;
 
     public Task getTask(Long taskId) {
-        return tasks.stream().filter(task -> task.getId() == taskId).findFirst().orElse(null);
+        return tasks.stream().filter(task -> task.getId().longValue() == taskId.longValue()).findFirst().orElse(null);
     }
 
     public void deleteTask(Long taskId){
-        tasks = tasks.stream().filter(task -> task.getId() != taskId).collect(Collectors.toList());
+        tasks = tasks.stream().filter(task -> task.getId().longValue() != taskId.longValue()).collect(Collectors.toList());
     }
 }

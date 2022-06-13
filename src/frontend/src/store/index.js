@@ -73,9 +73,10 @@ const store = createStore({
             story.tasks.push(arg.task);
 
         },
-        deleteTaskStory(state, arg){
-            let tasks = this.getters.getStoryTasks(arg.storyID);
-            const index = tasks.indexOf(arg.task);
+        deleteTask(state, arg){
+            let tasks = this.getters.getStoryTasks(arg.storyId);
+            const taskToDelete = tasks.find((x) => x.id == arg.id);
+            const index = tasks.indexOf(taskToDelete);
             tasks.splice(index, 1);
         },
         deleteStory(state, storyId){
@@ -157,6 +158,9 @@ const store = createStore({
       addTask({ commit }, payload){
           commit("addTask", payload)
       },
+        deleteTask({ commit }, payload){
+            commit("addTask", payload)
+        },
       },
         cleanStore({commit}) {
             commit("cleanStore");

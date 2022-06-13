@@ -3,8 +3,10 @@ package com.example.planningpoker.controller.story;
 import com.example.planningpoker.controller.MessageMapper;
 import com.example.planningpoker.controller.SuccessMessage;
 import com.example.planningpoker.controller.story.message.*;
+import com.example.planningpoker.controller.task.message.TaskMessage;
 import com.example.planningpoker.domain.Room;
 import com.example.planningpoker.domain.Story;
+import com.example.planningpoker.domain.Task;
 import com.example.planningpoker.service.RoomService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Controller
 @Slf4j
@@ -37,12 +42,14 @@ public class StoryController {
     }
 
     @MessageMapping("/api/poker/{roomName}/{userName}/story-create")
-    public void createStory(@DestinationVariable String roomName, @DestinationVariable String userName, StoryDescriptionMessage storyDescriptionMessage){
+    public void createStory(@DestinationVariable String roomName, @DestinationVariable String userName, CreateStoryMessage createStoryMessage){
         //DONE
         log.info("/api/poker/{}/{}/story-create", roomName, userName);
         Room room = roomService.getRoom(roomName);
         if (room != null && room.userExists(userName)) {
-            Story story = new Story(Long.parseLong(storyDescriptionMessage.getId()), storyDescriptionMessage.getDescription(), new ArrayList<>());
+            List<Task> tasks = createStoryMessage.getTasks().stream().filter(Objects::nonNull).map(MessageMapper::fromTaskMessage).collect(Collectors.toList());
+
+            Story story = new Story(Long.parseLong(createStoryMessage.getId()), createStoryMessage.getDescription(), tasks);
             room.getStories().add(story);
             CreateStoryMessage msg = MessageMapper.toCreateStoryMessage(story);
             messagingTemplate.convertAndSend(String.format(BACKEND_SOCKET_RESPONSE_FORMAT, roomName), msg);
