@@ -51,6 +51,13 @@ public class RoomController {
         }
     }
 
+    @GetMapping("/api/poker/{roomName}/{userName}/can-join-room")
+    public SuccessMessage canJoinRoom(@PathVariable String roomName, @PathVariable String userName) {
+        log.info("/api/poker/{}/{}/can-join-room", roomName, userName);
+        boolean success = roomService.canJoinRoom(userName, roomName);
+        return new SuccessMessage(success);
+    }
+
 
     @GetMapping("/api/poker/{roomName}/{userName}/leave-room")
     @ResponseBody

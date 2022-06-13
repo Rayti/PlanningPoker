@@ -1,6 +1,5 @@
 package com.example.planningpoker.service;
 
-import com.example.planningpoker.domain.Game;
 import com.example.planningpoker.domain.Room;
 import com.example.planningpoker.domain.Story;
 import org.springframework.stereotype.Service;
@@ -17,6 +16,8 @@ public interface RoomService {
     boolean leaveRoom(String userName, String roomName);
 
     boolean joinRoom(String userName, String roomName);
+
+    boolean canJoinRoom(String userName, String roomName);
 
     Room getRoom(String roomName);
 
