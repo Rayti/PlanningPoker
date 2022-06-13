@@ -9,13 +9,13 @@
           <div class="top">
           <div class="user-story">
           <div class="card mb-2 ">
-            <div class="card-header" v-bind="story">
-              {{story.name}}
+            <div class="card-header" v-bind="this.$store.state.currentStory" v-if="this.$store.state.currentStory!=undefined">
+              {{this.$store.state.currentStory.description}}
             </div>
             <div class="card-body tasks">
-              <ul class="list-group">
-                <li v-for="(task, index) in story.tasks" :key="`task${index}`" class="list-group-item">
-                  {{ task.taskTitle }}
+              <ul class="list-group" v-if="this.$store.state.currentStory!=undefined">
+                <li v-for="(task, index) in this.$store.state.currentStory.tasks" :key="`task${index}`" class="list-group-item">
+                  {{ task.description }}
                 </li>
               </ul>
             </div>
@@ -25,7 +25,7 @@
 
             <div class="manage">
               <button class="btn btn-outline-primary" @click="openUserStoryPanel">Manage user stories</button>
-              <button class="btn btn-outline-primary" :disabled="!story.id" @click="openTaskPanel">Manage tasks</button>
+              <button class="btn btn-outline-primary" :disabled="this.$store.state.currentStory==undefined" @click="openTaskPanel">Manage tasks</button>
             </div>
           </div>
           <div></div>
@@ -93,7 +93,7 @@ import TasksModal from "@/components/modals/TasksModal";
 
 export default {
   name: 'GameTable',
-  inject: ['webService'],
+  inject: ['webHttpService', 'webSocketService'],
   components: {
     TasksModal,
     UserStoryModal,
@@ -132,14 +132,15 @@ mounted() {
   })
 },
   computed: mapState([
-      "otherPlayersCards"
+      "otherPlayersCards",
+      "currentStory"
   ]),
   methods: {
     checkResults() {
       return !this.$store.state.isHost || !this.isSelectionConfirmed || this.mainPlayerCard === "";
     },
     getResults() {
-      this.webService.finishGame(this.$store.state.roomName, this.$store.state.userName);
+      this.webSocketService.finishGame(this.$store.state.roomName, this.$store.state.userName);
       this.showResults = true;
       // if (this.isSelectionConfirmed && this.mainPlayerCard !== "") {
       //   let numberOfParticipants = Math.floor(Math.random() * (8) + 1);
@@ -177,10 +178,9 @@ mounted() {
       this.displayTaskModal = false;
     },
     chooseStory($event){
-      let story = this.$store.getters.getStory($event.id)
-      this.story=story;
-      this.tasks = this.$store.getters.getStoryTasks($event.id);
+      this.webSocketService.chooseUserStory(this.$store.state.roomName, this.$store.state.userName, $event.id);
     },
+
     addStoryHandler(){
       this.$emit('select')
     },

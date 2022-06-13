@@ -9,6 +9,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class TaskDescriptionMessage {
     private String type;
-    private String taskId;
+    private String id;
     private String description;
 }

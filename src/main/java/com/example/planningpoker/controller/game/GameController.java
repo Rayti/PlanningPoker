@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -81,9 +82,10 @@ public class GameController {
         Room room = roomService.getRoom(roomName);
         if (room != null && room.userExists(userName)) {
 
-            List<StoryMessage> storyMessages = room.getStories().stream().map(MessageMapper::toStoryMessage).collect(Collectors.toList());
+            List<StoryMessage> storyMessages = room.getStories().stream().filter(Objects::nonNull).map(MessageMapper::toStoryMessage).collect(Collectors.toList());
 
-            List<UserMessage> userMessages = room.getUsers().stream().map(MessageMapper::toUserMessage).collect(Collectors.toList());
+            List<UserMessage> userMessages = room.getUsers().stream().filter(Objects::nonNull).map(MessageMapper::toUserMessage).collect(Collectors.toList());
+            Story currentStory = room.getCurrentGame().getStory();
 
             StoryMessage currentStoryMessage = MessageMapper.toStoryMessage(room.getCurrentGame().getStory());
 

@@ -44,20 +44,21 @@
 
 <script>
 import PlanningPokerCard from './PlanningPokerCard.vue';
-import {WebService} from "@/services/WebService";
+import {WebHTTPService} from "@/services/WebHTTPService";
 
 export default {
   name: 'MainPlayerSpace',
     components: {
         PlanningPokerCard
     },
-  inject: ['webService'],
+  inject: ['webHttpService','webSocketService'],
     data() {
         return {
             fibonacci: ['0', '1', '2', '3', '5', '8', '13', '21', '34', '55', '89', '?'],
             selectedCard: '',
             isSelectionConfirmed: false,
-            service: this.webService,
+            httpService: this.webHttpService,
+            socketService: this.webSocketService,
             messageInput: ""
         }
     },

@@ -21,7 +21,7 @@
             <div class="accordion-item" v-for="(story, index) in userStories" :key="story.id">
               <h2 class="accordion-header" :id="'flush-headingOne'+index">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" :data-bs-target="'#flush-collapseOne'+index" aria-expanded="false" :aria-controls="'flush-collapseOne'+index">
-                  #{{index + 1}} {{story.name}}
+                  #{{index + 1}} {{story.description}}
                   <button type="button" :id="story.id" class="btn btn-sm btn-outline-success btnModal" @click="onChooseStory">Choose</button>
                   <button type="button"  class="btn btn-sm btn-outline-danger btnModal" @click="onDeleteStoryClick(story.id)">Delete</button>
                   <button type="button"  class="btn btn-sm btn-outline-info btnModal" @click="onEditStoryClick(story)">Edit</button>
@@ -31,7 +31,7 @@
                 <div class="accordion-body">
                   <h5 align="left">Tasks:</h5>
                   <ul v-for="(task, index) in story.tasks" :key="task.id" class="justify-content-start">
-                    <li class = "taskList">#{{index+1}} {{task.taskTitle}}
+                    <li class = "taskList">#{{index+1}} {{task.description}}
                     <button type="button" :id="story.id" class="btn btn-sm btn-outline-danger btnModal" @click="onDeleteTaskClick(story.id, task)">Delete</button>
                     </li>
                   </ul>
@@ -74,7 +74,7 @@
                 <h5 align="left" class="border-top pt-2 mt-2 border-info">Tasks to the story</h5>
 
               <ul v-for="(task, index) in tasks" :key="task.id" class="justify-content-start">
-                <li class = "taskList">#{{index+1}} {{task.taskTitle}}</li>
+                <li class = "taskList">#{{index+1}} {{task.description}}</li>
                 </ul>
               <div class="form-floating mb-3">
                 <input class="form-control" id="floatingInputTask" v-model="newTaskInput">
@@ -117,6 +117,7 @@ export default {
   props: {
     storyID: String
   },
+  inject: ['webHttpService','webSocketService'],
   data () {
     return {
       userStories : this.$store.getters.getStoriesAll,
@@ -135,15 +136,10 @@ export default {
     },
     addNewStoryClick(){
       if(!this.newStoryId){
-        this.newStoryId=uuid4();
+        this.newStoryId=Date.now();
       }
       if(this.newStoryInput !== '') {
-        this.$store.commit('addStory', {
-          id: this.newStoryId,
-          name: this.newStoryInput,
-          tasks: this.tasks
-        });
-        // this.$emit('addStory');
+        this.webSocketService.addNewUserStory(this.$store.state.roomName, this.$store.state.userName, this.newStoryId, this.newStoryInput, this.tasks)
 
       }
       this.newStoryInput = "";
@@ -151,18 +147,17 @@ export default {
       this.newStoryId='';
     },
     addNewTaskToNewStoryClick(){
-      let taskId=uuid4()
-      this.tasks.push({id:taskId, taskTitle: this.newTaskInput});
+      let taskId=Date.now();
+      this.tasks.push({id:taskId, description: this.newTaskInput});
 
       this.newTaskInput="";
 
     },
     addNewTaskToStoryInsideClick(storyId){
-      let taskId=uuid4()
+      let taskId=Date.now();
       if(this.newTaskInsideInput !== '') {
-        let newTask = {id:taskId, taskTitle: this.newTaskInsideInput};
-        let arg = { storyID : storyId, task: newTask};
-        this.$store.commit('addTaskToStoryInside', arg);
+        this.webSocketService.addNewTask(this.$store.state.roomName, this.$store.state.userName,
+            storyId, taskId, this.newTaskInsideInput)
 
       }
       this.newTaskInsideInput="";
@@ -171,15 +166,11 @@ export default {
       this.$emit('chooseStory',{id: e.target.id});
     },
     onDeleteStoryClick(storyid){
-      this.$store.commit('deleteStory', storyid);
-      if(this.storyID == storyid){
-        this.$emit('clearStoryTable')
-      }
-
+      this.webSocketService.deleteUserStory(this.$store.state.roomName, this.$store.state.userName, storyid)
     },
-    onDeleteTaskClick(storyid, task){
-      let arg = { storyID : storyid, task: task}
-      this.$store.commit('deleteTaskStory', arg);
+    onDeleteTaskClick(storyId, task){
+      this.webSocketService.deleteTask(this.$store.state.roomName, this.$store.state.userName, storyId, task.id);
+      //this.$store.commit('deleteTaskStory', arg);
     },
     onEditStoryClick(story){
       this.displayEditStoryModal=true;
@@ -189,7 +180,9 @@ export default {
       this.displayEditStoryModal = false;
     },
     editStoryHandler($event){
-      this.$store.commit('updateStory', $event.arg);
+      this.webSocketService.updateUserStory(this.$store.state.roomName, this.$store.state.userName,
+          $event.arg.storyId,$event.arg.newName)
+
       this.displayEditStoryModal = false;
     }
   }

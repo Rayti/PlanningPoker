@@ -109,10 +109,10 @@ public class DefaultRoomService implements RoomService {
     @Override
     public Story chooseStoryToCurrentGame(String roomName, String storyId) {
         Room room = getRoom(roomName);
-        if (room == null) {
+        if (room == null || room.getStories()==null) {
             return null;
         }
-        Story story = room.getStories().stream().filter(st -> st.getId() == Integer.parseInt(storyId)).findFirst().orElse(null);
+        Story story = room.getStories().stream().filter(st -> st.getId() == Long.parseLong(storyId)).findFirst().orElse(null);
 
         if (story == null) {
             return null;

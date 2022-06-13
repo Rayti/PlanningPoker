@@ -1,7 +1,7 @@
 <template>
   <div v-if="checkUser()" class="container">
     <div class="row justify-content-start" >
-      <h2 v-if="!webService.stompClient || !webService.stompClient.connected">
+      <h2 v-if="!webSocketService.stompClient || !webSocketService.stompClient.connected">
       <!-- bardzo wazne to, inaczej trza zrobic -->
         WebSocket connection lost
       </h2>
@@ -27,11 +27,12 @@
 <script>
 import MainPlayerSpace from "@/components/MainPlayerSpace";
 import GameTable from "@/components/GameTable";
-import {WebService} from "@/services/WebService";
+import {WebHTTPService} from "@/services/WebHTTPService";
+import {WebSocketService} from "@/services/WebSocketService";
 
 export default {
   name: "GameView",
-  inject: ["webService"],
+  inject: ["webHttpService", "webSocketService"],
   components: {
     MainPlayerSpace,
     GameTable
@@ -63,7 +64,7 @@ export default {
       this.mainPlayerCard = $event.selectedCard;
       this.isSelectionConfirmed = $event.isSelectionConfirmed;
       if (this.isSelectionConfirmed && this.mainPlayerCard !== "") {
-        this.webService.selectCard(this.$store.state.roomName, this.$store.state.userName, this.mainPlayerCard);
+        this.webSocketService.selectCard(this.$store.state.roomName, this.$store.state.userName, this.mainPlayerCard);
       }
     },
     checkUser() {  

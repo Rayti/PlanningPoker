@@ -26,7 +26,7 @@
 <script>
 export default {
   name: "GiveNickModal",
-  inject: ['webService'],
+  inject: ['webHttpService','webSocketService'],
   props: {
     roomName: String,
   },
@@ -46,13 +46,14 @@ export default {
       }
       const roomName = this.roomName;
       const userName = this.nickInput;
-      const result = await this.webService.joinExistingRoomRequest(roomName, userName);
+      const result = await this.webHttpService.joinExistingRoomRequest(roomName, userName);
       if (result && result.success) {
         if (this.joinRoomError) {
           this.joinRoomError = false
         }
+        const gameData = this.webHttpService.getIntoCurrentGame(roomName,userName);
 
-        this.webService.createWebSocketConnection(roomName);
+        this.webSocketService.createWebSocketConnection(roomName);
         this.$store.dispatch("setBasicInformation", { roomName: roomName, userName: userName, isHost: false });
         this.$router.push({ name: "game", params: { roomName: roomName }});
       } else { // obsługa błędów

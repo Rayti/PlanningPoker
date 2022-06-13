@@ -32,7 +32,7 @@
 <script>
 export default {
   name: "LoginModal",
-  inject: ['webService'],
+  inject: ['webHttpService','webSocketService'],
   data(){
     return{
       loginNicknameInput: "",
@@ -46,7 +46,7 @@ export default {
       this.$emit('close-modal-event');
     },
     async logIn(){
-      this.webService.logIn(this.loginNicknameInput, this.loginPasswordInput)
+      this.webHttpService.logIn(this.loginNicknameInput, this.loginPasswordInput)
           .then(result => {
             let sessionId = result.data.sessionId;
             console.log(`SessionId: ${sessionId}`);

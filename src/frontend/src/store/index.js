@@ -1,15 +1,20 @@
 import {createStore} from 'vuex'
-
-const store = createStore({
-    state: {
+const getDefaultState = () => {
+    return {
         roomName: '',
         stories: [],
-		userName: '',
+        userName: '',
+        currentStory:{},
         isHost: false,
         // stories: {},
-        otherPlayersCards: [],
-        sessionId: ''
-    },
+        sessionId:'',
+        otherPlayersCards: []
+    }
+}
+const store = createStore({
+
+    state: getDefaultState(),
+
     getters: {
         getStoriesAll (state) {
 
@@ -25,6 +30,9 @@ const store = createStore({
         }
     },
     mutations: {
+        resetState (state) {
+            Object.assign(state, getDefaultState())
+        },
         setUserName(state, userName){
           state.userName = userName;
         },
@@ -35,37 +43,45 @@ const store = createStore({
             state.roomName = roomName;
         },
         addStory (state, story) {
-            if(story.id !== undefined && typeof story.name == 'string' ) {
+            if(story.id !== undefined && typeof story.description == 'string' ) {
                 state.stories.push({
                     id: story.id,
-                    name: story.name,
+                    description: story.description,
                     tasks: story.tasks,
                 })
             }
         },
-        addTaskToStory(state, arg){
-            let story = this.getters.getStory(arg.storyID);
-            story.tasks.push(arg.task);
+        addTask(state, arg){
+            const newTask = {
+                id: arg.id,
+                description: arg.description
+            }
+            let story = this.getters.getStory(arg.storyId);
+            story.tasks.push(newTask);
         },
         addTaskToStoryInside(state, arg){
             let story = this.getters.getStory(arg.storyID);
             story.tasks.push(arg.task);
 
         },
-        deleteTaskStory(state, arg){
-            let tasks = this.getters.getStoryTasks(arg.storyID);
-            const index = tasks.indexOf(arg.task);
+        deleteTask(state, arg){
+            let tasks = this.getters.getStoryTasks(arg.storyId);
+            const taskToDelete = tasks.find((x) => x.id == arg.id);
+            const index = tasks.indexOf(taskToDelete);
             tasks.splice(index, 1);
         },
         deleteStory(state, storyId){
             let story = this.getters.getStory(storyId);
             const index = state.stories.indexOf(story);
             state.stories.splice(index,1);
+            if(storyId==state.currentStory.id){
+                state.currentStory={};
+            }
 
         },
         updateStory(state, arg) {
             let story = this.getters.getStory(arg.storyId);
-            story.name = arg.newName;
+            story.description = arg.description;
 
         },
 		changeBasicInformation (state, payload) {
@@ -89,8 +105,17 @@ const store = createStore({
       removeCards(state) {
         state.otherPlayersCards = []
       },
+       setCurrentStory(state,payload){
+           if(payload) {
+               state.currentStory = this.getters.getStory(payload.id);
+           }
+
+       }
     },
     actions: {
+        resetState ({ commit }) {
+            commit('resetState')
+        },
         setUserName({commit}, payload){
             commit('setUserName', payload);
         },
@@ -109,6 +134,24 @@ const store = createStore({
       removeResults({ commit }) {
         commit("removeCards")
       },
+      changeCurrentStory({ commit }, payload) {
+          commit("setCurrentStory", payload)
+      },
+      addStory({ commit }, payload){
+          commit("addStory", payload)
+      },
+      deleteStory({ commit }, payload){
+            commit("deleteStory", payload)
+      },
+      updateStory({ commit }, payload){
+         commit("updateStory", payload)
+        },
+      addTask({ commit }, payload){
+          commit("addTask", payload)
+      },
+        deleteTask({ commit }, payload){
+            commit("addTask", payload)
+        },
         cleanStore({commit}) {
             commit("cleanStore");
         }

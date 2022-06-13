@@ -33,7 +33,7 @@
 <script>
 export default {
   name: "CreateRoomModal",
-  inject: ['webService'],
+  inject: ['webHttpService','webSocketService'],
   data() {
     return {
       roomInput: "",
@@ -48,14 +48,14 @@ export default {
     async createNewRoom() {
       const roomName = this.roomInput;
       const userName = this.nickInput;
-      const result = await this.webService.createRoomRequest(roomName, userName);
+      const result = await this.webHttpService.createRoomRequest(roomName, userName);
 
       if (result && result.success) { // jeżeli nie to powinien tost jakiś się pojawić
         if (this.createRoomError) {
           this.createRoomError = false
         }
 
-        this.webService.createWebSocketConnection(roomName);
+        this.webSocketService.createWebSocketConnection(roomName);
         this.$store.dispatch("setBasicInformation", { roomName: roomName, userName: userName, isHost: true });
         this.$router.push({ name: "game", params: { roomName: roomName }});
       } else { // obsługa błędów
