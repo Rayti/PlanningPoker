@@ -48,11 +48,9 @@ data () {
       })
 
 
-
-
-
-      }
         this.nameStoryInput="";
+      }
+
 
 
     }
