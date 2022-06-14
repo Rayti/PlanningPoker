@@ -96,11 +96,9 @@ const store = createStore({
       },
       cleanStore(state) {
             state.roomName = null;
-            state.userName = null;
             state.isHost = null;
             state.stories = [];
             state.otherPlayersCards = [];
-            state.sessionId = '';
       },
       removeCards(state) {
         state.otherPlayersCards = []

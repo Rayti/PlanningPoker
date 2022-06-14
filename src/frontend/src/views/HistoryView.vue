@@ -2,9 +2,9 @@
 <div>
   <h3 class="header">Check your planning history</h3>
 <!--  lista pokoi-->
-  <ul class="list-group w-75  " >
+  <ul class="list-group w-75  " v-if="userGames !== undefined" >
     <li class="list-group-item  itList  "
-        v-for="(game,index) in userGames" :key="game.id">
+         v-for="(game,index) in userGames" :key="game.id">
       <div class=" ms-4 me-auto" data-bs-toggle="collapse" :aria-expanded="game.expand" @click.prevent="collapseGame(game.id)" :data-bs-target="'#collapseExample'+index">
         <div class="fw-bold">
          {{ game.name     }}<div class="badge ms-2 bg-info rounded-pill">Gimmie more</div>
@@ -29,8 +29,6 @@
                 v-for="(task) in story.tasks" :key="task.id">
               <div class="ms-4 me-auto">
               {{ task.description }}
-
-
               </div>
             </li>
           </ul>
@@ -45,103 +43,23 @@
 <script>
 export default {
   name: "HistoryView",
-  data() {
-    return {
-      userGames: [{
-        name: "gra1",
-        id: "1",
-        expand:false,
-        stories: [
-          {
-            id: "1",
-            description: "story1",
-            estimation: "8",
-            tasks: [
-              {
-                id: "1",
-                description: "tasks1"
-              },
-              {
-                id: "1",
-                description: "tasks1"
-              },
-              {
-                id: "1",
-                description: "tasks1"
-              }
-            ]
-          },
-          {
-            id: "1",
-            description: "story1",
-            estimation: "8",
-            tasks: [
-              {
-                id: "1",
-                description: "tasks1"
-              },
-              {
-                id: "1",
-                description: "tasks1"
-              },
-              {
-                id: "1",
-                description: "tasks1"
-              }
-            ]
-          }
-        ]
-      },
-        {
-          name: "gra1",
-          id: "2",
-          expand:false,
-          stories: [
-            {
-              id: "1",
-              description: "story1",
-              estimation: "8",
-              tasks: [
-                {
-                  id: "1",
-                  description: "tasks1"
-                },
-                {
-                  id: "1",
-                  description: "tasks1"
-                },
-                {
-                  id: "1",
-                  description: "tasks1"
-                }
-              ]
-            },
-            {
-              id: "1",
-              description: "story1",
-              estimation: "8",
-              tasks: [
-                {
-                  id: "1",
-                  description: "tasks1"
-                },
-                {
-                  id: "1",
-                  description: "tasks1"
-                },
-                {
-                  id: "1",
-                  description: "tasks1"
-                }
-              ]
-            }
-          ]
-        }
-
-      ]
-    }
-  },
+  inject: ['webHttpService'],
   methods: {
+    async loadUserGameHistoryData() {
+      const userName = this.$store.state.userName;
+      this.userGames = this.webHttpService.getUserGameHistory(userName).then(result => {
+        console.log(result);
+        console.log(this.userGames);
+        if (result !== null) {
+           this.userGames = result.data.userGames.map((game, i) => {
+            console.log(game);
+            game.expand = false;
+            console.log(game);
+            return game;
+          });
+        }
+      })
+    },
     collapseGame(gameId) {
       this.userGames = this.userGames.map((game, i) => {
         game.expand = !game.expand;
@@ -151,6 +69,14 @@ export default {
         return game;
       })
     }
+  },
+  data() {
+    return {
+      userGames: []
+    }
+  },
+async  beforeMount() {
+    return this.loadUserGameHistoryData();
   }
 }
 

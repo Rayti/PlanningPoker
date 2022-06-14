@@ -54,7 +54,7 @@ public class DefaultUserService implements UserService {
         Optional<User> optionalUser = registeredUsers.stream().filter(user -> user.getName().equals(userName) && user.getPassword().equals(password))
                 .findFirst();
 
-        if (optionalUser.isEmpty() || loggedUserExists(userName)){
+        if (optionalUser.isEmpty() || checkLoggedUserExistsOnLogin(userName)){
             return null;
         }
         User user = optionalUser.get();
@@ -64,6 +64,10 @@ public class DefaultUserService implements UserService {
         return loggedUsers.stream().filter(filteredUser -> filteredUser.getName().equals(userName) && filteredUser.getPassword().equals(password))
                 .map(User::getSessionId)
                 .findFirst().orElse(null);
+    }
+
+    private boolean checkLoggedUserExistsOnLogin(String userName){
+        return loggedUsers.stream().anyMatch(user -> user.getName().equals(userName));
     }
 
     @Override
@@ -83,7 +87,7 @@ public class DefaultUserService implements UserService {
     @Override
     public boolean loggedUserExists(String userName) {
 
-        boolean exists = loggedUsers.stream().anyMatch(user -> user.getName().equals(userName));
+        boolean exists = checkLoggedUserExistsOnLogin(userName);
         if(!exists){
             log.warn("User {} tried to do something while being not logged in!!", userName);
         }

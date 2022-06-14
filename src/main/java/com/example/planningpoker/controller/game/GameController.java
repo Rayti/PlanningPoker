@@ -73,6 +73,7 @@ public class GameController {
                     .map(userCardEntry -> MessageMapper.toSelectedCardMessage(userCardEntry.getKey(), userCardEntry.getValue())).collect(Collectors.toList());
 
             room.getCurrentGame().calculateAndSetGameResult();
+            room.getGames().add(room.getCurrentGame());
 
             GameResultMessage msg = new GameResultMessage(GAME_RESULT_MESSAGE, String.valueOf(room.getCurrentGame().getGameResult()), selectedCardMessages);
             messagingTemplate.convertAndSend(String.format(BACKEND_SOCKET_RESPONSE_FORMAT, roomName), msg);
@@ -96,7 +97,6 @@ public class GameController {
             List<StoryMessage> storyMessages = room.getStories().stream().filter(Objects::nonNull).map(MessageMapper::toStoryMessage).collect(Collectors.toList());
 
             List<UserMessage> userMessages = room.getUsers().stream().filter(Objects::nonNull).map(MessageMapper::toUserMessage).collect(Collectors.toList());
-            Story currentStory = room.getCurrentGame().getStory();
 
             StoryMessage currentStoryMessage = MessageMapper.toStoryMessage(room.getCurrentGame().getStory());
 

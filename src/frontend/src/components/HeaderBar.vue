@@ -6,7 +6,10 @@
 <!--          <img src="/docs/5.1/assets/brand/bootstrap-logo.svg" alt="" width="30" height="24" class="d-inline-block align-text-top">-->
           Planning Poker
         </a>
+        <div>
+        <button type="button" v-if="this.$store.state.sessionId !== ''" class="btn btn-outline-light " @click="toHistory">History of Planing</button>
         <button type="button" v-if="this.$store.state.sessionId !== ''" class="btn btn-outline-light mx-4" @click="logOut">Log out</button>
+        </div>
       </div>
     </nav>
 <!--    <b-navbar class="header" toggleable="lg" type="dark" variant="info">-->
@@ -28,7 +31,7 @@ export default {
   methods: {
     navigate() {
       this.webSocketService.disconnect();
-      this.$store.dispatch("resetState");
+      this.$store.dispatch("cleanStore");
       this.$router.push('/');
     },
     async logOut(){
@@ -36,10 +39,13 @@ export default {
           .then(result => {
             if(result?.data?.success === true){
               alert("Successfully logged out!");
-              this.$store.dispatch("cleanStore");
+              this.$store.dispatch("resetState");
               this.$router.push('/');
             }
           })
+    },
+    toHistory(){
+      this.$router.push('/history');
     }
   }
 
