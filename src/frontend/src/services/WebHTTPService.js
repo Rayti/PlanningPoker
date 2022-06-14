@@ -114,6 +114,17 @@ export class WebHTTPService {
         }
     }
 
+    async getUserGameHistory(userName){
+        const link = `${API_URL}/user/game-history/${userName}`;
+        try {
+            return await axios.get(link, config);
+        }catch (error) {
+            console.log(error.message);
+            return null;
+        }
+    }
+
+
     async userAccountExist(userName){
         //TODO
 

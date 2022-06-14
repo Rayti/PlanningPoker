@@ -38,13 +38,13 @@ public class RoomController {
     @ResponseBody
     public SuccessMessage joinRoom(@PathVariable String roomName, @PathVariable String userName){
         log.info("/api/poker/{}/{}/join-room", roomName, userName);
-        return userService.loggedUserExists(userName) && this.roomService.joinRoom(userName, roomName) ? new SuccessMessage(true) : new SuccessMessage(false);
+        return userService.loggedUserExists(userName) && this.roomService.joinRoom(userService.getRegisteredUser(userName), roomName) ? new SuccessMessage(true) : new SuccessMessage(false);
     }
 
     @MessageMapping("/api/poker/{roomName}/{userName}/join-room-ws")
     public void joinRoomWebSocket(@DestinationVariable String roomName, @DestinationVariable String userName) {
         log.info("/api/poker/{}/{}/join-room-ws", roomName, userName);
-        boolean success = userService.loggedUserExists(userName) && this.roomService.joinRoom(userName, roomName);
+        boolean success = userService.loggedUserExists(userName) && this.roomService.joinRoom(userService.getRegisteredUser(userName), roomName);
         if (success) {
             JoinedRoomMessage msg = new JoinedRoomMessage("JoinedRoomMessage", userName);
             messagingTemplate.convertAndSend(String.format(BACKEND_SOCKET_RESPONSE_FORMAT, roomName), msg);
@@ -84,7 +84,7 @@ public class RoomController {
     @ResponseBody
     public SuccessMessage deleteRoom(@PathVariable String roomName, @PathVariable String userName) {
         log.info("/api/poker/{}/{}/delete-room", roomName, userName);
-        return new SuccessMessage(userService.loggedUserExists(userName) && this.roomService.deleteRoom(userName, roomName));
+        return new SuccessMessage(userService.loggedUserExists(userName) && this.roomService.deleteRoom(userService.getRegisteredUser(userName), roomName));
     }
 
 
@@ -92,7 +92,7 @@ public class RoomController {
     @ResponseBody
     public SuccessMessage createRoom(@PathVariable String roomName, @PathVariable String userName) {
         log.info("/api/poker/{}/{}/create-room", roomName, userName);
-        return new SuccessMessage(userService.loggedUserExists(userName) && this.roomService.createRoom(userName, roomName));
+        return new SuccessMessage(userService.loggedUserExists(userName)  && this.roomService.createRoom(userService.getRegisteredUser(userName), roomName));
     }
 
 }

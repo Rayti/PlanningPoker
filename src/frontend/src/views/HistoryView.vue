@@ -45,103 +45,18 @@
 <script>
 export default {
   name: "HistoryView",
-  data() {
-    return {
-      userGames: [{
-        name: "gra1",
-        id: "1",
-        expand:false,
-        stories: [
-          {
-            id: "1",
-            description: "story1",
-            estimation: "8",
-            tasks: [
-              {
-                id: "1",
-                description: "tasks1"
-              },
-              {
-                id: "1",
-                description: "tasks1"
-              },
-              {
-                id: "1",
-                description: "tasks1"
-              }
-            ]
-          },
-          {
-            id: "1",
-            description: "story1",
-            estimation: "8",
-            tasks: [
-              {
-                id: "1",
-                description: "tasks1"
-              },
-              {
-                id: "1",
-                description: "tasks1"
-              },
-              {
-                id: "1",
-                description: "tasks1"
-              }
-            ]
-          }
-        ]
-      },
-        {
-          name: "gra1",
-          id: "2",
-          expand:false,
-          stories: [
-            {
-              id: "1",
-              description: "story1",
-              estimation: "8",
-              tasks: [
-                {
-                  id: "1",
-                  description: "tasks1"
-                },
-                {
-                  id: "1",
-                  description: "tasks1"
-                },
-                {
-                  id: "1",
-                  description: "tasks1"
-                }
-              ]
-            },
-            {
-              id: "1",
-              description: "story1",
-              estimation: "8",
-              tasks: [
-                {
-                  id: "1",
-                  description: "tasks1"
-                },
-                {
-                  id: "1",
-                  description: "tasks1"
-                },
-                {
-                  id: "1",
-                  description: "tasks1"
-                }
-              ]
-            }
-          ]
-        }
-
-      ]
-    }
-  },
+  inject: ['webHttpService'],
   methods: {
+    async loadUserGameHistoryData(){
+      const userName = this.$store.state.userName;
+      console.log(userName);
+      console.log("IN LOAD USER GAME HISTORY DATA")
+      this.webHttpService.getUserGameHistory(userName).then(result => {
+        console.log(result);
+        console.log(this.userGames);
+        this.userGames = result.data.userGames;
+      })
+    },
     collapseGame(gameId) {
       this.userGames = this.userGames.map((game, i) => {
         game.expand = !game.expand;
@@ -151,7 +66,15 @@ export default {
         return game;
       })
     }
+  },
+  data() {
+    return {
+      userGames: []
+    }
   }
+  },
+  beforeMount() {
+    return this.loadUserGameHistoryData();
 }
 
 </script>

@@ -2,6 +2,7 @@ package com.example.planningpoker.service;
 
 import com.example.planningpoker.domain.Room;
 import com.example.planningpoker.domain.Story;
+import com.example.planningpoker.domain.User;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -9,13 +10,13 @@ import java.util.List;
 @Service
 public interface RoomService {
 
-    boolean createRoom(String userName, String roomName);
+    boolean createRoom(User user, String roomName);
 
-    boolean deleteRoom(String userName, String roomName);
+    boolean deleteRoom(User user, String roomName);
 
     boolean leaveRoom(String userName, String roomName);
 
-    boolean joinRoom(String userName, String roomName);
+    boolean joinRoom(User user, String roomName);
 
     boolean canJoinRoom(String userName, String roomName);
 

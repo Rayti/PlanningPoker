@@ -4,6 +4,8 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Data
@@ -13,10 +15,12 @@ public class User {
     @Getter
     @Setter
     private String sessionId;
+    private List<Room> roomGamesHistory;
 
     public User(String name, String password) {
         this.name = name;
         this.password = password;
+        this.roomGamesHistory = new ArrayList<>();
     }
 
     @Override

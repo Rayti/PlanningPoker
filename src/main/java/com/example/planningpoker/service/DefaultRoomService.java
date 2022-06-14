@@ -24,16 +24,14 @@ public class DefaultRoomService implements RoomService {
 
 
     @Override
-    public boolean createRoom(String userName, String roomName) {
+    public boolean createRoom(User user, String roomName) {
         if(getRoom(roomName) == null){
-            User user = new User(userName, "");
             Game game = new Game();
             Room room = new Room(roomName);
             room.getUsers().add(user);
-            room.getGames().add(game);
             room.setCurrentGame(game);
             roomCache.add(room);
-            log.info("Room {} and User {} created", roomName, userName);
+            log.info("Room {} and User {} created", roomName, user.getName());
             return true;
         }
         return false;
@@ -41,7 +39,7 @@ public class DefaultRoomService implements RoomService {
 
 
     @Override
-    public boolean joinRoom(String userName, String roomName) {
+    public boolean joinRoom(User user, String roomName) {
         Optional<Room> optionalRoom = roomCache.stream().filter(room -> room.getRoomName().equals(roomName)).findFirst();
 
         if (optionalRoom.isEmpty()) {
@@ -50,11 +48,12 @@ public class DefaultRoomService implements RoomService {
 
         Room room = optionalRoom.get();
 
-        Optional<User> optionalUser = optionalRoom.get().getUsers().stream().filter(user -> user.getName().equals(userName)).findFirst();
+        Optional<User> optionalUser = optionalRoom.get().getUsers().stream().filter(x -> x.getName().equals(user.getName())).findFirst();
 
         if (optionalUser.isEmpty()) {
-            User user = new User(userName, "");
             room.getUsers().add(user);
+            user.getRoomGamesHistory().add(room);
+
             return true;
         }
 
@@ -75,7 +74,7 @@ public class DefaultRoomService implements RoomService {
     }
 
     @Override
-    public boolean deleteRoom(String userName, String roomName) {
+    public boolean deleteRoom(User user, String roomName) {
         Room room = getRoom(roomName);
         if (room == null) {
             return false;
