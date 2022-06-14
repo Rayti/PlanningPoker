@@ -31,7 +31,7 @@ export default {
   methods: {
     navigate() {
       this.webSocketService.disconnect();
-      this.$store.dispatch("resetState");
+      this.$store.dispatch("cleanStore");
       this.$router.push('/');
     },
     async logOut(){
@@ -39,7 +39,7 @@ export default {
           .then(result => {
             if(result?.data?.success === true){
               alert("Successfully logged out!");
-              this.$store.dispatch("cleanStore");
+              this.$store.dispatch("resetState");
               this.$router.push('/');
             }
           })
