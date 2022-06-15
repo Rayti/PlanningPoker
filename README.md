@@ -1,2 +1,4 @@
 
-#### swagger: `http://localhost:8080/swagger-ui.html`
+# How to run the project?
+
+run spring server + cd src/frontend npm run serve
