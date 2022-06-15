@@ -35,12 +35,29 @@ export default {
       "userName",
   ]),
   methods: {
-    navigate() {
-      this.webSocketService.disconnect();
-      this.$store.dispatch("cleanStore");
+    async navigate() {
+      if (this.roomName !== "") {
+        this.webSocketService.leaveExistingRoom(this.roomName, this.userName);
+        await this.connectingDelay(3000);
+        this.webSocketService.disconnect();
+        this.$store.dispatch("cleanStore");
+      }
       this.$router.push('/');
     },
-    async logOut(){
+    connectingDelay(delayInMs) {
+      return new Promise(resolve => {
+        setTimeout(() => {
+          resolve(2);
+        }, delayInMs);
+      });
+    },
+    async logOut() {
+      if (this.roomName !== "") {
+        this.webSocketService.leaveExistingRoom(this.roomName, this.userName);
+        await this.connectingDelay(3000);
+        this.webSocketService.disconnect();
+        this.$store.dispatch("cleanStore");
+      }
       this.webHttpService.logOut()
           .then(result => {
             if(result?.data?.success === true){
@@ -49,11 +66,14 @@ export default {
               this.$router.push('/');
             }
           });
+    },
+    async toHistory() {
       if (this.roomName !== "") {
         this.webSocketService.leaveExistingRoom(this.roomName, this.userName);
+        await this.connectingDelay(3000);
+        this.webSocketService.disconnect();
+        this.$store.dispatch("cleanStore");
       }
-    },
-    toHistory(){
       this.$router.push('/history');
     }
   }

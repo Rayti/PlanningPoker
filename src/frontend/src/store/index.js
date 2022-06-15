@@ -94,7 +94,9 @@ const store = createStore({
         },
         resetStory(state) {
             const index = state.stories.findIndex(story => story.id === state.currentStory.id);
-            state.stories[index].lastEstimation = state.currentGameResult;
+            if (index !== -1) {
+                state.stories[index].lastEstimation = state.currentGameResult;
+            }
             state.currentStory = {};
         },
 
@@ -136,7 +138,10 @@ const store = createStore({
                 state.roomName = "";
                 state.isHost = false;
                 state.stories = [];
-                state.otherPlayersCards = [];
+                state.otherPlayers = [];
+                state.currentGameResult = "";
+                state.mySelectedCard = "";
+                state.isSelectedCardConfirmed = false;
         },
         removeCards(state) {
             const players = state.otherPlayers.map(player => { return { userName: player.userName }});
