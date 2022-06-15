@@ -19,7 +19,7 @@
     </div> -->
     <div class="room-table">
       <game-table ref="gameTableRef" :mainPlayerCard="this.mainPlayerCard" :isSelectionConfirmed="this.isSelectionConfirmed"/>
-      <main-player-space ref="mainPlayerSpaceRef" @clear="clearTableHandler" @selection="getSelection"/>
+      <main-player-space ref="mainPlayerSpaceRef" @clear="clearTableHandler"/>
     </div>
   </div>
 </template>
@@ -27,8 +27,7 @@
 <script>
 import MainPlayerSpace from "@/components/MainPlayerSpace";
 import GameTable from "@/components/GameTable";
-import {WebHTTPService} from "@/services/WebHTTPService";
-import {WebSocketService} from "@/services/WebSocketService";
+import { mapState } from 'vuex';
 
 export default {
   name: "GameView",
@@ -43,6 +42,10 @@ export default {
       isSelectionConfirmed: false
     }
   },
+  computed: mapState([
+      "mySelectedCard",
+      "isSelectedCardConfirmed",
+  ]),
   // mounted() {
   //   let popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
   //   popoverTriggerList.forEach(popoverTriggerEl=> {
@@ -61,20 +64,21 @@ export default {
   // },
   methods: {
     getSelection($event) {
-      this.mainPlayerCard = $event.selectedCard;
-      this.isSelectionConfirmed = $event.isSelectionConfirmed;
-      if (this.isSelectionConfirmed && this.mainPlayerCard !== "") {
-        this.webSocketService.selectCard(this.$store.state.roomName, this.$store.state.userName, this.mainPlayerCard);
-      }
+      // this.mainPlayerCard = $event.selectedCard;
+      // this.isSelectionConfirmed = $event.isSelectionConfirmed;
+      // if (this.isSelectionConfirmed && this.mainPlayerCard !== "") {
+        
+      // }
     },
     checkUser() {  
       return this.$route.params.roomName === this.$store.state.roomName; 
     },
     clearTableHandler() {
-      this.$refs.gameTableRef.clearResult();
-      this.mainPlayerCard = "";
-      this.isSelectionConfirmed = false;
-
+      // this.$refs.gameTableRef.clearResult(); // TO POPRAWIĆ!!!!
+      // this.mainPlayerCard = "";
+      
+      // this.isSelectionConfirmed = false;
+      this.$store.dispatch("setCardSelection", { selectedCard: "", confirmation: false });
     }
   }
 }

@@ -1,86 +1,97 @@
 <template>
-  <div :class="{'blur-content': displayUserStoryModal||displayTaskModal}">
+  <div>
+    <div :class="{'blur-content': displayUserStoryModal||displayTaskModal}">
 
-  <div class="game-table">
-    <div class="inside-table">
-      <div class="many-users row">
+    <div class="game-table">
+      <div class="inside-table">
+        <div class="many-users row">
 
-        <div class="grid-table">
-          <div class="top">
-          <div class="user-story">
-          <div class="card mb-2 ">
-            <div class="card-header" v-bind="this.$store.state.currentStory" v-if="this.$store.state.currentStory!=undefined">
-              {{this.$store.state.currentStory.description}}
-            </div>
-            <div class="card-body tasks">
-              <ul class="list-group" v-if="this.$store.state.currentStory!=undefined">
-                <li v-for="(task, index) in this.$store.state.currentStory.tasks" :key="`task${index}`" class="list-group-item">
-                  {{ task.description }}
-                </li>
-              </ul>
-            </div>
-          </div>
-          </div>
-          <div></div>
-
-            <div class="manage">
-              <button class="btn btn-outline-primary" @click="openUserStoryPanel">Manage user stories</button>
-              <button class="btn btn-outline-primary" :disabled="this.$store.state.currentStory==undefined" @click="openTaskPanel">Manage tasks</button>
-            </div>
-          </div>
-          <div></div>
-         <div class="left">
-               <div class="row justify-content-start" >
-             <button type="button" class="btn btn-outline-secondary invite-btn col-8 align-start"
-                     data-bs-toggle="popover" title="Copy invite link " data-bs-placement="bottom"
-                     data-content-id="popover-27">
-               Invite to room
-             </button>
-               </div>
-             <div style="display: none;" id="popover-27">
-               <div class="input-group mb-3">
-                 <span class="input-group-text" id="basic-addon1">Link</span>
-                 <input type="text" class="form-control"  aria-describedby="basic-addon1">
-               </div>
-             </div>
-          </div>
-
-          <div class="players-space">
-            <div class="players-content">
-              <div>
-                <div class="names">{{ this.$store.state.userName }}</div>
-                <planning-poker-card :v-if="isSelectionConfirmed" :estimation="mainPlayerCard"/>
+          <div class="grid-table">
+            <div class="top">
+            <div class="user-story">
+            <div class="card mb-2 ">
+              <div class="card-header" v-bind="this.$store.state.currentStory" v-if="this.$store.state.currentStory!=undefined">
+                {{this.$store.state.currentStory.description}}
               </div>
-              <div :v-if="showResults" v-for="(player, index) in otherPlayersCards" :key="`player-${index + 2}`">
-                <div class="names">{{ player.userName }}</div>
-                <planning-poker-card :estimation="formatValue(player.value)"/>
+              <div class="card-body tasks">
+                <ul class="list-group" v-if="this.$store.state.currentStory!=undefined">
+                  <li v-for="(task, index) in this.$store.state.currentStory.tasks" :key="`task${index}`" class="list-group-item">
+                    {{ task.description }}
+                  </li>
+                </ul>
               </div>
             </div>
+            </div>
+            <div></div>
+              <div class="manage">
+                <button class="btn btn-outline-primary" @click="openUserStoryPanel">Manage user stories</button>
+                <button class="btn btn-outline-primary" :disabled="this.$store.state.currentStory==undefined" @click="openTaskPanel">Manage tasks</button>
+              </div>
+            </div>
+            <div></div>
+          <div class="left">
+                <div class="row justify-content-start" >
+              <button type="button" class="btn btn-outline-secondary invite-btn col-8 align-start"
+                      data-bs-toggle="popover" title="Copy invite link " data-bs-placement="bottom"
+                      data-content-id="popover-27">
+                Invite to room
+              </button>
+                </div>
+              <div style="display: none;" id="popover-27">
+                <div class="input-group mb-3">
+                  <span class="input-group-text" id="basic-addon1">Link</span>
+                  <input type="text" class="form-control"  aria-describedby="basic-addon1">
+                </div>
+              </div>
+            </div>
+
+            <div class="players-space">
+              <div class="players-content">
+                <div>
+                  <div class="names">{{ this.$store.state.userName }}</div>
+                  <planning-poker-card :estimation="mySelectedCard"/>
+                </div>
+                <!-- <div v-if="checkResults()">  -->
+                  <div v-for="(player, index) in otherPlayers" :key="`player-${index + 2}`">
+                    <div class="names">{{ player.userName }}</div>
+                    <planning-poker-card :estimation="formatValue(player.value)"/>
+                  </div>
+                <!-- </div> -->
+              </div>
+            </div>
+            <div class="right">
+              <button class="btn btn-outline-primary btn-lg" 
+                      :disabled="checkGetResults()" @click="getResults">
+                Get results
+              </button>
+              <button class="btn btn-outline-primary btn-lg" 
+                      :disabled="checkNextGame()" @click="goToNextGame">
+                Next game
+              </button>
+              <div v-if="checkResults()" class="results">
+                <div style="color:black;">Average value of last estimation is:</div>
+                <h2>{{ currentGameResult }}</h2>
+              </div>
+              <!-- <button class="btn btn-outline-primary btn-lg" 
+                      :disabled="checkResults()" @click="getResults">
+                Clear results
+              </button> -->
+            </div>
+            <div></div>
+            <!-- <div class="bot"> -->
+            <!-- <div class="bot-player"><div class="bot-player2"><div class="card-bot"> -->
+            <!-- </div></div></div> -->
+            <!-- </div> -->
+            <div></div>
           </div>
-          <div class="right">
-            <button class="btn btn-outline-primary btn-lg" 
-                    :disabled="checkResults()" @click="getResults">
-              Get results
-            </button>
-            <!-- <button class="btn btn-outline-primary btn-lg" 
-                    :disabled="checkResults()" @click="getResults">
-              Clear results
-            </button> -->
-          </div>
-          <div></div>
-          <!-- <div class="bot"> -->
-          <!-- <div class="bot-player"><div class="bot-player2"><div class="card-bot"> -->
-          <!-- </div></div></div> -->
-          <!-- </div> -->
-          <div></div>
         </div>
       </div>
     </div>
-  </div>
-  </div>
-      <UserStoryModal v-if="displayUserStoryModal" :storyID ="this.story.id" @closeUserStoryModal="hideModal" @clearStoryTable = "clearStoryTable" @chooseStory="chooseStory"></UserStoryModal>
+    </div>
+    <UserStoryModal v-if="displayUserStoryModal" :storyID ="this.story.id" @closeUserStoryModal="hideModal" @clearStoryTable = "clearStoryTable" @chooseStory="chooseStory"></UserStoryModal>
     <TasksModal v-if="displayTaskModal" :storyID ="this.story.id" @closeTaskModal="hideTaskModal"></TasksModal>
 <!--  <EditStoryModal v-if="displayEditStoryModal" @close-modal-event="hideModal"></EditStoryModal>-->
+  </div>
 </template>
 
 <script>
@@ -105,65 +116,65 @@ export default {
   },
   data() {
     return {
-      showResults: false,
       clearResults: false,
       displayUserStoryModal: false,
       displayTaskModal:false,
       story:{},
       players: [],
-      tasks: (this.story)? this.$store.getters.getStoryTasks(this.story.id) : [],
-
+      tasks: (this.story)? this.$store.getters.getStoryTasks(this.story.id): [],
     }
   },
-mounted() {
-  let popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
-  popoverTriggerList.forEach(popoverTriggerEl=> {
-    const popoverId = popoverTriggerEl.attributes['data-content-id'];
-    const contentEl = $(`#${popoverId.value}`).html();
-    let opts = {
-      content: contentEl,
-      html: true,
-      container: 'body',
-      sanitize  : false,
-      // trigger: 'focus'
-    }
-    new Popover(popoverTriggerEl, opts);
+  mounted() {
+    let popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
+    popoverTriggerList.forEach(popoverTriggerEl=> {
+      const popoverId = popoverTriggerEl.attributes['data-content-id'];
+      const contentEl = $(`#${popoverId.value}`).html();
+      let opts = {
+        content: contentEl,
+        html: true,
+        container: 'body',
+        sanitize  : false,
+        // trigger: 'focus'
+      }
+      new Popover(popoverTriggerEl, opts);
 
-  })
-},
+    })
+  },
   computed: mapState([
-      "otherPlayersCards",
-      "currentStory"
+      "otherPlayers",
+      "currentStory",
+      "currentGameResult",
+      "mySelectedCard",
+      "isSelectedCardConfirmed",
   ]),
   methods: {
+    checkGetResults() {
+      return !this.$store.state.isHost || !this.isSelectedCardConfirmed || this.mySelectedCard === "";
+    },
     checkResults() {
-      return !this.$store.state.isHost || !this.isSelectionConfirmed || this.mainPlayerCard === "";
+      return this.currentGameResult !== "";
+    },
+    checkNextGame() {
+      const result = this.checkGetResults();
+      return result || this.currentGameResult === "";
     },
     getResults() {
       this.webSocketService.finishGame(this.$store.state.roomName, this.$store.state.userName);
-      this.showResults = true;
-      // if (this.isSelectionConfirmed && this.mainPlayerCard !== "") {
-      //   let numberOfParticipants = Math.floor(Math.random() * (8) + 1);
-      //   const participants = [];
-      //   while (numberOfParticipants >= 0) {
-      //     console.log("here");
-      //     participants.push(Math.floor(Math.random() * (12)));
-      //     numberOfParticipants--;
-      //   }
-      //   this.players = participants;
-      //   console.log(numberOfParticipants);
-      //   console.log(participants);
-      //   this.showResults = true;
-      // }
     },
     formatValue(value) {
-      return value.split(".")[0];
+      if (value) {
+        return value.split(".")[0];
+      }
+      return null;
+    },
+    goToNextGame() {
+      this.webSocketService.goToNextGame(this.$store.state.roomName, this.$store.state.userName);
     },
     clearResult() {
       if (this.$store.state.otherPlayersCards.length !== 0) {
         this.$store.dispatch("removeResults");
       } 
-      this.showResults = false;
+      // this.showResults = false;
     },
     openUserStoryPanel() {
       this.displayUserStoryModal = true;
@@ -180,18 +191,13 @@ mounted() {
     chooseStory($event){
       this.webSocketService.chooseUserStory(this.$store.state.roomName, this.$store.state.userName, $event.id);
     },
-
     addStoryHandler(){
       this.$emit('select')
     },
     clearStoryTable(){
-      this.story={};
-      this.tasks=[];
+      this.story = {};
+      this.tasks = [];
     },
-
-    onClick() {
-      //this.webService.selectCard("siema", "eniu");
-    }
   }
 }
 </script>
@@ -319,11 +325,14 @@ mounted() {
   grid-area: right;
   z-index: 3;
   display: flex;
-  /* flex-direction: column-reverse; */
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   margin-top: 8rem;
-  padding: 8rem 0;
+}
+
+.right button {
+  margin: 0.2rem;
 }
 
 /* .bot {
@@ -386,5 +395,12 @@ mounted() {
   /*background: rgba(0, 0, 0, 0.5);*/
   /*position: fixed;*/
 
+}
+
+.results {
+  padding: 0.3rem;
+  font-family: Helvetica;
+  text-align: center;
+  color: rgb(214, 10, 81);
 }
 </style>
