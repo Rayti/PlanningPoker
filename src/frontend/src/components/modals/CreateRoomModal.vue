@@ -7,12 +7,8 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" @click="closeModal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <p class="text-start">Firstly, please enter your nick:</p>
-          <div class="form-floating mb-3">
-            <input  class="form-control" id="floatingNick" v-model="nickInput" aria-label="Floating label select example" placeholder="Enter your nick">
-            <label for="floatingNick">Your nick</label>
-          </div>
-          <p class="text-start">and then name your room:</p>
+          <p class="text-start">Hello, {{ userName }}!</p>
+          <p class="text-start">Please enter the name of your room:</p>
           <div class="form-floating mb-3">
             <input  class="form-control" id="floatingInput" v-model="roomInput" placeholder="Enter room name">
             <label for="floatingInput">Game room name</label>
@@ -31,24 +27,27 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
+
 export default {
   name: "CreateRoomModal",
   inject: ['webHttpService','webSocketService'],
   data() {
     return {
       roomInput: "",
-      nickInput: "",
       createRoomError: false,
     }
   },
+  computed: mapState([
+      "userName",
+  ]),
   methods: {
     closeModal() {
       this.$emit('close-modal-event');
     },
     async createNewRoom() {
       const roomName = this.roomInput;
-      const userName = this.nickInput;
-      const result = await this.webHttpService.createRoomRequest(roomName, userName);
+      const result = await this.webHttpService.createRoomRequest(roomName, this.userName);
 
       if (result && result.success) { // jeżeli nie to powinien tost jakiś się pojawić
         if (this.createRoomError) {
@@ -56,7 +55,7 @@ export default {
         }
 
         this.webSocketService.createWebSocketConnection(roomName);
-        this.$store.dispatch("setBasicInformation", { roomName: roomName, userName: userName, isHost: true });
+        this.$store.dispatch("setBasicInformation", { roomName: roomName, isHost: true });
         this.$router.push({ name: "game", params: { roomName: roomName }});
       } else { // obsługa błędów
         if (!this.createRoomError) {

@@ -34,6 +34,18 @@ export class WebHTTPService {
         }
     }
 
+    async canJoinRoomRequest(roomName, userName) {
+        console.log(this.store.state.userName);
+        const link = `${API_URL}/${roomName}/${userName}/can-join-room`;
+        try {
+            const response = await axios.get(link, config);
+            return response.data;
+        } catch (error) {
+            console.log(error.message); 
+            return null;
+        }
+    }
+
     async joinExistingRoomRequest(roomName, userName) {
         const link = `${API_URL}/${roomName}/${userName}/join-room`;
         try {
@@ -92,11 +104,16 @@ export class WebHTTPService {
         const link = `${API_URL}/${roomName}/${userName}/game-data`;
         try {
             const response = await axios.get(link, config);
-            for(let i=0;i<response.data.stories.length;i++){
-                this.store.dispatch("addStory", response.data.stories[i]);
+            const data = await response.data;
+            console.log(data);
+            for(let i=0;i< data.stories.length;i++){
+                this.store.dispatch("addStory", data.stories[i]);
             }
-            this.store.dispatch("changeCurrentStory", response.data.currentStory)
-            return response
+            this.store.dispatch("changeCurrentStory", data.currentStory)
+            console.log("getintocurrent");
+            console.log(data.users);
+            this.store.dispatch("addPlayers", data.users);
+            return data;
         } catch (error) {
             console.log(error.message); 
             return null;

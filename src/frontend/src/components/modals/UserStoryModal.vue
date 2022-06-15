@@ -25,6 +25,7 @@
                   <button type="button" :id="story.id" class="btn btn-sm btn-outline-success btnModal" @click="onChooseStory">Choose</button>
                   <button type="button"  class="btn btn-sm btn-outline-danger btnModal" @click="onDeleteStoryClick(story.id)">Delete</button>
                   <button type="button"  class="btn btn-sm btn-outline-info btnModal" @click="onEditStoryClick(story)">Edit</button>
+                  <div v-if="story.lastEstimation !== ''">   - Last Estimation: {{ story.lastEstimation }}</div>
                 </button>
               </h2>
               <div :id="'flush-collapseOne'+index" class="accordion-collapse collapse" :aria-labelledby="'flush-headingOne'+index" data-bs-parent="#accordionFlushExample">

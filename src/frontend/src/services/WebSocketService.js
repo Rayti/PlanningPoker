@@ -23,10 +23,10 @@ export class WebSocketService {
                     console.log("RESPONSE FROM BACKEND:");
                     console.log(tick);
 
-                    let receivedMsg = JSON.parse(tick.body); // TUTAJ można zrobić switcha i w zależności od odpowiedzi coś tam robić
+                    let receivedMsg = JSON.parse(tick.body);
                     switch (receivedMsg.type) {
                         case "GameResultMessage":
-                            this.store.dispatch("addResults", receivedMsg.selectedCards);
+                            this.store.dispatch("addResults", receivedMsg);
                             break;
                         case "CurrentGameStoryMessage":
                             this.store.dispatch("changeCurrentStory", receivedMsg.storyMessage);
@@ -45,9 +45,19 @@ export class WebSocketService {
                             break;
                         case "DeleteTaskMessage":
                             this.store.commit('deleteTask', receivedMsg)
-
-
-
+                            break;
+                        case "NextGameMessage":
+                            this.store.dispatch("removeResults");
+                            break; 
+                        case "JoinedRoomMessage":
+                            if (receivedMsg.userName === this.store.state.userName) {
+                                break;
+                            }
+                            this.store.dispatch("addPlayer", receivedMsg.userName);
+                            break;
+                        case "LeftRoomMessage":
+                            this.store.dispatch("deletePlayer", receivedMsg.userName);
+                            break;
                     }
                     console.log(receivedMsg);
                     // this.receivedMessages.push(JSON.parse(tick.body).message);
@@ -65,6 +75,21 @@ export class WebSocketService {
             this.stompClient.disconnect();
         }
         this.connected = false;
+    }
+
+    joinExistingRoom(roomName, userName) {
+        console.log("jestem tu");
+        if (this.stompClient && this.stompClient.connected) {
+            console.log("I've joined an exisitng room");
+            this.stompClient.send(`${SOCKET_API_URL}/${roomName}/${userName}/join-room-ws`);
+        }
+    }
+
+    leaveExistingRoom(roomName, userName) {
+        if (this.stompClient && this.stompClient.connected) {
+            console.log("I've left an exisitng room");
+            this.stompClient.send(`${SOCKET_API_URL}/${roomName}/${userName}/leave-room-ws`);
+        }
     }
 
     selectCard(roomName, userName, selectedCard) {

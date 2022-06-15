@@ -1,23 +1,23 @@
 import {createStore} from 'vuex'
 const getDefaultState = () => {
     return {
-        roomName: '',
-        stories: [],
-        userName: '',
-        currentStory:{},
+        roomName: "",
+        userName: "",
         isHost: false,
-        // stories: {},
-        sessionId:'',
-        otherPlayersCards: []
+        currentGameResult: "",
+        stories: [],
+        currentStory:{},
+        sessionId: "",
+        mySelectedCard: "",
+        isSelectedCardConfirmed: false,
+        otherPlayers: []
     }
 }
 const store = createStore({
 
     state: getDefaultState(),
-
     getters: {
         getStoriesAll (state) {
-
             return state.stories;
         },
         getStory: (state) => (id) =>{
@@ -42,12 +42,14 @@ const store = createStore({
         setRoomName (state, roomName) {
             state.roomName = roomName;
         },
+
         addStory (state, story) {
             if(story.id !== undefined && typeof story.description == 'string' ) {
                 state.stories.push({
                     id: story.id,
                     description: story.description,
                     tasks: story.tasks,
+                    lastEstimation: ""
                 })
             }
         },
@@ -84,31 +86,74 @@ const store = createStore({
             story.description = arg.description;
 
         },
-		changeBasicInformation (state, payload) {
-        state.roomName = payload.roomName
-        state.userName = payload.userName
-        state.isHost = payload.isHost
-      },
-      setCards(state, payload) {
-        const filteredCards = payload.filter(card => card.userName !== state.userName)
-        console.log(filteredCards)
-        state.otherPlayersCards = filteredCards
-      },
-      cleanStore(state) {
-            state.roomName = null;
-            state.isHost = null;
-            state.stories = [];
-            state.otherPlayersCards = [];
-      },
-      removeCards(state) {
-        state.otherPlayersCards = []
-      },
-       setCurrentStory(state,payload){
-           if(payload) {
-               state.currentStory = this.getters.getStory(payload.id);
-           }
+        setCurrentStory(state,payload){
+            if(payload) {
+                state.currentStory = this.getters.getStory(payload.id);
+            }
+ 
+        },
+        resetStory(state) {
+            const index = state.stories.findIndex(story => story.id === state.currentStory.id);
+            if (index !== -1) {
+                state.stories[index].lastEstimation = state.currentGameResult;
+            }
+            state.currentStory = {};
+        },
 
-       }
+		setBasicInformation (state, payload) {
+            state.roomName = payload.roomName
+            state.isHost = payload.isHost
+        },
+        setCardSelection(state, payload) {
+            state.mySelectedCard = payload.selectedCard;
+            state.isSelectedCardConfirmed = payload.confirmation;
+        },
+        setCards(state, payload) {
+            console.log("here",payload)
+            const filteredCards = payload.selectedCards.filter(card => card.userName !== state.userName)
+            for (let i = 0; i < filteredCards.length; i++) {
+                const index = state.otherPlayers.findIndex(player => player.userName === filteredCards[i].userName);
+                if (index !== -1) {
+                    state.otherPlayers[index] = filteredCards[i];
+                }
+            }
+            // console.log(filteredCards)
+            // state.otherPlayersCards = filteredCards
+        },
+        setCurrentGameResult(state, payload) {
+            state.currentGameResult = payload.gameAvgValue
+        },
+        addPlayer(state, payload) {
+            state.otherPlayers = [ ...state.otherPlayers, { userName: payload }]
+        },
+        addPlayers(state, payload) {
+            const players = payload.filter(player => player.userName !== state.userName).map(player => { return { userName: player.userName }})
+            state.otherPlayers = [ ...state.otherPlayers, ...players ]
+        },
+        deletePlayer(state, payload) {
+            const players = state.otherPlayers.filter(player => player.userName !== payload);
+            state.otherPlayers = players
+        },
+        cleanStore(state) {
+                state.roomName = "";
+                state.isHost = false;
+                state.stories = [];
+                state.otherPlayers = [];
+                state.currentGameResult = "";
+                state.mySelectedCard = "";
+                state.isSelectedCardConfirmed = false;
+        },
+        removeCards(state) {
+            const players = state.otherPlayers.map(player => { return { userName: player.userName }});
+            state.otherPlayers = players;
+        },
+        removeGameResult(state) {
+            state.currentGameResult = ""
+        },
+        removeSelection(state) {
+            state.mySelectedCard = "";
+            state.isSelectedCardConfirmed = false;
+        }
     },
     actions: {
         resetState ({ commit }) {
@@ -124,34 +169,50 @@ const store = createStore({
             context.commit('setRoomName', roomName)
         },
 		setBasicInformation ({ commit }, payload) {
-        commit("changeBasicInformation", payload)
-      },
-      addResults({ commit }, payload) {
-        commit("setCards", payload)
-      },
-      removeResults({ commit }) {
-        commit("removeCards")
-      },
-      changeCurrentStory({ commit }, payload) {
-          commit("setCurrentStory", payload)
-      },
-      addStory({ commit }, payload){
-          commit("addStory", payload)
-      },
-      deleteStory({ commit }, payload){
-            commit("deleteStory", payload)
-      },
-      updateStory({ commit }, payload){
-         commit("updateStory", payload)
+            commit("setBasicInformation", payload)
         },
-      addTask({ commit }, payload){
-          commit("addTask", payload)
-      },
+        addResults({ commit }, payload) {
+            commit("setCards", payload)
+            commit("setCurrentGameResult", payload)
+        },
+        addPlayer({ commit }, payload) {
+            commit("addPlayer", payload)
+        },
+        addPlayers({ commit }, payload) {
+            commit("addPlayers", payload)
+        },
+        deletePlayer({ commit }, payload) {
+            commit("deletePlayer", payload);
+        },
+        removeResults({ commit }) {
+            commit("removeCards");
+            commit("resetStory");
+            commit("removeGameResult");
+            commit("removeSelection");
+        },
+        changeCurrentStory({ commit }, payload) {
+            commit("setCurrentStory", payload)
+        },
+        addStory({ commit }, payload){
+            commit("addStory", payload)
+        },
+        deleteStory({ commit }, payload){
+                commit("deleteStory", payload)
+        },
+        updateStory({ commit }, payload){
+            commit("updateStory", payload)
+            },
+        addTask({ commit }, payload){
+            commit("addTask", payload)
+        },
         deleteTask({ commit }, payload){
             commit("addTask", payload)
         },
         cleanStore({commit}) {
             commit("cleanStore");
+        },
+        setCardSelection({ commit }, payload) {
+            commit("setCardSelection", payload);
         }
     },
     modules: {

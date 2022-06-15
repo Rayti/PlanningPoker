@@ -44,7 +44,6 @@
 
 <script>
 import PlanningPokerCard from './PlanningPokerCard.vue';
-import {WebHTTPService} from "@/services/WebHTTPService";
 
 export default {
   name: 'MainPlayerSpace',
@@ -56,7 +55,7 @@ export default {
         return {
             fibonacci: ['0', '1', '2', '3', '5', '8', '13', '21', '34', '55', '89', '?'],
             selectedCard: '',
-            isSelectionConfirmed: false,
+            // isSelectionConfirmed: false,
             httpService: this.webHttpService,
             socketService: this.webSocketService,
             messageInput: ""
@@ -71,19 +70,21 @@ export default {
             }
         },
         confirmSelect() {
-            this.isSelectionConfirmed = true
-            this.emitValue();
+            if (this.selectedCard !== "") {
+                this.$store.dispatch("setCardSelection", { selectedCard: this.selectedCard, confirmation: true });
+                this.webSocketService.selectCard(this.$store.state.roomName, this.$store.state.userName, this.selectedCard);
+            } else {
+                this.$store.dispatch("setCardSelection", { selectedCard: "", confirmation: false });
+            }
         },
-        emitValue() {
-            this.$emit("selection", { selectedCard: this.selectedCard, isSelectionConfirmed: this.isSelectionConfirmed });
-        },
-
-      clearSelections() {
-        this.selectedCard = "";
-        this.$emit("clear", {beCleared: true});
-      }
-
-
+        // emitValue() {
+        //     this.$emit("selection", { selectedCard: this.selectedCard, isSelectionConfirmed: this.isSelectionConfirmed });
+        // },
+        clearSelections() {
+            this.selectedCard = "";
+            // this.isSelectionConfirmed = false;
+            this.$emit("clear", { beCleared: true });
+        }
     }
 }
 </script>

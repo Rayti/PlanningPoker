@@ -7,7 +7,7 @@
           Planning Poker
         </a>
         <div>
-        <button type="button" v-if="this.$store.state.sessionId !== ''" class="btn btn-outline-light " @click="toHistory">History of Planing</button>
+        <button type="button" v-if="this.$store.state.sessionId !== ''" class="btn btn-outline-light " @click="toHistory">History of Planning</button>
         <button type="button" v-if="this.$store.state.sessionId !== ''" class="btn btn-outline-light mx-4" @click="logOut">Log out</button>
         </div>
       </div>
@@ -26,15 +26,38 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
+
 export default {
   inject: ['webHttpService','webSocketService'],
+  computed: mapState([
+      "roomName",
+      "userName",
+  ]),
   methods: {
-    navigate() {
-      this.webSocketService.disconnect();
-      this.$store.dispatch("cleanStore");
+    async navigate() {
+      if (this.roomName !== "") {
+        this.webSocketService.leaveExistingRoom(this.roomName, this.userName);
+        await this.connectingDelay(3000);
+        this.webSocketService.disconnect();
+        this.$store.dispatch("cleanStore");
+      }
       this.$router.push('/');
     },
-    async logOut(){
+    connectingDelay(delayInMs) {
+      return new Promise(resolve => {
+        setTimeout(() => {
+          resolve(2);
+        }, delayInMs);
+      });
+    },
+    async logOut() {
+      if (this.roomName !== "") {
+        this.webSocketService.leaveExistingRoom(this.roomName, this.userName);
+        await this.connectingDelay(3000);
+        this.webSocketService.disconnect();
+        this.$store.dispatch("cleanStore");
+      }
       this.webHttpService.logOut()
           .then(result => {
             if(result?.data?.success === true){
@@ -42,9 +65,15 @@ export default {
               this.$store.dispatch("resetState");
               this.$router.push('/');
             }
-          })
+          });
     },
-    toHistory(){
+    async toHistory() {
+      if (this.roomName !== "") {
+        this.webSocketService.leaveExistingRoom(this.roomName, this.userName);
+        await this.connectingDelay(3000);
+        this.webSocketService.disconnect();
+        this.$store.dispatch("cleanStore");
+      }
       this.$router.push('/history');
     }
   }
