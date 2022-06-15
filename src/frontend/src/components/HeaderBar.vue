@@ -7,7 +7,7 @@
           Planning Poker
         </a>
         <div>
-        <button type="button" v-if="this.$store.state.sessionId !== ''" class="btn btn-outline-light " @click="toHistory">History of Planing</button>
+        <button type="button" v-if="this.$store.state.sessionId !== ''" class="btn btn-outline-light " @click="toHistory">History of Planning</button>
         <button type="button" v-if="this.$store.state.sessionId !== ''" class="btn btn-outline-light mx-4" @click="logOut">Log out</button>
         </div>
       </div>
@@ -26,8 +26,14 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
+
 export default {
   inject: ['webHttpService','webSocketService'],
+  computed: mapState([
+      "roomName",
+      "userName",
+  ]),
   methods: {
     navigate() {
       this.webSocketService.disconnect();
@@ -42,7 +48,10 @@ export default {
               this.$store.dispatch("resetState");
               this.$router.push('/');
             }
-          })
+          });
+      if (this.roomName !== "") {
+        this.webSocketService.leaveExistingRoom(this.roomName, this.userName);
+      }
     },
     toHistory(){
       this.$router.push('/history');

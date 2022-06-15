@@ -49,6 +49,7 @@ const store = createStore({
                     id: story.id,
                     description: story.description,
                     tasks: story.tasks,
+                    lastEstimation: ""
                 })
             }
         },
@@ -92,7 +93,9 @@ const store = createStore({
  
         },
         resetStory(state) {
-            state.currentStory = {}
+            const index = state.stories.findIndex(story => story.id === state.currentStory.id);
+            state.stories[index].lastEstimation = state.currentGameResult;
+            state.currentStory = {};
         },
 
 		setBasicInformation (state, payload) {
@@ -124,6 +127,10 @@ const store = createStore({
         addPlayers(state, payload) {
             const players = payload.filter(player => player.userName !== state.userName).map(player => { return { userName: player.userName }})
             state.otherPlayers = [ ...state.otherPlayers, ...players ]
+        },
+        deletePlayer(state, payload) {
+            const players = state.otherPlayers.filter(player => player.userName !== payload);
+            state.otherPlayers = players
         },
         cleanStore(state) {
                 state.roomName = "";
@@ -169,11 +176,14 @@ const store = createStore({
         addPlayers({ commit }, payload) {
             commit("addPlayers", payload)
         },
+        deletePlayer({ commit }, payload) {
+            commit("deletePlayer", payload);
+        },
         removeResults({ commit }) {
             commit("removeCards");
+            commit("resetStory");
             commit("removeGameResult");
             commit("removeSelection");
-            commit("resetStory");
         },
         changeCurrentStory({ commit }, payload) {
             commit("setCurrentStory", payload)

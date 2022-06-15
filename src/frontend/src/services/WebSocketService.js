@@ -55,6 +55,9 @@ export class WebSocketService {
                             }
                             this.store.dispatch("addPlayer", receivedMsg.userName);
                             break;
+                        case "LeftRoomMessage":
+                            this.store.dispatch("deletePlayer", receivedMsg.userName);
+                            break;
                     }
                     console.log(receivedMsg);
                     // this.receivedMessages.push(JSON.parse(tick.body).message);
@@ -81,6 +84,14 @@ export class WebSocketService {
             this.stompClient.send(`${SOCKET_API_URL}/${roomName}/${userName}/join-room-ws`);
         }
     }
+
+    leaveExistingRoom(roomName, userName) {
+        if (this.stompClient && this.stompClient.connected) {
+            console.log("I've left an exisitng room");
+            this.stompClient.send(`${SOCKET_API_URL}/${roomName}/${userName}/leave-room-ws`);
+        }
+    }
+
     selectCard(roomName, userName, selectedCard) {
         if (this.stompClient && this.stompClient.connected) {
             console.log("I've selected a card");

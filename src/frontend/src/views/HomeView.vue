@@ -114,13 +114,15 @@ export default {
           if (this.joinRoomError) {
             this.joinRoomError = false
           }
-          const result2 = await this.webHttpService.getIntoCurrentGame(roomName, this.userName);
-          console.log(result2);
+          
           this.webSocketService.createWebSocketConnection(roomName);
           await this.connectingDelay(3000);
           console.log("coś");
          
           this.webSocketService.joinExistingRoom(roomName, this.userName);
+          await this.connectingDelay(3000);
+          const result2 = await this.webHttpService.getIntoCurrentGame(roomName, this.userName);
+          console.log(result2);
           this.$store.dispatch("setBasicInformation", { roomName: roomName, isHost: false });
           this.$router.push({ name: "game", params: { roomName: roomName }});
         } else { // obsługa błędów
