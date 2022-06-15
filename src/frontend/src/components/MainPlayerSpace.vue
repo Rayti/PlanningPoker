@@ -92,14 +92,14 @@ export default {
 <style>
 .bottom-space {
     flex-shrink: 0;
-    overflow: hidden;
+    /*overflow: hidden*/;
     position: relative; 
     /* width: 100%; */
     /* bottom: 5px;
     display: grid;
     grid-template-rows: auto; */
     box-sizing: border-box;
-    height: 16rem;
+    height: 13rem;
     outline-color: #74b3ff;
 }
 
@@ -112,6 +112,7 @@ export default {
     right: 0;
     transition: all .1s;
     z-index: 3;
+    max-height: 13rem;
 }
 
 .deck-label {

@@ -31,6 +31,7 @@ public class DefaultRoomService implements RoomService {
             room.getUsers().add(user);
             room.setCurrentGame(game);
             roomCache.add(room);
+            user.getRoomGamesHistory().add(room);
             log.info("Room {} and User {} created", roomName, user.getName());
             return true;
         }
